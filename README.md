@@ -1,4 +1,4 @@
-# RESTful and HTTP services in Pyramid Demos
+# RESTful and HTTP services in Pyramid demos
 
 RESTful and HTTP services in Pyramid and Python course materials from Talk Python Training.
 
