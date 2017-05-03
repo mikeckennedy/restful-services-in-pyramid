@@ -1,0 +1,46 @@
+<html>
+<body>
+
+
+<style>
+    #car_details {
+        display: none;
+        font-size: 20px;
+    }
+    #car_details > div {
+        margin: 10px;
+    }
+    input {
+        font-size: 20px;
+        width: 400px;
+        padding: 10px;
+    }
+    button  {
+        padding: 10px;
+        margin: 10px;
+        margin-left: 0px;
+    }
+
+</style>
+
+<h1>SPA Client (JavaScript)</h1>
+
+<form action="#">
+    <input type="text" value="" name="car_id" placeholder=" Search by car ID"
+    ><br>
+    <button type="submit">Search</button>
+</form>
+
+<div id="car_details">
+    <div id="name"></div>
+    <div id="price"></div>
+    <div id="year"></div>
+    <div id="damage"></div>
+    <div id="last_seen"></div>
+</div>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="site.js"></script>
+</body>
+
+</html>
