@@ -10,7 +10,7 @@ class Repository:
     def all_cars(cls, limit=None):
         cls.__load_data()
 
-        cars = list(cls.__car_data.items())
+        cars = list(cls.__car_data.values())
         if limit:
             cars = cars[:limit]
 
