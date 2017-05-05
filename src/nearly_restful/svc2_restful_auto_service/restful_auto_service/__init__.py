@@ -1,5 +1,8 @@
 from pyramid.config import Configurator
 from pyramid.events import NewRequest
+from pyramid.renderers import JSON
+
+from restful_auto_service.data.car import Car
 
 
 def main(_, **settings):
@@ -9,6 +12,7 @@ def main(_, **settings):
     config.include('pyramid_chameleon')
 
     allow_cors(config)
+    configure_renderers(config)
     register_routes(config)
 
     return config.make_wsgi_app()
@@ -39,3 +43,9 @@ def register_routes(config):
     config.add_route('auto_api', '/api/autos/{car_id}')
 
     config.scan()
+
+
+def configure_renderers(config):
+    json_renderer = JSON(indent=4)
+    json_renderer.add_adapter(Car, lambda c, _: c.to_dict())
+    config.add_renderer('json', json_renderer)

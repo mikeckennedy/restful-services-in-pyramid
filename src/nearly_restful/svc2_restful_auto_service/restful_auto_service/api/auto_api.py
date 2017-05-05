@@ -2,6 +2,7 @@ from pyramid.request import Request
 from pyramid.response import Response
 from pyramid.view import view_config
 
+from restful_auto_service.data.car import Car
 from restful_auto_service.data.repository import Repository
 
 
@@ -18,6 +19,8 @@ def all_autos(_):
              renderer='json')
 def single_auto(request: Request):
     car_id = request.matchdict.get('car_id')
+    if car_id == '__first__':
+        car_id = Repository.all_cars()[0].id
 
     car = Repository.car_by_id(car_id)
     if not car:
@@ -34,14 +37,15 @@ def single_auto(request: Request):
 def create_auto(request: Request):
     try:
         car_data = request.json_body
+        car = Car.from_dict(car_data)
     except:
         return Response(status=400, body='Could not parse your post as JSON.')
 
     # TODO: Validate
 
     try:
-        car_data = Repository.add_car(car_data)
-        return Response(status=201, json_body=car_data)
+        car = Repository.add_car(car)
+        return Response(status=201, json_body=car)
     except:
         return Response(status=400, body='Could not save car.')
 
@@ -52,6 +56,8 @@ def create_auto(request: Request):
 def update_auto(request: Request):
     car_id = request.matchdict.get('car_id')
     car = Repository.car_by_id(car_id)
+    if car_id == '__first__':
+        car_id = Repository.all_cars()[0].id
 
     if not car:
         msg = "The car with id '{}' was not found.".format(car_id)
@@ -59,13 +65,14 @@ def update_auto(request: Request):
 
     try:
         car_data = request.json_body
+        car = Car.from_dict(car_data)
     except:
         return Response(status=400, body='Could not parse your post as JSON.')
 
     # TODO: Validate
 
     try:
-        Repository.update_car(car_data)
+        Repository.update_car(car)
         return Response(status=204, body='Car updated successfully.')
     except:
         return Response(status=400, body='Could not update car.')
