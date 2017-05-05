@@ -38,3 +38,22 @@ class Repository:
                 key = str(uuid.uuid4())
                 row['id'] = key
                 cls.__car_data[key] = row
+
+    @classmethod
+    def add_car(cls, car_data):
+        key = str(uuid.uuid4())
+        car_data['id'] = key
+        cls.__car_data[key] = car_data
+
+        return car_data
+
+    @classmethod
+    def update_car(cls, car_data):
+        key = car_data['id']
+        cls.__car_data[key] = car_data
+
+        return car_data
+
+    @classmethod
+    def delete_car(cls, car_id):
+        del cls.__car_data[car_id]
