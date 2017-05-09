@@ -8,6 +8,18 @@ from restful_auto_service.data.repository import Repository
 
 @view_config(route_name='autos_api',
              request_method='GET',
+             accept='text/csv',
+             renderer='csv')
+def all_autos_csv(_):
+    cars = Repository.all_cars(limit=25)
+    # return [car.to_dict() for car in cars]
+    # return [(1, 1), (2, 1)]
+    return cars
+
+
+@view_config(route_name='autos_api',
+             request_method='GET',
+             accept='application/json',
              renderer='json')
 def all_autos(_):
     cars = Repository.all_cars(limit=25)
@@ -16,6 +28,15 @@ def all_autos(_):
 
 @view_config(route_name='auto_api',
              request_method='GET',
+             accept='image/png',
+             renderer='png')
+def single_auto_image(request):
+    return single_auto(request)
+
+
+@view_config(route_name='auto_api',
+             request_method='GET',
+             accept='application/json',
              renderer='json')
 def single_auto(request: Request):
     car_id = request.matchdict.get('car_id')

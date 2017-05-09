@@ -3,6 +3,10 @@ from pyramid.events import NewRequest
 from pyramid.renderers import JSON
 
 from restful_auto_service.data.car import Car
+from restful_auto_service.renderers.csv_renderer import CSVRendererFactory
+from restful_auto_service.renderers.image_direct_renderer import ImageDirectRendererFactory
+from restful_auto_service.renderers.image_renderer import ImageRedirectRendererFactory
+from restful_auto_service.renderers.json_renderer import JSONRendererFactory
 
 
 def main(_, **settings):
@@ -46,6 +50,15 @@ def register_routes(config):
 
 
 def configure_renderers(config):
-    json_renderer = JSON(indent=4)
+    json_renderer = JSONRendererFactory(indent=4)
     json_renderer.add_adapter(Car, lambda c, _: c.to_dict())
     config.add_renderer('json', json_renderer)
+
+    csv_renderer = CSVRendererFactory()
+    csv_renderer.add_adapter(Car, lambda c, _: c.to_dict())
+    config.add_renderer('csv', csv_renderer)
+
+    # image_renderer = ImageRedirectRendererFactory()
+    image_renderer = ImageDirectRendererFactory()
+    image_renderer.add_adapter(Car, lambda c, _: c.to_dict())
+    config.add_renderer('png', image_renderer)
