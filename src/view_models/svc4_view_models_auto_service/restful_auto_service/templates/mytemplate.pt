@@ -1,0 +1,24 @@
+<div metal:use-macro="load: layout.pt">
+    <div metal:fill-slot="content">
+
+        <div class="content">
+            <h1><span class="font-semi-bold">auto_svc</span> <span class="smaller">A basic RESTful auto service</span></h1>
+            <p class="lead">
+                Feel free to use our API to shop for cars<br>
+                <br>
+                <strong>Endpoints</strong>
+            <ul>
+                <li>
+                    <strong>All cars</strong><br>
+                    <a href="/api/autos">GET /api/autos</a>
+                </li>
+                <li>
+                    <strong>Individual car</strong><br>
+                    <a href="/api/autos/123">GET /api/autos/{car_id}</a>
+                </li>
+            </ul>
+            </p>
+        </div>
+
+    </div>
+</div>
