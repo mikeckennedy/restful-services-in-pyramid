@@ -44,7 +44,7 @@ class CSVRendererFactory(RendererAbstractBase):
 
         t = type(value)
         if t in self.adapters:
-            value = [self.adapters[t](value, _)]
+            value = [self.adapters[t](value, None)]
 
         if isinstance(value, list):
             first = value[0]

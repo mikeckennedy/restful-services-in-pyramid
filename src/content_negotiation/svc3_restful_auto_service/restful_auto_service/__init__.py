@@ -7,6 +7,7 @@ from restful_auto_service.renderers.csv_renderer import CSVRendererFactory
 from restful_auto_service.renderers.image_direct_renderer import ImageDirectRendererFactory
 from restful_auto_service.renderers.image_renderer import ImageRedirectRendererFactory
 from restful_auto_service.renderers.json_renderer import JSONRendererFactory
+from restful_auto_service.renderers.negotiate_renderer import NegotiatingRendererFactory
 
 
 def main(_, **settings):
@@ -62,3 +63,11 @@ def configure_renderers(config):
     image_renderer = ImageDirectRendererFactory()
     image_renderer.add_adapter(Car, lambda c, _: c.to_dict())
     config.add_renderer('png', image_renderer)
+
+    negotiate_renderer = NegotiatingRendererFactory()
+    negotiate_renderer.add_accept_all_renderer(json_renderer)
+    negotiate_renderer.add_renderer('application/json', json_renderer)
+    negotiate_renderer.add_renderer('text/csv', csv_renderer)
+    negotiate_renderer.add_renderer('image/png', image_renderer)
+    negotiate_renderer.add_adapter(Car, lambda c, _: c.to_dict())
+    config.add_renderer('negotiate', negotiate_renderer)

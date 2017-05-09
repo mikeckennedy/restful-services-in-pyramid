@@ -8,3 +8,4 @@ class JSONRendererFactory(JSON, RendererAbstractBase):
     def can_serialize_value(self, value):
         return True  # how do we know?
 
+
