@@ -5,6 +5,7 @@ from pyramid.view import view_config
 from restful_auto_service.data.car import Car
 from restful_auto_service.data.repository import Repository
 from restful_auto_service.viewmodels.create_auto_viewmodel import CreateAutoViewModel
+from restful_auto_service.viewmodels.update_auto_viewmodel import UpdateAutoViewModel
 
 
 @view_config(route_name='autos_api',
@@ -67,14 +68,16 @@ def update_auto(request: Request):
 
     try:
         car_data = request.json_body
-        car = Car.from_dict(car_data)
     except:
         return Response(status=400, body='Could not parse your post as JSON.')
 
-    # TODO: Validate
+    vm = UpdateAutoViewModel(car_data, car_id)
+    vm.compute_details()
+    if vm.errors:
+        return Response(status=400, body=vm.error_msg)
 
     try:
-        Repository.update_car(car)
+        Repository.update_car(vm.car)
         return Response(status=204, body='Car updated successfully.')
     except:
         return Response(status=400, body='Could not update car.')
