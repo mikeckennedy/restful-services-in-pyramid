@@ -14,7 +14,7 @@
                 </li>
                 <li>
                     <strong>Individual car</strong><br>
-                    <a href="/api/autos/123">GET /api/autos/{car_id}</a>
+                    <a href="/api/autos/__first__">GET /api/autos/{car_id}</a>
                 </li>
             </ul>
             </p>

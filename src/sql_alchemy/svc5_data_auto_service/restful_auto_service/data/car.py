@@ -1,7 +1,9 @@
+from dateutil.parser import parse
+
 class Car:
     def __init__(self, brand, name, price, year, damage, last_seen, image, id=None):
         self.image = image
-        self.last_seen = last_seen
+        self.last_seen = parse(last_seen)
         self.damage = damage
         self.year = year
         self.price = price
