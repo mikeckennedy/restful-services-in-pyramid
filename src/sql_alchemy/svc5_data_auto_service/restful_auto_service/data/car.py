@@ -1,15 +1,25 @@
-from dateutil.parser import parse
+import uuid
 
-class Car:
-    def __init__(self, brand, name, price, year, damage, last_seen, image, id=None):
-        self.image = image
-        self.last_seen = parse(last_seen)
-        self.damage = damage
-        self.year = year
-        self.price = price
-        self.name = name
-        self.brand = brand
-        self.id = id
+import sqlalchemy
+import datetime
+
+from restful_auto_service.data.sqlalchemy_base import SqlAlchemyBase
+
+
+class Car(SqlAlchemyBase):
+
+    __tablename__ = 'Car'
+
+    id = sqlalchemy.Column(sqlalchemy.String, primary_key=True,
+                           default=lambda: str(uuid.uuid4()))
+    brand = sqlalchemy.Column(sqlalchemy.String, index=True, nullable=False)
+    name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    damage = sqlalchemy.Column(sqlalchemy.String)
+    image = sqlalchemy.Column(sqlalchemy.String)
+    price = sqlalchemy.Column(sqlalchemy.Integer, index=True, nullable=False)
+    year = sqlalchemy.Column(sqlalchemy.Integer, index=True, nullable=False)
+    last_seen = sqlalchemy.Column(sqlalchemy.DateTime, index=True,
+                                  default=datetime.datetime.now)
 
     def to_dict(self):
         return {

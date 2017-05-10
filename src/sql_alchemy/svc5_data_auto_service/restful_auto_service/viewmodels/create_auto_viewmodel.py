@@ -23,8 +23,6 @@ class CreateAutoViewModel(ViewModelBase):
         image = self.data_dict.get('image')
         car_id = self.data_dict.get('id')
 
-        if not last_seen:
-            self.errors.append("Last seen is a required field.")
         if not name:
             self.errors.append("Name is a required field.")
         if not brand:
@@ -39,7 +37,7 @@ class CreateAutoViewModel(ViewModelBase):
             self.errors.append("Year must be non-negative.")
 
         if not self.errors:
-            car = Car(brand, name, price, year, damage,
-                      last_seen, image, car_id)
+            car = Car(brand=brand, name=name, price=price,
+                      year=year, damage=damage, image=image,
+                      last_seen=last_seen, id=car_id)
             self.car = car
-

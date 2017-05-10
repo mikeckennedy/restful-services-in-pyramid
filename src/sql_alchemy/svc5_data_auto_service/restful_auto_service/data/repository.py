@@ -4,6 +4,7 @@ import random
 import uuid
 
 from restful_auto_service.data.car import Car
+from restful_auto_service.data.db_factory import DbSessionFactory
 
 
 class Repository:
@@ -24,18 +25,28 @@ class Repository:
 
     @classmethod
     def all_cars(cls, limit=None):
-        cls.__load_data()
+        session = DbSessionFactory.create_session()
 
-        cars = list(cls.__car_data.values())
+        query = session.query(Car).order_by(Car.year.desc())
+
         if limit:
-            cars = cars[:limit]
+            cars = query[:limit]
+        else:
+            cars = query.all()
+
+        session.close()
 
         return cars
 
     @classmethod
     def car_by_id(cls, car_id):
-        cls.__load_data()
-        return cls.__car_data.get(car_id)
+        session = DbSessionFactory.create_session()
+
+        car = session.query(Car).filter(Car.id == car_id).first()
+
+        session.close()
+
+        return car
 
     @classmethod
     def __load_data(cls):
@@ -66,20 +77,47 @@ class Repository:
         return str(uuid.uuid4())
 
     @classmethod
-    def add_car(cls, car):
-        key = Repository.generate_id()
-        car.id = key
-        cls.__car_data[key] = car
+    def add_car(cls, car: Car):
+        session = DbSessionFactory.create_session()
 
-        return car
+        db_car = Car()
+        db_car.last_seen = car.last_seen
+        db_car.brand = car.brand
+        db_car.image = car.image if car.image else random.choice(cls.__fake_image_url)
+        db_car.damage = car.damage
+        db_car.year = car.year
+        db_car.price = car.price
+        db_car.name = car.name
+
+        session.add(db_car)
+        session.commit()
+
+        return db_car
 
     @classmethod
     def update_car(cls, car):
-        key = car.id
-        cls.__car_data[key] = car
 
-        return car
+        session = DbSessionFactory.create_session()
+
+        db_car = session.query(Car).filter(Car.id == car.id).first()
+        db_car.last_seen = car.last_seen
+        db_car.brand = car.brand
+        db_car.image = car.image if car.image else random.choice(cls.__fake_image_url)
+        db_car.damage = car.damage
+        db_car.year = car.year
+        db_car.price = car.price
+        db_car.name = car.name
+
+        session.commit()
+
+        return db_car
 
     @classmethod
     def delete_car(cls, car_id):
-        del cls.__car_data[car_id]
+        session = DbSessionFactory.create_session()
+        db_car = session.query(Car).filter(Car.id == car_id).first()
+        if not db_car:
+            return
+
+        session.delete(db_car)
+        session.commit()

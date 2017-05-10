@@ -5,11 +5,19 @@ from pyramid.events import NewRequest
 from pyramid.renderers import JSON
 
 from restful_auto_service.data.car import Car
+from restful_auto_service.data.db_factory import DbSessionFactory
 from restful_auto_service.renderers.csv_renderer import CSVRendererFactory
 from restful_auto_service.renderers.image_direct_renderer import ImageDirectRendererFactory
 from restful_auto_service.renderers.image_renderer import ImageRedirectRendererFactory
 from restful_auto_service.renderers.json_renderer import JSONRendererFactory
 from restful_auto_service.renderers.negotiate_renderer import NegotiatingRendererFactory
+
+
+def init_db(config):
+    settings = config.get_settings()
+    db_file = settings.get('db_filename')
+
+    DbSessionFactory.global_init(db_file)
 
 
 def main(_, **settings):
@@ -19,6 +27,7 @@ def main(_, **settings):
     config.include('pyramid_chameleon')
 
     allow_cors(config)
+    init_db(config)
     configure_renderers(config)
     register_routes(config)
 
