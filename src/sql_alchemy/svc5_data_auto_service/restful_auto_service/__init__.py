@@ -6,6 +6,7 @@ from pyramid.renderers import JSON
 
 from restful_auto_service.data.car import Car
 from restful_auto_service.data.db_factory import DbSessionFactory
+from restful_auto_service.data.repository import Repository
 from restful_auto_service.renderers.csv_renderer import CSVRendererFactory
 from restful_auto_service.renderers.image_direct_renderer import ImageDirectRendererFactory
 from restful_auto_service.renderers.image_renderer import ImageRedirectRendererFactory
@@ -18,6 +19,7 @@ def init_db(config):
     db_file = settings.get('db_filename')
 
     DbSessionFactory.global_init(db_file)
+    # Repository.load_data()
 
 
 def main(_, **settings):

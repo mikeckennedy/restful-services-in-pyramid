@@ -1,7 +1,7 @@
-import csv
-import os
 import random
-import uuid
+
+# noinspection PyPackageRequirements
+from dateutil.parser import parse
 
 from restful_auto_service.data.car import Car
 from restful_auto_service.data.db_factory import DbSessionFactory
@@ -49,44 +49,16 @@ class Repository:
         return car
 
     @classmethod
-    def __load_data(cls):
-        if cls.__car_data:
-            return
-
-        file = os.path.join(
-            os.path.dirname(__file__),
-            'opel.csv'
-        )
-
-        with open(file, 'r', encoding='utf-8') as fin:
-            # brand,name,price,year,damage,last_seen
-            reader = csv.DictReader(fin)
-            for row in reader:
-                key = Repository.generate_id()
-                row['id'] = key
-                row['image'] = random.choice(cls.__fake_image_url)
-                cls.__car_data[key] = Car(**row)
-
-                # Converting this to cars is kinda slow,
-                # 100 records is enough to get started with.
-                if len(cls.__car_data) > 100:
-                    break
-
-    @classmethod
-    def generate_id(cls):
-        return str(uuid.uuid4())
-
-    @classmethod
     def add_car(cls, car: Car):
         session = DbSessionFactory.create_session()
 
         db_car = Car()
-        db_car.last_seen = car.last_seen
+        db_car.last_seen = parse(car.last_seen)
         db_car.brand = car.brand
         db_car.image = car.image if car.image else random.choice(cls.__fake_image_url)
         db_car.damage = car.damage
-        db_car.year = car.year
-        db_car.price = car.price
+        db_car.year = int(car.year)
+        db_car.price = int(car.price)
         db_car.name = car.name
 
         session.add(db_car)

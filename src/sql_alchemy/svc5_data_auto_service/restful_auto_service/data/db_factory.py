@@ -16,7 +16,7 @@ class DbSessionFactory:
         conn_string = 'sqlite:///' + file
 
         # print("Connection string: " + conn_string)
-        engine = sqlalchemy.create_engine(conn_string, echo=True)
+        engine = sqlalchemy.create_engine(conn_string, echo=False)
 
         SqlAlchemyBase.metadata.create_all(engine)
 
