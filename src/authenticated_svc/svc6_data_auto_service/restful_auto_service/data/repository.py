@@ -103,3 +103,15 @@ class Repository:
         session.close()
 
         return user
+
+    @classmethod
+    def create_user(cls, username):
+
+        session = DbSessionFactory.create_session()
+
+        user = User(name=username)
+        session.add(user)
+
+        session.commit()
+
+        return user

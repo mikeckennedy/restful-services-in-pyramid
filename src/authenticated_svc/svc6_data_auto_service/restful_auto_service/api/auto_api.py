@@ -2,7 +2,7 @@ from pyramid.request import Request
 from pyramid.response import Response
 from pyramid.view import view_config
 
-from restful_auto_service.data.car import Car
+import restful_auto_service.infrastructure.auth as auth
 from restful_auto_service.data.repository import Repository
 from restful_auto_service.viewmodels.create_auto_viewmodel import CreateAutoViewModel
 from restful_auto_service.viewmodels.update_auto_viewmodel import UpdateAutoViewModel
@@ -11,7 +11,9 @@ from restful_auto_service.viewmodels.update_auto_viewmodel import UpdateAutoView
 @view_config(route_name='autos_api',
              request_method='GET',
              renderer='negotiate')
-def all_autos(_):
+@auth.require_api_auth
+def all_autos(request):
+    print("Listing cars for {}".format(request.api_user.name))
     cars = Repository.all_cars(limit=25)
     return cars
 
@@ -19,6 +21,7 @@ def all_autos(_):
 @view_config(route_name='auto_api',
              request_method='GET',
              renderer='negotiate')
+@auth.require_api_auth
 def single_auto(request: Request):
     car_id = request.matchdict.get('car_id')
     if car_id == '__first__':
@@ -35,6 +38,7 @@ def single_auto(request: Request):
 @view_config(route_name='autos_api',
              request_method='POST',
              renderer='json')
+@auth.require_api_auth
 def create_auto(request: Request):
     try:
         car_data = request.json_body
@@ -56,6 +60,7 @@ def create_auto(request: Request):
 # noinspection PyBroadException
 @view_config(route_name='auto_api',
              request_method='PUT')
+@auth.require_api_auth
 def update_auto(request: Request):
     car_id = request.matchdict.get('car_id')
     car = Repository.car_by_id(car_id)
@@ -86,6 +91,7 @@ def update_auto(request: Request):
 # noinspection PyBroadException
 @view_config(route_name='auto_api',
              request_method='DELETE')
+@auth.require_api_auth
 def delete_auto(request: Request):
     car_id = request.matchdict.get('car_id')
     car = Repository.car_by_id(car_id)
