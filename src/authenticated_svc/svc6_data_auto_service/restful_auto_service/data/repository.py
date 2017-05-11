@@ -5,6 +5,7 @@ from dateutil.parser import parse
 
 from restful_auto_service.data.car import Car
 from restful_auto_service.data.db_factory import DbSessionFactory
+from restful_auto_service.data.user import User
 
 
 class Repository:
@@ -93,3 +94,12 @@ class Repository:
 
         session.delete(db_car)
         session.commit()
+
+    @classmethod
+    def find_user_by_api_key(cls, api_key: str) -> User:
+
+        session = DbSessionFactory.create_session()
+        user = session.query(User).filter(User.api_key == api_key).first()
+        session.close()
+
+        return user

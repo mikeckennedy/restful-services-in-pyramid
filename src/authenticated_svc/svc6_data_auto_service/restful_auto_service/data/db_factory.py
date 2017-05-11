@@ -5,6 +5,8 @@ import sqlalchemy.orm
 
 from restful_auto_service.data.sqlalchemy_base import SqlAlchemyBase
 
+import restful_auto_service.data.user
+
 
 class DbSessionFactory:
     __session_factory = None
