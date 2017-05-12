@@ -54,7 +54,7 @@ class Repository:
         session = DbSessionFactory.create_session()
 
         db_car = Car()
-        db_car.last_seen = parse(car.last_seen)
+        db_car.last_seen = car.last_seen
         db_car.brand = car.brand
         db_car.image = car.image if car.image else random.choice(cls.__fake_image_url)
         db_car.damage = car.damage

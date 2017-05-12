@@ -16,6 +16,7 @@ requires = [
     'requests',
     'python-dateutil',
     'sqlalchemy',
+    'logbook',
 ]
 
 tests_require = [
