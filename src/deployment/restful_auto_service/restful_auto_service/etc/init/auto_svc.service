@@ -1,0 +1,16 @@
+[Unit]
+Description=uWSGI Auto Service server instance
+After=syslog.target
+
+[Service]
+ExecStart=/usr/local/bin/uwsgi --ini-paste /webapps/auto_service/demos/restful_svc/production.ini
+# Requires systemd version 211 or newer
+RuntimeDirectory=/webapps/auto_service/demos/restful_svc/
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
