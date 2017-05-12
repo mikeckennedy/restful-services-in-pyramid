@@ -11,7 +11,7 @@ server {
         gzip_buffers    8 256k;
         uwsgi_buffers   8 256k;
 
-        alias /webapps/auto_service/demos/restful_svc/svc1_first_auto_service/static/;
+        alias /webapps/restful-services-in-pyramid/src/deployment/restful_auto_service/restful_auto_service/static;
         expires 365d;
     }
     location / {
