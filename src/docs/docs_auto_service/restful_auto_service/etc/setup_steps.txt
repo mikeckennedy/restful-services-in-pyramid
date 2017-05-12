@@ -1,0 +1,55 @@
+apt-get update
+apt-get upgrade -y
+
+ufw allow 22
+ufw allow 80
+ufw allow 443
+ufw enable
+
+apt install fail2ban
+
+apt-get install --no-install-recommends -y -q build-essential
+apt-get install --no-install-recommends -y -q git python3 python3-dev wget unzip nload
+
+# for nginx latest
+add-apt-repository ppa:nginx/development
+apt-get update
+apt install python-software-properties
+apt install nginx
+
+apt install python3-pip
+pip3 install uwsgi
+pip3 install glances
+
+mkdir /webapps
+mkdir /webapps/logs
+mkdir /webapps/logs/auto_service
+mkdir /webapps/logs/auto_service/app_log
+cd /webapps
+
+git config --global credential.helper cache
+git config --global credential.helper 'cache --timeout=360000'
+
+git clone https://github.com/mikeckennedy/restful-services-in-pyramid.git
+
+
+cd /webapps/restful-services-in-pyramid/src/deployment/restful_auto_service/
+python3 setup.py develop
+
+
+/webapps/restful-services-in-pyramid/src/deployment/restful_auto_service/restful_auto_service/etc/init/auto_svc.service /etc/systemd/system/
+
+systemctl start auto_svc
+systemctl enable auto_svc
+systemctl status auto_svc
+
+
+# CAREFUL HERE. If you are using default, maybe skip this
+rm /etc/nginx/sites-enabled/default
+
+cp /webapps/restful-services-in-pyramid/src/deployment/restful_auto_service/restful_auto_service/etc/nginx/sites-available/auto_service.nginx /etc/nginx/sites-available/
+
+update-rc.d nginx enable
+
+service nginx start
+service nginx restart

@@ -1,0 +1,16 @@
+[Unit]
+Description=uWSGI Auto Service server instance
+After=syslog.target
+
+[Service]
+ExecStart=/usr/local/bin/uwsgi --ini-paste /webapps/restful-services-in-pyramid/src/deployment/restful_auto_service/production.ini
+# Requires systemd version 211 or newer
+RuntimeDirectory=/webapps/restful-services-in-pyramid/src/deployment/restful_auto_service/
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
