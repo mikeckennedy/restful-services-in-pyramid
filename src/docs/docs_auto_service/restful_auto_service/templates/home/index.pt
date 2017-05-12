@@ -1,4 +1,4 @@
-<div metal:use-macro="load: layout.pt">
+<div metal:use-macro="load: ../shared/layout.pt">
     <div metal:fill-slot="content">
 
         <div class="content">
@@ -10,7 +10,11 @@
             <ul>
                 <li>
                     <strong>All cars</strong><br>
-                    <a href="/api/autos">GET /api/autos</a>
+                    <a href="/docs/all_autos">GET /api/autos</a>
+                </li>
+                <li>
+                    <strong>Create car</strong><br>
+                    <a href="/docs/create_auto">POST /api/autos</a>
                 </li>
                 <li>
                     <strong>Individual car</strong><br>

@@ -1,0 +1,41 @@
+<div metal:use-macro="load: ../shared/layout.pt">
+    <div metal:fill-slot="content">
+        <link href="/static/docs.css" rel="stylesheet">
+
+
+        <div class="content">
+            <h1>All autos</h1>
+            <p class="desc lead">
+                To view all automobiles for sale, use this API endpoint.
+            </p>
+            <p class="request get">
+                GET /api/autos
+            </p>
+            <p class="try_it">
+                <a href="/api/autos" class="btn btn-primary">Try it</a>
+            </p>
+            <p class="response_formats">
+                Response formats: <span>JSON</span>, <span>CSV</span>
+            </p>
+            <p class="response"
+>
+<pre>[
+    {
+            "brand": "opel",
+            "name": "Opel Calibra A BJ 4/92 automatik",
+            "price": 1250,
+            "year": 1995,
+            "damage": "",
+            "last_seen": "2016-05-07T14:58:46",
+            "id": "23073625-a26f-4f40-8219-8c3c021d9db6",
+            "image": "http://www...."
+    },
+...
+]</pre>
+            </p>
+
+            <a href="/">Back home</a>
+        </div>
+
+    </div>
+</div>

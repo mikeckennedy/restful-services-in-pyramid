@@ -1,0 +1,51 @@
+<div metal:use-macro="load: ../shared/layout.pt">
+    <div metal:fill-slot="content">
+        <link href="/static/docs.css" rel="stylesheet">
+
+        <style>
+
+        </style>
+
+        <div class="content">
+            <h1>Create a car</h1>
+            <p class="desc lead">
+                To create and offer your car for sale, use this API endpoint.
+            </p>
+            <p class="request post">
+                POST /api/autos
+            </p>
+            <p class="request_body">
+            <div>The request body should be car details (without the ID)</div>
+<pre>{
+        "brand": "opel",
+        "name": "Opel Calibra A BJ 4/92 automatik",
+        "price": 1250,
+        "year": 1995,
+        "damage": "",
+        "last_seen": "2016-05-07T14:58:46",
+        "image": "http://www...."
+}</pre>
+
+            </p>
+            <p class="response_formats">
+                Response formats: <span>JSON</span>, <span>CSV</span>
+            </p>
+            <p class="response"
+>
+<pre>{
+        "brand": "opel",
+        "name": "Opel Calibra A BJ 4/92 automatik",
+        "price": 1250,
+        "year": 1995,
+        "damage": "",
+        "last_seen": "2016-05-07T14:58:46",
+        "id": "23073625-a26f-4f40-8219-8c3c021d9db6",
+        "image": "http://www...."
+}</pre>
+            </p>
+
+            <a href="/">Back home</a>
+        </div>
+
+    </div>
+</div>
