@@ -2,7 +2,6 @@ import datetime
 
 from pyramid.config import Configurator
 from pyramid.events import NewRequest
-from pyramid.renderers import JSON
 
 from restful_auto_service.data.car import Car
 from restful_auto_service.data.db_factory import DbSessionFactory
@@ -14,20 +13,7 @@ from restful_auto_service.renderers.json_renderer import JSONRendererFactory
 from restful_auto_service.renderers.negotiate_renderer import NegotiatingRendererFactory
 
 
-def init_db(config):
-    settings = config.get_settings()
-    db_file = settings.get('db_filename')
-
-    DbSessionFactory.global_init(db_file)
-    # Repository.create_user('jeff')
-    # Repository.create_user('chloe')
-    # Repository.create_user('sarah')
-    # Repository.create_user('mike')
-
-
 def main(_, **settings):
-    """ This function returns a Pyramid WSGI application.
-    """
     config = Configurator(settings=settings)
     config.include('pyramid_chameleon')
 
@@ -37,6 +23,13 @@ def main(_, **settings):
     register_routes(config)
 
     return config.make_wsgi_app()
+
+
+def init_db(config):
+    settings = config.get_settings()
+    db_file = settings.get('db_filename')
+
+    DbSessionFactory.global_init(db_file)
 
 
 def allow_cors(config):
