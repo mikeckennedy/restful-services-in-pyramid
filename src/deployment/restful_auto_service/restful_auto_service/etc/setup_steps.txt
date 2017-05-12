@@ -37,11 +37,7 @@ cd /webapps/restful-services-in-pyramid/src/deployment/restful_auto_service/
 python3 setup.py develop
 
 
-cp /webapps/auto_service/demos/restful_svc/svc1_first_auto_service/etc/init/auto_svc.service /etc/systemd/system/
-
-# Test
-
-
+/webapps/restful-services-in-pyramid/src/deployment/restful_auto_service/restful_auto_service/etc/init/auto_svc.service /etc/systemd/system/
 
 systemctl start auto_svc
 systemctl enable auto_svc
@@ -51,7 +47,7 @@ systemctl status auto_svc
 # CAREFUL HERE. If you are using default, maybe skip this
 rm /etc/nginx/sites-enabled/default
 
-cp /webapps/auto_service/demos/restful_svc/svc1_first_auto_service/etc/nginx/sites-available/auto_service.nginx /etc/nginx/sites-available/
+cp /webapps/restful-services-in-pyramid/src/deployment/restful_auto_service/restful_auto_service/etc/nginx/sites-available/auto_service.nginx /etc/nginx/sites-available/
 
 update-rc.d nginx enable
 
