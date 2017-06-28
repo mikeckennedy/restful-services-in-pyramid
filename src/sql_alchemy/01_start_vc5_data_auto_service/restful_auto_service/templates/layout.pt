@@ -38,7 +38,7 @@
         <div class="row">
           <div class="links">
             <ul>
-              <li><i class="glyphicon glyphicon-cog icon-muted"></i><a href="https://github.com/mikeckennedy">Github Project</a></li>
+              <li><i class="glyphicon glyphicon-cog icon-muted"></i><a href="https://github.com/mikeckennedy/restful-services-in-pyramid">Github Project</a></li>
               <li><i class="glyphicon glyphicon-globe icon-muted"></i><a href="https://twitter.com/talkpython">Twitter</a></li>
             </ul>
           </div>
