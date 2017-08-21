@@ -1,0 +1,29 @@
+00:01 Now you might feel like we've done everything there is to do
+00:03 with this json renderer, the built in one,
+00:05 but, there is a really important question we have to address before we move on.
+00:09 So, using it is straightforward as we've seen,
+00:11 we just set the renderer to json, and don't have to do anything,
+00:15 pyramid already knows about that, that's cool,
+00:17 and then we just return some object that is serializable
+00:21 as an object for the json renderer,
+00:24 so basically if you can use the json module in Python,
+00:27 to serialize this, then it will work fine here, okay.
+00:30 Now, what happens if that cars object
+00:34 that we were returning from that method and letting the renderer serialize
+00:37 what if it contains some kind of custom type, right,
+00:41 like an entity you might get back from the database or something like that,
+00:44 well, maybe everything will be okay, however, it's not okay;
+00:49 here is what happens if you try to return a type that is some kind of built in,
+00:53 so you can see right here in the error, we're returning a car instance,
+00:57 car object at ox106 etc, it's some memory address
+01:02 and it says this thing is not json serializable.
+01:04 However, it is very common to have these types of objects, right,
+01:08 if we're using sqlalchemy to get something from the database,
+01:11 mongo engine to get something from mongo db
+01:14 all sorts of reasons we might have our own custom objects
+01:16 even things as simple as datetimes,
+01:19 like datetimes ar not json serializable , what do you there, right,
+01:22 you better hope you don't have a thing that has a date, that's really common.
+01:25 So what we're going to talk about now is how do we configure the json,
+01:29 the built in json renderer to make this error go away
+01:33 and serialize everything perfectly.

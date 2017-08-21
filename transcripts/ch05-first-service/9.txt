@@ -1,0 +1,52 @@
+00:00 Let's review the main concepts behind implementing our API.
+00:04 We created the Pyramid web app, we went into the __init__
+00:08 and we configured the routing to define two new routes
+00:12 one called api_all_cars, that maps to this function,
+00:17 this is going to be just /api/autos
+00:20 and the idea here is you do a get request against this
+00:23 and we want to return a json representation of some number of cars.
+00:28 So, it all begins with going to the database and actually getting the cars out
+00:33 in this case you can see we're limiting it to 25,
+00:36 we don't let that be controlled by the API,
+00:38 but obviously, in a real one, we would;
+00:41 we go to the database, we get 25 cars not 20 thousand cars or whatever in there
+00:45 and we're going to return those and serialize them as json.
+00:48 And the reason they're going to be sterilized as json
+00:51 is we set the renderer to be json,
+00:54 we're also matching the get verb to this function
+00:57 because later on, we're going to want to be able
+00:59 to let you submit cars to /api/autos via post,
+01:03 we want to make sure that this one only processes
+01:06 the reading of the data, not the writing.
+01:08 Alright, so once we got that, we can return it to be formatted as json
+01:11 and the reason this works, we have the json renderer
+01:15 and the individual elements in that list are already dictionaries
+01:18 which are easily serializable to json.
+01:21 Well that's for all the cars, what if we want an individual car?
+01:25 Well, we're going to come over here and we're going to define another API method,
+01:28 this time called api car for the route, again json a can get
+01:34 so it's only going to respond to get it's only going to return json,
+01:37 but this time, it's a little more complex,
+01:39 we need to take some input from the user as part of the url
+01:42 so we're going to use the match dict, which are
+01:46 where all the little cutouts that we put into the routes,
+01:48 where the keys are the cutout names and the values get dropped in there,
+01:53 so we can go to this request.match dict
+01:55 and we can pull out the string that represents that id.
+01:59 Then we go to a repository, and we say give us the car by looking it up by id
+02:03 if this was say an integer id, we'd have to do some kind of conversion
+02:06 from strings to int, because the cars are stored by string ids,
+02:11 they could just pass it right along, so that looks nicely.
+02:14 We got the car back, but we might not have gotten the car back, right
+02:17 it depends on whether there's a car actually matching that id
+02:20 so we do a test to say if there's no car, we want to return an hp friendly response
+02:24 set up an error, return our response object to say 404,
+02:28 there is nothing here with his id, but instead of just saying 404 not found
+02:32 we're going to actually say the problem is
+02:35 there's no car with this id that you passed us
+02:38 and we're going to pass that in as a dictionary to json body
+02:40 which again gets converted to json.
+02:43 This response object basically skips the renderer set on the overall function,
+02:46 but if all is well, we're going to return just the car object again that's a dictionary,
+02:50 so this is going to work just fine and serialize the individual car as a response
+02:55 and if you don't do anything, the response code is of course 200.

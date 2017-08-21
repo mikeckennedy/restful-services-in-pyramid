@@ -1,0 +1,34 @@
+00:01 Now let's see how content negotiation is going to work.
+00:04 We've seen this picture before, we have our car listing method ,
+00:07 we have our database, a request is going to come in
+00:10 but now we have a set of renderers to select from,
+00:12 you can see at the bottom we have a json one, a csv one, an xml one,
+00:15 maybe some others that we're not going into the details about.
+00:18 So when a request comes in, the request is going to say
+00:20 I am accepting this type text/ csv , whatever, and just like before,
+00:25 our code is going to run unchanged, we're going to do a little bit of work
+00:28 we're going to go ask the database for object
+00:30 we're going to get our Python objects back
+00:32 maybe the sqlalchemy or mongo engine type of object;
+00:35 whatever it is, we have this object.
+00:37 And now, the system is going to ask do I have a renderer for text/ csv ,
+00:43 and we're going to look at our set of renders and say yes, I do
+00:45 let's bring that one into play, feed our object to it and return the response there.
+00:50 Of course, that renderer sets the content time to text/ csv and gives you all the values.
+00:55 Okay, so this is really nice, and what's going to be even better
+00:59 is all of this do I have this renderer, what are the available renderers
+01:03 bringing into play, that's going to be transparent to us ,
+01:05 we're just going to return that green object
+01:08 underlying system, pyramid is going to work out what renderer it needs to be used.
+01:14 Now, before we move on, I just want to give a quick shot out to Cecil Phillip,
+01:18 he wrote a nice article called "Content Negotiation With The Pyramid Web Framework"
+01:22 and he and I were talking about these different renderers
+01:25 and he's like you know, does it do content negotiation
+01:27 and I'm like I don't really, I think so, he's like I bet we could make it,
+01:30 and he's right, it's not that hard, he's written a really cool article here,
+01:33 the link is at the bottom, so if you want to go through this in detail,
+01:35 and see what he wrote, he can explain a bunch of it there,
+01:38 and you can see the steps,
+01:40 of course we're about to go through much of what was talked about
+01:41 slightly adapted and evolved
+01:44 but original idea is out to Cecil, so thank you Cecil for that.

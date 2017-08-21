@@ -1,0 +1,103 @@
+00:01 For our final client, let's create a client side Javascript client,
+00:05 so this is very, very common, you're going to create a website,
+00:08 it's going to serve up some html, you might put something like angular
+00:12 or Aurelia, or one of those types of front end frameworks into your web app,
+00:18 and it does a lot of the work talking to services that you're creating
+00:21 just like we're learning in this course,
+00:23 so let's real quickly see how that goes,
+00:25 we're just going to use something super basic like jquery
+00:28 but you could use one of the more interesting front end frameworks, for sure.
+00:31 Now, this is going to start out to seem totally straightforward and easy— until it's not.
+00:37 So let's look at our little html, now this is crazy simple html, so that's great ,
+00:43 we've got an input and you can input the car id
+00:47 that you're interested in, and click the search button.
+00:50 Then, some javascript is going to catch that click event
+00:53 and it's going to come down here and fill out
+00:55 the details of name, price, year and whatnot.
+00:57 So we are going to use jquery and we're including our little site js
+01:00 where we're writing our code.
+01:02 It seems straightforward, it's not totally done
+01:05 so if we come over here let's look, when the document is ready
+01:07 we're grabbing the form, we're hooking the submit
+01:10 and we're telling it don't actually submit, we got this handled in javascript
+01:14 and we're handling it by calling load car details, that's cool
+01:18 so there's a couple of things we need to do here in order to get this start,
+01:22 but let's just run it so we can see what we got so far;
+01:25 so you can right click on this in PyCharm and say run
+01:27 if you're familiar with web storm, basically PyCharm has
+01:30 all the web store and features built as part of it.
+01:33 All right, so there it goes, now it's off to run,
+01:35 it doesn't do anything yet when I click this
+01:37 because there is at least three two dos we still have to fill out right,
+01:41 okay so this seems pretty straightforward,
+01:43 and it's good idea to always show the javascript console
+01:46 while you're doing these types of things,
+01:49 it's a little upset that I didn't set the encoding to whatever;
+01:52 so we're going to input some kind of id here
+01:57 and see what happens, so let's go write the code first
+02:00 first thing we have to do is get the car id,
+02:02 so they're going to type that into this thing here,
+02:05 this input box that has the name car id
+02:08 I'm going to kind of cheat and say well there's only one input box
+02:11 so we're going to grab the value out of that
+02:14 so also car id is going to be, we'll just do a little jQuery thing,
+02:17 we'll say give me the input and I would like it a val for input boxes
+02:22 and things like that you get the val , for raw like red only elements you get the text.
+02:28 So let's just alert car id, so let's run this, go over here and say abc ,
+02:37 click, not yet, we haven't hooked click yet, have we, okay
+02:41 or we're doing something wrong, let's look at the console real quick.
+02:44 Actually, so make sure to click here, let's just say click,
+02:49 all right so we're capturing the click, oh great, great
+02:52 there we go, abc , I think it's the caching, caching, caching,
+02:56 all right so we hit this, all right it's clicked, we're learning abc very, very good
+03:00 so we don't need our little clicked anymore, it looks like we're getting
+03:03 the abc that we typed in correctly, okay, so let's get rid of the to do
+03:07 and just say get the car id, the next thing we need to do
+03:10 is actually build the url , right, so var url ,
+03:14 remember if we have the car car id the url is going to be
+03:17 well what we had in Python, so let's just snatch it here
+03:20 like that, so it looks like this, except there is no format
+03:24 there's less rules in Javascript so we're just going to go down here
+03:27 and say plus car id, all right.
+03:32 Again, not too much error handling, so we built the url it's all good,
+03:37 now, the last thing we need to do is we're going to use jQuery
+03:40 to go and talk to the server, so we'll say $get there's get post delete whatever,
+03:46 I want to give it the url , and then we want to give it 2 call back functions,
+03:51 so we're going to say done, and when you're done
+03:53 we want to have a function here that has the results.
+03:57 And if you fail, we want to have a function here that has the error, like so.
+04:02 Alright , so let's just say alert success, alert fail.
+04:09 Now, this might look like it's going to work, but I do not think it's going to work
+04:15 so let's go over here, refresh again, show the console, and let's try.
+04:22 So everything's clear, if we hit click, all right abc great,
+04:27 we can get rid of that thing in a moment,
+04:29 now it failed, this url looks right and actually I guess it could have failed
+04:34 because of 404 but that's not why it failed,
+04:37 that's why I didn't pay attention to what the id was,
+04:39 look down here cross origin request blocked,
+04:43 the same origin policy disallowed reading of the remote resource,
+04:47 so here you have to decide, how is your service going to be used
+04:51 in this case, we have one site granted they're both on local host
+04:56 but different ports, they are different applications;
+04:59 this one is our service here, that returns this data, at this address.
+05:03 We have this effectively entirely different web app
+05:07 running over here running some javascript ,
+05:09 if this was running as a page on the same server, this would have worked fine,
+05:14 but because our service is running and wants to be
+05:17 contacted from outside of the web app, right,
+05:20 hopefully you want to build services that many people consume,right
+05:23 and if that's the case, you need to allow web applications
+05:26 javascript apps outside of your domain to talk to it;
+05:30 you want to be very careful here, if you've got like private data
+05:34 and sessions and all sorts of stuff, also on that same web app
+05:37 you don't want to do it, you probably want to separate your service or something like that,
+05:40 but if it's just a pure raw service and it's meant to be consumed from anywhere,
+05:44 you need to find a way to get over this, right.
+05:46 So what we're going to do next, is we're going to make a minor change to pyramid
+05:50 to basically enable what's called cores,
+05:54 cross origin site scripting, cross origin request security, I think.
+06:00 Yeah, so you can see down here, reason course header, okay.
+06:03 So we need to enable cores in particular we need to enable
+06:06 access control allow origin on our service
+06:09 so that then the browsers will let our javascript client
+06:13 or someone else's javascript client talk to you our service.

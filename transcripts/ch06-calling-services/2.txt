@@ -1,0 +1,111 @@
+00:01 Now let's focus on some programmatic clients.
+00:04 Notice, this is the source code repository and I have created a svc_1clients
+00:08 and I've created a Javascript section and a Python section,
+00:11 so we are going to go look at those now in PyCharm .
+00:16 So I have already opened up that subfolder there ,
+00:19 by just dropping it onto PyCharm , and we've got some pre-built
+00:22 HTML, jQuery type stuff going on over here, and we'll get to that last.
+00:27 So let's add a Python, I'll call this svc_client here ,
+00:32 and so this is going to make a request up to our autos,
+00:37 so maybe it'll show you the various ones that will like list them out
+00:42 and ask you which one would you like to work with,
+00:44 and then you can plot the id and they will go get that
+00:47 who knows, something to this effect.
+00:49 Now, we could use the built in urllib stuff, but when you have
+00:53 something like requests available, why would you do that,
+00:56 so let's say import requests, now notice there is a couple of problems
+01:00 PyCharm says you don't have this installed,
+01:03 so we can just hit enter and it will install it,
+01:05 or we could have opened up here and just say oops,
+01:08 open up the terminal, it's a pip install requests, either one would have worked,
+01:12 you can see PyCharm already beat us to the punch.
+01:15 Now, when you go to run this code, realize that you're also going to have to
+01:18 manually install requests, there's not like a requirements.txt for this part,
+01:22 there is the setup.py for the main app, but not here.
+01:26 So let's go ahead and just set this as the thing that runs for now, when I say go ,
+01:30 all right, it's doing nothing but it is doing its thing.
+01:34 So let's go over here and we can make a request,
+01:38 so let's just add a main method really quick,
+01:41 and the standard naming, the standard invocation convention there
+01:48 so first of all, let's list out what ones are available,
+01:53 so we'll say this cars= list cars, something like that
+01:58 so we'll define that and down here in order to get started
+02:02 we're going to need a url and again, this is going to be living at local host, like that,
+02:10 so we'll just grab the url there, again adjust this for however your system is running,
+02:15 and you may be familiar with the requests,
+02:18 if you are not, actually I have a whole class on all sorts of
+02:21 service clients, http clients and various other service clients
+02:25 but we'll just go for the super quick version here just so you can see it in action,
+02:29 now this code could be running in a script on my computer, as it is
+02:34 or it could be running as part of our web application,
+02:36 consuming a service somewhere else right, there is no real distinction
+02:39 between whether this is service side or client side, for the most part.
+02:43 Okay, so we're going to go here, and we want to do a get against this
+02:47 so we'll say a response= request.get url that's pretty easy right
+02:52 and then we can print a response.status code
+02:56 so let's just run this, 200, oh that's good, it didn't crash, it didn't 404, things like that.
+03:05 Now the next thing we want to do, we obviously want to check that status code
+03:09 so let's just say if there's a couple of things we can do here
+03:12 we can say raise if there's some kind of status that's an error
+03:15 or we could come over here and we could say if the status is not equal to 200
+03:20 print error contacting server, and put that out, and we can just bail..
+03:28 So we won't add too much error handling to this
+03:30 but you know, you get the idea right, we want to add the error handling.
+03:34 So here will have all of our cars, they are going to be response.
+03:37 now we have text here, we could parse that out,
+03:40 but we can also call this json transformation function
+03:43 and that will give us all of the cars,
+03:45 so let's just print out cars to see what we get back here
+03:48 and notice we have a list of these cars, and the cars have an id
+03:52 and they have a name, so let's just return the name:id , maybe id:name is better ;
+03:59 so here, we'll return a list of car.get_id , card.get_name
+04:06 and what his car well for car in cars, okay,
+04:13 so this is going to return them back, and we can come over here
+04:17 and do something like show cars, right, we can create a little function here
+04:22 and who knows, we'll just a little quick print, cars from cars for sale Opels , right
+04:28 for c in cars print, and remember this is coming back as a tuple ,
+04:34 I guess we could return the whole car, but whatever, we'll just print it like this.
+04:39 Now if we run this, you can see now we're getting all the cars back
+04:43 and then I guess to a kind of round this out
+04:46 we could go and actually get an individual car
+04:49 we could say car id= what car do you want to see, I'll say car id this
+04:58 and we'll do that as an input, so input here and no error checking
+05:02 to make sure that they didn't enter whatever, we'll just say so car details for a car id
+05:09 and that is the last function that we have to write.
+05:12 So here we have our list cars, and let's copy this real quick
+05:17 because what we're going to do, I can say get car, singular and car id.
+05:24 So what we want to do is we want to use a slightly different url here
+05:29 remember, we passed the car id that's how we set up our route,
+05:33 I get this and we get the single cars the json , and we can just return car,
+05:38 and in the case we type in something wrong
+05:41 obviously this will come back as a 404 or something like that
+05:44 so we'll say no, no there was some kind of problem you couldn't get it.
+05:47 This has got a reasonably good chance of being robust
+05:50 but there's probably more checking that we want to apply here.
+05:53 Okay, so we're going to show the car once we ask for it,
+05:56 last thing, all right so we come over here, make sure we don't get the colon
+05:59 it says what car do you want to see,
+06:03 this one here is going to be an Opel sinatra 2.2
+06:06 so that's what we're hoping to get back,
+06:08 and did we actually print it out, no, no, no, we did not whoops.
+06:13 Alright, so we can all get car but we're not actually doing it,
+06:16 okay so say car= get_car ( car_id ) and then we just print out the car,
+06:24 we could probably do better formatting, but let's just go with that,
+06:27 alright, let's get the same one, boom, look at that, how cool is this,
+06:32 well, let's do one more thing, let's print out a little bit better,
+06:36 we can pretty print it at least, right, let's try this one more time,
+06:40 okay so there's all the cars, we're going to try to get this one by id
+06:43 so give it the id and boom, there it is, this is the Opel sinatra 2.2
+06:49 so it's pretty straightforward for us to work with this,
+06:52 let's do a little clean up here, I'd love to have the main thing first
+06:56 and then the little like detail methods below it,
+07:00 so this is like you can read that and just understand what's happening.
+07:03 Okay so here what have we done, let's quickly review
+07:06 we import requests, we come down here doing a get against the url ,
+07:10 checking the status code, using the json
+07:13 to convert that from text into python dictionaries
+07:16 here we're just doing little transformation to get just id and name out
+07:19 and then given an id, we go and use the url we constructed
+07:23 do a get, json again but this time the body is just a single car so we're good to go,
+07:29 and that's pretty much it, of course there's a little extra error handling
+07:33 and checking, but it's a pretty nice little python client.

@@ -1,0 +1,70 @@
+00:01 We've seen that we tried to run the website and it crashes
+00:03 because we were referencing a route name called autos and there is none.
+00:07 So what we need to do, is we need to go to our __init__
+00:09 for the primary package, the main website
+00:13 and we need to go here and we need to change our routing.
+00:16 Now, this is not that big of a deal, and that is pretty simple
+00:19 but as this grows, we probably want to reorganize this,
+00:23 so let's come over here and make a function,
+00:26 a method and we're going to call this register routes.
+00:34 Okay, so now we've got register routes over here
+00:40 and to pull that menu up I highlighted it and hit control t, so control t pulls that up.
+00:46 So we got our static piece, which I have cranked way down,
+00:48 you wouldn't do this in production, but for this particular example we did,
+00:51 so the next one we're going to do is I want to come down here
+00:55 and have our API, I think I just called it autos, let's have a look
+00:59 because of that name, let's call this API just to be a super clear,
+01:03 so remember those names have to match,
+01:06 so what we're going to do is we're going to map api /autos to this.
+01:09 Now, one thing that's kind of unfortunate here is
+01:14 autos like this won't map whereas this will,
+01:17 so you can set up a second route to the same one
+01:20 or you can just make sure that you don't put this slash on the end
+01:23 you can decide how strict you want to be about it.
+01:25 So we're going to map this over there,
+01:28 and let's go in and add one more thing while we're here
+01:31 maybe call it auto api , and we're going to go to / api /autos and we'll have a car id.
+01:37 How do I know I can call it car id like right here?
+01:43 Well because you make this up, like you put a name here
+01:45 this little cut out, it gets dropped into a dictionary with a value
+01:48 when somebody goes to that url , and you pull that out
+01:51 so you just have to be consistent here I call it car id,
+01:54 in my view function I'll call a car id, it works great.
+01:56 Okay, we don't have something to map to this yet
+01:59 but I put it in place, so we're ready;
+02:01 now, let's go over here and we should have this mapped
+02:04 and let's just put a little bit of test data here
+02:08 so test was autos okay
+02:11 so if I run this again, hooray, it doesn't crash, that's already pretty excellent, right;
+02:16 let's pull this up again, if we do get api /autos
+02:19 now this looks kind of funky, check this out
+02:22 let me close all these extra stuff here, we'll come back to this in a moment.
+02:26 Firefox just recently added like super nice support for json display
+02:31 so we can save or copy this, and this is like an interpreted version
+02:35 if we hit raw data this is what was actually returned ,
+02:37 we could pretty print it or copy it and we could also go and see the headers
+02:42 so application.json is the type,
+02:45 servers waitress, it won't be in production but it is for this development bit here.
+02:50 You saw that we've got the function to be called,
+02:52 but does that look like car auto data to you- no, it's not car auto data,
+02:58 let's go and do another thing real quick, let's add one more function here
+03:03 one more view function that it is the individual piece
+03:07 so the other part of our API, we'll just do another test,
+03:11 I'll put is auto singular, and down here, this is going to be auto API,
+03:16 and now be very careful here, this name and this name are the same
+03:21 the way Python works is that gets stuffed into the module name space,
+03:25 when this runs down here, it's going to eject that function
+03:30 so basically only the other auto api url works now
+03:36 so make sure this is something like single auto.
+03:39 Now we're going to need to get the request for this one,
+03:42 so I am going to unhide that piece, let's go ahead and run this
+03:46 so if we go back, refresh it so we can still get to this one,
+03:53 was autos and this one, well we give it 123,
+03:56 normally this doesn't work, because we're going to go to the database
+03:59 there might not be a 123, but right now, you can see those two pieces are wired up
+04:03 so our little endpoints are wired up.
+04:05 What do we need now, well we need autos, we need data,
+04:09 we need cars, there's no data to return, so the next thing we're going to do
+04:12 is we're going to add some temporary fake data
+04:15 until we get to the point where we implement
+04:18 enter actual database integration with sqlalchemy .

@@ -1,0 +1,147 @@
+00:01 Now let's return to our create auto, and I've added just a few little tweaks to it
+00:05 down here I realized I had forgot to actually return the error and say bad response,
+00:09 so I am now submitting the errors back to the user
+00:12 if they somehow do something wrong,
+00:14 and it turns out I also need to call to dick here.
+00:17 Okay, so this is all looking pretty good, like this works,
+00:21 let's just run it and verify so if I came over here,
+00:24 I can get all the autos, and you can see here's the format we're looking for
+00:27 and let's go and create one, so we are going to do a post here
+00:31 that's the create auto function we're working on
+00:34 and let's set this to the year 2020 and we'll call this the Opel concept 2020
+00:41 and here's all the details about it, right.
+00:44 Now, notice over here, first of all let's just make this invalid,
+00:48 like if it's just like this, right that's invalid json so this should not submit
+00:51 we can come down here and see could not parse your post
+00:54 invalid character at such and such place, ok
+00:57 it looks like I'm missing like a little space there but that's fine
+01:00 if I take one of these lines out, like let's just take this price out
+01:04 I'll call it x price because it's going to be looking for price
+01:07 and we go over here and we'll see in the validation
+01:09 it's looking for the price, actually I think it might not work so well
+01:14 let me take out the damage, okay, we'll try this
+01:18 notice we get a 400 bad request, unexpected keyword argument x
+01:24 yeah okay, try again, could not parse positional thing require, right
+01:30 so we're not really making it past this, let me do one more
+01:34 and let me just put damage is none, null in this case
+01:38 it turns out none on the other side, and I guess damage was okay to be none,
+01:41 but this is not, alright, so 400 bad request,
+01:46 there are errors with your submitted car, brand is a required field,
+01:50 so this is some of our validation, like this is that part right there
+01:53 and let's just see that some other stuff is working
+01:56 so if I make price like negative, I'll have two errors
+01:59 brand is required, price must be non negative,
+02:02 you can give it away but you can't make people pay you
+02:05 you can't pay people to be buyers.
+02:09 Alright, so this is working pretty well, and like I said
+02:12 this is good, there's no problem in functionality here
+02:16 the problem is like this is really what we're trying to do here
+02:19 and it's totally obscured and it's hard to test
+02:22 so let's move this to a view model concept,
+02:25 so I want to come over here, and again like all well factored sites
+02:29 while this broken into different pieces, so view models
+02:33 so we know right where to look when we want to find a particular view model here,
+02:37 I'm going to start out with just a flat class, then we'll do a little work on this
+02:40 so I'll call this create auto view model, like so,
+02:44 and in here I want to create a class, create auto view model,
+02:48 I think that's solid, and let's go and import this,
+02:53 so what we're going to do up here, I want to create import one of these
+02:57 I want to create it, and I'll call it vm for view model
+03:00 and now I want to give this a function so this part about here
+03:04 this car from dictionary bit, not a big fan of that,
+03:07 let's get this down to just parsing the json body;
+03:12 now, I would actually push this off to the view model itself
+03:15 but it's too complicated to pass the string of just the body
+03:21 because that's bytes encoded so I also have to pass the request and coding type
+03:25 and it's not worth to try to decouple this in pyramid.
+03:28 So we're going to leave this part here, but we're going to take this dictionary
+03:32 and we want to go and pass that over here, so car data like that,
+03:39 now we're going to say I could have it actually do all the work right there
+03:43 that's totally reasonable, I'm going to make it a little bit explicit
+03:47 about when this gets processed, so I am going to say compute details
+03:50 and so this will compute the details, the validation, things like that
+03:54 and then we'll just say something to this effect, if vm.errors
+03:59 so it's going to have an errors property, and if it does
+04:01 you can bet that it's going to look like this, all right
+04:06 so if there is an error, vm.errors , say there were errors like this
+04:11 now actually, this construction of the error message here
+04:14 let's change that as well, let's go over here and just say
+04:17 this is going to be vm.error message like so.
+04:23 I'll leave this here for just a moment, because we'll just copy that over.
+04:26 Okay, so you can see PyCharm is saying
+04:28 you are passing something where it doesn't belong,
+04:31 this function doesn't exist, this field doesn't exist, this property doesn't exist
+04:34 so let's start to change this, let's go over and say
+04:38 it's going to have init that takes a data dictionary and let's just store it for now.
+04:46 It's all going to need the self.errors , which is going to be empty list,
+04:50 and let's give it an error message as well, I call it error message, like that.
+04:58 We'll make that a property, not with a little complete thing
+05:04 and let's go ahead and just copy this bit over here, like so, not quite like that.
+05:11 And we'll just return message, okay so we're just going to move that over
+05:14 and get it out of the way, get the computation and work on that
+05:19 we'll just say there's an error message and it can talk about.
+05:22 The next thing that we want to do is we want to work with this method
+05:26 which doesn't exist but we're going to add it so it's going to do some work
+05:29 one of the things that we need to capture here is the car,
+05:33 so we're going to parse out the car from the data dictionary,
+05:37 the other thing is we're going to do this validation
+05:40 so let's take this, we're going to move that down and this I am just going to delete,
+05:45 okay so notice here's vm.car use that car there, we're going to pass that along
+05:52 and let's go back down here and put all of this validation
+05:55 so I'll say to do parse car and we'll do all this validation stuff
+06:01 and here this will be self.errors , and we're going to work with that car in a minute
+06:07 but just to replace this variable here, okay so it looks like that's working,
+06:14 now the other thing we have to do is actually create the car
+06:17 so just to get it to work really quick, I am going to say car= car.from dict ,
+06:21 now we're going to improve upon this in a second, but let's go and import that,
+06:25 okay so this is looking good, let's go ahead and run it,
+06:29 and see if it still works the same, let's do one more quick double check over here
+06:34 do a little clean up, so get the body, we're now creating the view model
+06:38 and now this is the fixed guaranteed validation that we're doing
+06:44 the parsing and validation, we basically promised
+06:47 it will never get more complicated than this,
+06:50 other than possibly passing in also a car id
+06:52 which we would have to get from somewhere,
+06:55 so maybe a little more arguments to the initializer ,
+06:57 but other than that, like we can have as much validation as we want
+07:00 do you want to pass in different types of data and unit test it,
+07:03 well this is what goes in your test and then you look in errors, super nice.
+07:10 So let's go and run this and see how it works, notice that this better be vm.car ,
+07:15 alright, it looks like it's hanging together, I'll give it a shot
+07:19 okay, so now we're going to try this and we should get the exact same message
+07:23 right, there are errors, brand is required, price must be not negative.
+07:26 Guess what— it's the same, so let's make price not negative,
+07:31 that's the first thing we've got to do, now it's nine thousand
+07:34 okay brand is required field, like everything in our little dealership, it's Opel,
+07:38 this should work, notice bad request, when I hit this it should say 201 created,
+07:41 oh but it did not, what did we do wrong, cannot parse for json ,
+07:45 that's right json is not like python, it's not a fan of the single quotes,
+07:51 now 500 internal server error, non type has no object attribute id
+07:57 what did we do wrong here, let's see, 500 server error,
+08:01 I am guessing— oh, I see, yeah, I see what we're doing wrong here
+08:12 so we're getting the car back and car is actually what we did want to return right
+08:17 we want to return the one created by the repository
+08:20 but the problem is in complete details, I'm not saying self.car, right there,
+08:24 and I will say car=self.car, okay, right this should work, right
+08:32 pass validation, go— boom, car created and notice, Opeal concept 2020,
+08:38 lets grab the id, so we can go have a look, let's go over here and say
+08:43 we want to duplicate that, and we'll go over here and get this
+08:48 yeah, it sure looks like we created it correctly
+08:51 and maybe you noticed before these were strings,
+08:54 now they're not strings, we've made it a little bit nicer
+08:57 because I had to add some work for the validation,
+08:59 it wouldn't compare a string number versus negative, it's less than zero.
+09:04 All right, so this is looking like it's working pretty well,
+09:08 so let's just go back and look what we've got,
+09:11 again, this view model thing is doing all of the work
+09:14 and it lets the validation become as complex
+09:18 or when the creation and parsing become as complex as it needs to be
+09:21 without messing up our API,
+09:25 and once you get used to working with these view models
+09:27 you know exactly what those three lines mean, okay.
+09:31 So this is a really, really nice pattern, it is actually more useful
+09:34 when you're doing html stuff, because the templates usually require
+09:38 many pieces of data right, templates want like maybe a car, a logged in user
+09:43 whether there's a sale price, like all sorts of stuff
+09:45 and you can like use the view model to carry all that data over to the template
+09:50 but it is still very valuable even here in this API world as well.

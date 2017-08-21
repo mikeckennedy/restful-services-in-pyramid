@@ -1,0 +1,113 @@
+00:01   As we saw, having all this header parsing, database querying, API
+00:04  at the beginning of every one of our functions is super bad,
+00:08  now we could slightly improve this by putting this into a function, right,
+00:12  we could come over here and say extract a method
+00:15  and if I grab the right stuff and it didn't really like these return values
+00:18  I could store those values and check it, whatever, right,
+00:22  I could make this work no problem.
+00:24  But, we can do better than this,
+00:26  so let's go add a new section of our web app here
+00:29  let's go to infrastructure and over in this section,
+00:32  we'll probably end up with a number of other things
+00:35  but for now, let's just put a thing we're going to call auth.
+00:38   And that method that we wrote, let's say def parse_api_key ,
+00:44  so let's break this into two things, request okay,
+00:48  so let's go over here and cut this out for a minute,
+00:54  so what do we have, we have auth header, again, spelling matters,
+00:59  so we are going to get the authorization, if not this, we're going to return,
+01:02  let's make a copy really quick of this,
+01:07  so we're going to return none, no auth header.
+01:10  Actually, I am wondering if we should maybe pass the error message back as well,
+01:14  so let's go over here and say none and error is no auth header.
+01:20  Let's go over here and say none, and the reason is invalid here
+01:26  got to import this, this is going to be none and the reason is invalid auth key,
+01:31  and then finally, here we're going to return a user ,no error
+01:35  so we're going to say given request let's go find the API key here,
+01:41  so it has to live in authorization thing, there's none of that obviously
+01:46  we have no user and the error is this, if it's invalid, no user error is this.
+01:51  No user, no user and the error is this,
+01:54  otherwise, we found these and there are no errors,
+01:57  so that's how we're going to use this little bit here.
+01:59  Now, we don't really need this anymore,
+02:01  the next thing I want to do is I would like to be able to go over here
+02:04  and just go something like this, at require auth, API auth, okay.
+02:10   So what we're going to do is build a decorator,
+02:14  just a basic decorator that we can wrap on this
+02:16  and it's going to intercept the call here, and it won't even let it get to it,
+02:20  if there's no authorization, right,
+02:23  it's going to manage all the stuff that you saw us do,
+02:25  and we go back here and turn this back off,
+02:27  because we're not going to need this anymore,
+02:30  instead we're going to have this
+02:32   So , how do we do that? Let's start really simple,
+02:35  so decorators are just functions, okay,
+02:37  and decorators are just functions that take a function,
+02:40  what function are they going to take, the thing that you put them before
+02:43  so in our example here, if I say at this, let's be a little more explicit up here,
+02:50  so let's say this, [typing code] import that as auth, okay,
+03:01  so let's make it kind of explicit where it's coming from
+03:04  @ auth.require.api_auth , okay,
+03:06  so it's going to take this function
+03:09  and that is a function that takes one thing, a request
+03:12  and it returns a response, so we need to tell this thing to return a function
+03:17  which takes a request and returns a response, right,
+03:20  so I am going to come down here
+03:23  and we'll have a def wrapped takes a request
+03:27  and it returns some kind of response,
+03:30  and often this will just be by delegating to this inner function,
+03:35  this wrapped function here, I am going to need to return wrapped, without calling it,
+03:40  now let's just do a print, before the wrapped  func
+03:45  and let's go ahead and try to print it here maybe it will tell us what it is func ;
+03:49  okay, so do we have it over here, we do, and restart,
+03:56  before the wrap function and here are all autos at this address perfect,
+04:00  now did it work, did it still run— it did, look, down here at the bottom,
+04:04  we've got all this stuff, and that part happened right here,
+04:11  this is the actual execution of that API call.
+04:14   So this before part came before, then right,
+04:19  here's where we can do that validation
+04:21  so we'll say user error equals parse api key with this request,
+04:27  and we'll say if error then return response from pyramid
+04:35  with a status just like before, 403, and the body being the error, like so.
+04:44  Now, maybe this car, remember what we had up here
+04:47  is we had a little print statement, print listing cars for
+04:53  we give a name here, we said . format( user.name)
+04:56  what is the user, what if we actually need to provide the user,
+05:00  not just make sure they can call it or don't call it,
+05:04  so we can do that step right here, before we call the function
+05:07  but we have already verified there is a user, we can say request.api_user = user.
+05:14  Now, we could plug into the pyramid all stuff and try to make that user
+05:19  but I kind of feel like just making it super explicit like this is the user;
+05:23   So let's go over here, you can choose to do that however you want
+05:29  request.api_user.name and this has to be
+05:32  again put back request now that we want to use it
+05:34   an the idea is, if this lets the function run there will be a user,
+05:39  if there's no user, this function doesn't run,
+05:41  so you don't need to worry about whether or not this is there,
+05:44  right, it's going to be there; now let's try this again,
+05:46  this should be awesome, are you ready?
+05:49  I'm over here, who is our user, this is the authorization I believe I got it for jeff
+05:52  and first of all, let's not send it, see what happens,
+05:55  boom 403 forbidden no auth header,
+05:59  so you could say like maybe a nicer message,
+06:04  like you must specify an authorization header, something like this,
+06:11  but whatever the error is, there is no auth header,
+06:14  now if I pass it in, and maybe I get this wrong
+06:17  I'll put an extra f on the end, first of all let's mess this up
+06:20  make the api thing wrong, so it's invalid,
+06:23  make it valid, now it's valid but the value corresponds to no user,
+06:27  there's no user with that account, take the f off,
+06:29  now, so notice, none of this crashed, right,
+06:32  this was never run at all, because the outer shell was guarding it, right
+06:41  this required auth API that we created is guarding it
+06:44  now it should pass through that, and on the way through
+06:47  it should set the API user to jeff , let's try—
+06:50  boom, so it works fine over in our log files, well ''log files'', in our print
+06:56  we have listing cars for jeff , what do you guys think, is that killer or what?
+07:00   So just to review, we come over here, we wrote two functions
+07:04  one that knows how to suck this authorization header apart,
+07:07  break it into its pieces and give us the API key,
+07:09  and then there's a very very simple decorator
+07:12  that takes basically right here what turns out to be the thing that gets executed,
+07:16  wrapping around the API call, it checks for the user
+07:20  and if there's no user, return error, don't ever call the function,
+07:24  but if it is good, set the API user and call the function.

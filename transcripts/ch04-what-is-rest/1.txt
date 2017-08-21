@@ -1,0 +1,73 @@
+00:01 Are you about ready to write some code-?
+00:04 I hope so, because we're about ready to pick a web framework 
+00:07 or at least compare them and go with Pyramid, right;
+00:10 go with our web framework and start creating some basic services 
+00:13 
+00:21 If you work with Python day to day, you'll know it can do amazing things, 
+00:24 but a lot of people, they don't work with Python day to day,
+00:27 and they may think well, maybe I should use some language X, technology X
+00:32 to build these services or web apps.
+00:34 Let me show you some amazing sites which of course 
+00:36 have many web services as part of the built with Python.
+00:39 So the The Onion, the very funny 
+00:42 sort of satired news source, that's built with Python;
+00:45 Spotify, their web app and some other services are built with Python.
+00:50 Some of the other ones are written in Java, but Python's evolved here,
+00:53 Nasa, Bitly, a lot of Bitly is powered by Python,
+00:57 Atlassian Bitbucket, their web app is written in Python,
+01:02 Survey Monkey, Quora, in my opinion, the best general Q&A site on the internet 
+01:08 that's written in Python, and they are very passionate users of Python,
+01:11 they do a lot of writing about performance and things like that,
+01:14 so very interesting to look at what they're doing with Python.
+01:17 Disqus, these guys handle many many requests, 
+01:21 because they get embedded on all these different sites at the bottom 
+01:24 so they got to handle a ton of requests and that's done significantly in Python.
+01:28 Instagram, Reddit, Reddit is largely powered by Python,
+01:32 they use sqlalchemy core in the middle and they use Python for their web app,
+01:37 YouTube is written in Python, handling several million requests per second,
+01:42 we've got Pinterest, we've got PayPal, PayPal has some very powerful services 
+01:47 that get called several billion times a day, written in Python.
+01:52 Dropbox is one of the largest users of Python, they have many core developers
+01:57 including Guido Van Rossum, the creator of Python working there;
+02:01 and of course, Talk Python, almost all of my stuff is written in Python,
+02:04 the web apps and the services that they need, 
+02:07 I'll try to point those out when it makes sense during this course.
+02:10 You will learn more exactly how these sites are using Python,
+02:13 check out this link here at the bottom bit.ly/pyapp-25 
+02:18 and there is a nice article that highlights all of the usages and so on.
+02:22 So when you're thinking of web frameworks, 
+02:25 and when you're building web services, 
+02:28 web services are really a subset of web frameworks, right 
+02:31 you are thinking of them there is kind of two different types of Python web frameworks, 
+02:35 and there's a couple of other distinctions maybe we should make 
+02:38 but let's keep to these two for now,
+02:40 so on one hand we have the very small bring the building blocks that you need 
+02:44 in very small pieces, it's your job to find them, micro frameworks;
+02:47 on the other we have large what I call building block frameworks,
+02:51 where most of the stuff you need is there, 
+02:53 but you have less granularity in how you work with them,
+02:56 kind of take what you get there,
+02:59 and the building block side of things I'd say we have Django, 
+03:01 on the small side, we have Bottle, 
+03:04 other frameworks down here include Flask,
+03:07 and somewhere in the middle of this world, we have Pyramid.
+03:10 So we're going to be using Pyramid for this class, 
+03:13 and I think Pyramid is kind of the goldilocks framework, 
+03:15 it's a little more full featured than Bottle of Flask, 
+03:17 but it's not so much so that the conventions and stuff get in the way,
+03:22 like Django comes with its own ORM, and yes you can use sqlalchemy with it, 
+03:26 but kind of have to fight the framework to do so, right.
+03:29 Well not with Pyramid, use whatever ORM you want, 
+03:32 you can use whatever formatters you want for your services, things like that.
+03:36 So Pyramid is really nice, especially if you are going to 
+03:39 also have a website component to what you're building,
+03:42 not every service is 100 percent standalone, 
+03:45 maybe there's a website and some backend services 
+03:47 and the web site talks to the services, 
+03:50 and maybe mobile apps talk to the talk to the services, things like that.
+03:54 So understanding some of the html side of the framework makes some sense, 
+03:57 because chances are you going to have some part of html in your service,
+04:02 not everyone I know, but many of them 
+04:04 will have a little bit of html as well as their service story. 
+04:08 So Pyramid fits right in the middle here, 
+04:10 and I think that's a good place to work with.

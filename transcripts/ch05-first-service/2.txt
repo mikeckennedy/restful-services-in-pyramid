@@ -1,0 +1,98 @@
+00:02   It's time to create our web app so we can host our services there.
+00:05  Now, I've changed into this folder that is in our github source code repository,
+00:12  so anything you see me do here I'm going to check that into github
+00:16  and you should be able to get to that when you watch this video.
+00:19   So the thing that we need to do to get started working with Pyramid
+00:22  regardless of really how we're using it, is to install this thing called cookiecutter .
+00:28  Now, traditionally Pyramid has used its own internal project generator thing
+00:32  and they've switched to a more general one called cookiecutter .
+00:36  First thing we got to do is make sure that we have cookiecutter installed,
+00:42  I'm going to do the --user to install it just locally for me.
+00:47  Alright, it looks like I already have that installed, that's great;
+00:51  the next thing we can ask is which cookiecutter , just so you can find it,
+00:54  sometimes I found that the path to the bin folder where this gets installed
+01:00  sometimes doesn't make it into your path, and then if you try cookiecutter
+01:04  it gives you an error like command not found,
+01:07  so you might have to add this, the user name
+01:10  and maybe change the back slashes to forward slashes for windows
+01:14  adapt that your system, you might have to add that to your path for this to work.
+01:19  Ok, so once you've got cookiecutter set up and it's in your path,
+01:23  then you are ready to use it, so we just type cookiecutter
+01:26  and it's going to tell us hey you have to give us a template,
+01:28  now where do we get this template- well from github of course,
+01:31  so over here you can see in the Pylons project
+01:34  which is a grouping for Pyramid and other stuff
+01:38  they've got a Pyramid Cookiecutter starter, so let's go with that.
+01:42   We're  going to go over here and we'll say cookiecutter run from this template,
+01:45  now if you've already run this command, you could just type that
+01:49  but if you don't have the template installed and downloaded
+01:52  then you've got to give it the full path, so we'll run it like this,
+01:55  notice I've already done it so it's going to say do you want to get a fresh version,
+01:59  I'll say yes this will be our First Auto Service.
+02:02   Now it's going to suggest a pretty decent name first_auto_service
+02:07  this has to be a Python package name,
+02:09  so it's got to match some of the rules around package names.
+02:13  Now, this is good, but I'm going to use svc1_first_auto_service
+02:18  and then that way we can have service 2, service 3,
+02:21  it will be more easy to find the various versions that we've built
+02:24  throughout the class in the course repository.
+02:27   So let's call this, it will ask us what kind of templates
+02:30  you can choose which one of the three you like,
+02:32  I think Chameleon is best so I'm going to pick that,
+02:34  it doesn't really matter so much.
+02:36  All right, it looks like it worked, it says welcome to Pyramid, sorry for the convenience,
+02:41  now, it gives us a little bit of guidance here,
+02:44  it says okay we can create we can cd over to where the files are;
+02:48  the next thing it says, you should create a virtual environment,
+02:52  it's true, we should create a virtual environment,
+02:54  you don't have to but this allows you to have a separate clean copy of Python
+02:58  to run and manage the dependencies of this project,
+03:01  so let's go ahead and I will do that, I'm not going to call it env
+03:06  I'm going to call it . env , so it's hidden
+03:09  and it also matches some rules that make a few things easier later.
+03:13  I'm also going to add a --copies here,
+03:16   this only matters if you are on Mac and you care to use PyCharm ,
+03:19  but taken together there is something about the way symlinks get set up
+03:22  that without the --copies don't quite work right,
+03:25  so you need this to basically use it in PyCharm .
+03:27   We'll wait a second- everything is ready to go,
+03:31  so notice now here we have a little setup,
+03:34  the last thing to do is set up and basically install Pyramid,
+03:36  install all the dependencies of Pyramid in this project
+03:40  as well as these Pyramid packages themselves behave as Python packages
+03:45  and so the set up here provides another step in that it registers the website
+03:51  in the Python executable environment, the virtual one we just created.
+03:56  Well, before we can do that we actually have to activate this,
+03:59  so we could say source, or we could just say . env /bin/activate
+04:05  notice my prompt changes, if I'm on Windows you don't need the first . ( dot )
+04:10  and this is scripts, and it's activate. that ,
+04:16  so unfortunately those are not the same, but whatever
+04:18  it's not hard to adapt to either.
+04:21   So now, if we ask which Python, on Windows the command is where,
+04:25  notice we're running the one out of our little virtual environment we just created,
+04:29  that's cool, so we can come over here we can run Python setup.py
+04:34  and don't just run it by itself, there's really two decent options here
+04:38  we could install and now we copy it to the runtime for Python and run it,
+04:43  but we want to be able to continue to work on it and edit here,
+04:46  so we're going to use develop, so we run that, it installs all the dependencies
+04:49  it takes just a moment, and then we'll be ready to go.
+04:52  Alright, it looks like it installed, everything we can do a quick pip list
+04:57  and you'll see Chameleon, Pyramid,
+05:01  Waitress the dev server, things like that got installed,
+05:04  including our little project itself got registered as a package.
+05:07   So the last thing we need to do is just to run this,
+05:10  and it comes with a command p serve,
+05:13  which got installed during that setup step,
+05:15  it came along with the install of Pyramid there
+05:18  and we can give it either development.ini, production.ini ,
+05:21  we can make up another configuration file,
+05:23  but we give it a configuration file here,
+05:26  we run it, it's serving up right on the localhost .
+05:31   So now we can have a look and see what we got-
+05:34   ta - da , here's our Pyramid starter project,
+05:36  and you can see it's got the little name that we gave it, and all sorts of stuff.
+05:39  It doesn't do much yet, it's just a blank site,
+05:42  there's no API section or anything like that, because we haven't created it yet
+05:47  but that's what we're going to do next,
+05:49  we're already ready to go, we've got our site created
+05:51  all the dependencies installed and it's up and running.

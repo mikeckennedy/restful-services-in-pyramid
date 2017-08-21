@@ -1,0 +1,53 @@
+00:01 One thing you should do as you start to build services like this 
+00:04 is look at well established, highly used services 
+00:08 and how they are working and how they're doing it.
+00:10 And you find a lot of examples of bad services and people not doing this well,
+00:14 we're going to look at a couple of services starting with github, 
+00:17 that I think are doing a pretty fine job with their services.
+00:21 So over at developer.github.com we can go around 
+00:24 and check out the getting started stuff, 
+00:27 so there's all kinds of things we can work with, 
+00:30 there's oauth an authorization and what not,
+00:32 but let's look at the issues section here.
+00:34 So there's different things we can do, we can list the issues,
+00:37 we can get a single issue, we can edit or create an issue things like that;
+00:42 we can even give a little thumbs up or something like that if we want.
+00:45 Okay, so to get the issues across all repositories that we have access to,
+00:50 remember we're an authenticated user, we can just do get /issues.
+00:54 Now, if we want to get them for a particular user 
+00:58 we could do a /user/issues or for organization we could say /orgs/talkpython/issues 
+01:08 and that would show me all the issues that are assigned to this user 
+01:11 across that organization all right.
+01:13 So that's cool, and they give us a nice response, 
+01:16 like ok the status code from this is going to be 200,
+01:18 remember, there is get that probably makes sense 
+01:20 and here's what this is going to look like, all right,
+01:22 so let's pick another one, let's go down here to create an issue,
+01:24 now issues are associated with a particular repository,
+01:28 so we're going to do a post to a repo 
+01:32 who owns a repo, the name of the repo and issues.
+01:35 So maybe this is /repos/mikeckennedy/pyramid-rest-course/issues 
+01:43 and we did a post that would actually create one,
+01:45 new issue for this course, right, whatever, look at the full url right there.
+01:48 Now, it says these are the things you can send in 
+01:51 and they give us an example, these are the inputs, right, 
+01:54 I want to create a bug, the body is this, the title is I found a bug 
+01:58 and then the response is going to be not 200, 201 created, 
+02:02 and again, they give us all the options, let's look at one more.
+02:06 What if we want to edit one, so these guys are actually using patch all right,
+02:10 patch I didn't talk about, it's not that commonly used,
+02:13 but in this case, they're using the patch verb, 
+02:16 and they are going to basically apply that operation with a particular body
+02:19 to the url for that issue exactly, ok,
+02:23 so here's the inputs, here's the response, everything was ok.
+02:26 Now, it's interesting here to think about what the response code should be,
+02:31 if you're submitting all the details for that issue, 
+02:35 maybe it should be 204 accepted but no content. 
+02:41 If they were not sending anything back, 
+02:44 but maybe there is some state of that issue that is going to be 
+02:47 basically it's in the system but they somehow didn't pass it in, right, 
+02:50 they might not roundtrip everything, 
+02:53 so they because they send stuff back, they are doing 200, okay 
+02:56 so that is the github API and how they have created their API. 
+02:59 You can use this for inspiration, I'll show you another one 
+03:03 that is working slightly different but also very well done next. 

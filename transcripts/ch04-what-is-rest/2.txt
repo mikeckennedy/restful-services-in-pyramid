@@ -1,0 +1,62 @@
+00:02 Before we can write our first service,
+00:05 we should have a high level of view of all the moving parts 
+00:08 of the building blocks of Pyramid.
+00:10 I find in web apps in general they are even harder to work with,
+00:13 than say just standard other libraries
+00:16 because a lot of parts have to fit together often via conventions,
+00:19 configuration files, main app initialization files, 
+00:23 views, templates, static files and so on.
+00:26 So we're going to try to cover those things and show you how they all fit together 
+00:30 and then we'll start writing some code around it.
+00:32 So what are these building blocks?
+00:35 First of all, we're going to need to take a url and map it to some code,
+00:38 some behaviors in our app, so the first thing we can talk about are routes,
+00:42 so routes take a url pattern and map them to views, 
+00:46 some web frameworks use regular expressions for these, 
+00:50 and I don't think that's a great way to do it, right, 
+00:53 these regular expressions can be really tricky,
+00:56 they're powerful but they're also quite complicated and error prone 
+00:59 to see why something may or may not map to a particular url.
+01:02 Thankfully, in Pyramid, there's a really powerful and simple way to do this,
+01:07 and if we need what regular expressions provide,
+01:09 we can add on something like constraints via a regular expression.
+01:13 Views, so views are the functions or the code that runs 
+01:17 once a request has been routed, and figure out which view it's suppose to go to,
+01:21 all the request data is passed to us, that could be the post body 
+01:25 that could be the url, a query string and many many more things.
+01:29 Now notice also have a.k.a controllers, Pyramid speaks 
+01:31 in this template view design pattern language,
+01:35 but it very much matches the pattern of what's more generally known 
+01:39 as model of view controller, 
+01:41 so if you're coming from an mvc design way of thinking 
+01:44 I'll also put those words here, so views are the functions
+01:47 that run in Pyramid syntax or nomenclature, and these would be called controllers.
+01:52 And we also have templates so once the view is run,
+01:56 it's gotten some sort of data, presumably,
+01:59 and it wants to show that to a person or transform that 
+02:02 into say an xml rss feed to send off to a machine, or even turn into json.
+02:08 Templates are a way to take html structure 
+02:11 and pass a bit of data to it and it will transform it into html, 
+02:14 we don't use this a ton in services, 
+02:17 we use this all the time in web applications.
+02:21 So if you have a web page for documentation 
+02:24 that's sort of the front part of your service,
+02:26 you're going to care about this, if you're just sending json,
+02:28 the thing that we'll be working with is not so much templates but renderers. 
+02:32 And these renderers take our data 
+02:34 and transform it just some sort of plain text thing 
+02:37 like json or xml or something like that.
+02:40 We also have models, this is the data taken, created by the view 
+02:43 and passed either to the template or to the renderer
+02:46 to be turned into text for the users,
+02:48 and we have static files and a special way to deal with static files 
+02:52 again services probably care less about this, 
+02:55 but you could theoretically redirect to a static file 
+02:58 with all of its cashing and support and things like that,
+03:01 and we also have configuration, any real service has database connection strings,
+03:05 service API strings, things like what's your Stripe credit card API key 
+03:12 if you're going to be a credit card service
+03:14 it's going to do some sort of charge for your web application or your web app,
+03:18 so we'll see there's a lot of support for configuration files 
+03:21 as well as various use cases for these configuration files,
+03:25 like different settings for dev, test and production. 

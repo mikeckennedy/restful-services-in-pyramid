@@ -1,0 +1,105 @@
+00:01 In this chapter, we're going to add a type of authentication
+00:03 that is super common among APIs.
+00:06 Basically what we're going to do is we're going to pass an API key
+00:09 along with our client to send this data over basically to show who we are
+00:15 maybe this is just because we don't want to have
+00:17 a public API that anyone can use for free or just out in the open
+00:21 we want to be able to track who's doing what;
+00:23 maybe the actions are actually modifying things on behalf of a user
+00:27 think of github, if you say create a new repository and you pass an API key, right
+00:32 whose account is that going to be created in— yours, right.
+00:36 So we're going to talk about those types of things in this chapter.
+00:39 Now, let's start right away with a demo,
+00:42 so what we're going to need in order to get started is,
+00:46 unless we just want to have one API key for the entire thing,
+00:49 which doesn't make any sense, is we're going to need users,
+00:52 so let's go and add another sequel alchemy type here
+00:55 and I'll call this user, and we're just going to have a class called user
+00:59 and it's going to derive from sqlalchemy base as we've just learned, like so.
+01:05 Now let's give this— let's go and explicitly set the table name first
+01:09 before I forget, then let' go ahead and give it an id
+01:15 and we are not really going to do much with the id
+01:18 it's just going to be autoincrementing, so we'll have a column,
+01:22 we can import that from sqlalchemy, and it's going to be an integer
+01:27 we can import that, and it's going to be a primary key,
+01:31 and it's going to be autoincrementing true.
+01:34 So here's a nice simple autoincerementing id and let's also go
+01:37 and record when these users were created,
+01:39 like whenever I have accounts and account behavior,
+01:42 like a little tiny bit of auditing, always good;
+01:46 so we'll go and create a datetime, call him here
+01:50 and we'll set the default to datetime.now.
+01:55 Remember, don't call the function, pass the function.
+01:58 Ok, so now we get into interesting things,
+02:00 we probably need a username or an email,
+02:02 often those are actually the same thing in the database, email is name, same thing.
+02:06 So let's have this be a string from sqlalchemy,
+02:10 let's say that it's nullable, it's false so that we require it, it has to be unique,
+02:16 and we want to be able to index it, we want it indexed, so we can query it,
+02:20 if this is the way you log in with your name
+02:24 then obviously we would like to have that unique, we can't have multiple users.
+02:28 We're also going to have a password and it needs to be super explicit,
+02:33 this will be hashed password, and we don't need any indexes,
+02:37 or anything that, technically it doesn't have to be unique
+02:39 although you kind of hope it is,
+02:42 so remember never, ever, ever, store plain text passwords
+02:45 you always hash it, use something like passlib
+02:48 working with this is really out of the scope of this project, this course,
+02:51 but if you are going to have a password, hash it and use passlib.
+02:55 Okay, now we get to an interesting thing that we're actually after, the API key,
+02:59 so in here, it's conceivable that we'll have many API keys
+03:03 and you can expire them and give them different privileges and whatnot,
+03:06 in our world, things are simple a user has a single API key, alright,
+03:10 and you guys can extrapolate the data model
+03:12 if you want to do something more adventurous.
+03:15 So here what we're going to say is the API key, it has to be a string,
+03:19 let's go ahead and have it automatically generated,
+03:23 so when an account is created that it's just going to automatically be there
+03:27 they might not know about it, but if they go and look in their little section
+03:30 and their user account if we had one, it would say your API key is such and such.
+03:34 So let's set this to be a function that we're going to call,
+03:36 an empty lambda that's going to return a string representation of uuid4
+03:44 alright, so that's a decent key there, and we also probably want an index
+03:49 because when our API call comes in, the thing we're going to be given is the key
+03:54 and we need to get the user, so we absolutely want to have this index = true.
+03:58 Okay, I think that's going to be solid for our code here,
+04:02 I suppose one other thing we could add
+04:05 although the way we're generating it it's not a problem,
+04:08 but this is also like an effective user name,
+04:11 so let's go ahead and set this to be unique,
+04:13 although it's going to be kind of funky to get that generated,
+04:16 there's no reasonable chance of that being duplicated,
+04:19 but maybe somebody copies a value from somewhere
+04:22 and tries to set it somewhere else, so a little bit of protection there as well.
+04:25 Now, let's look at our database, and in this one we don't have our data
+04:28 so we have car, and we have some management details there,
+04:34 let's go and rerun this, and then refresh this.
+04:41 Now, notice there's no user, sadly and for whatever reason
+04:47 the system is just not pulling this in, it hasn't been pulled in yet,
+04:51 we could start using it other places and it would probably be ok
+04:54 but let's just do this, let's be really explicit here,
+04:57 let's just say import, so we'll just import the user here.
+05:01 Now, we're not going to use it in any way,
+05:03 but this will before we call this function here,
+05:07 we'll sort of show sqlalchemy base the user class.
+05:10 So if we try again, we refresh, magically there's our user, with everything we need.
+05:15 Ok, so we have our user, let's go and write one quick query over in our repository,
+05:21 so we are going to be doing a bunch of stuff,
+05:24 and down here, we'll ave a class method
+05:27 and let's say what we want to do is get, I'm going to call it something like that,
+05:31 find user my api key, it's just going to take an API key,
+05:37 we could even tell them hey this is a string
+05:40 and it returns a user if that's what we want.
+05:43 Ok, so then just like before, standard stuff,
+05:46 so we're going to come over here, create a session
+05:49 and then the session is going to be a query of user
+05:51 and the filter is going to be user.api_key == api_key
+05:57 alright, this is why we need that index, right, so that's good and this will be a user
+06:03 and let's say session.close and then just return user
+06:08 and because we're using first, if there's no user with that API key
+06:11 like some of these are passing nothing
+06:13 or they are passing an incorrect one or whatever,
+06:15 it's just going to return none, which is pretty decent representation of no user.
+06:22 Okay, now we have this in place,
+06:24 the next thing we have to address is
+06:26 how do we pass the data from client to server.

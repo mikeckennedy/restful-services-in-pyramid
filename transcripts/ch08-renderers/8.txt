@@ -1,0 +1,62 @@
+00:01 So to get the most functionality out of these types
+00:03 we want everything to be at least one of these abstract base render types here,
+00:08 we want to obviously implement the protocol of being a renderer factory
+00:13 and then we have our concept of adding an adapter
+00:16 and then, when we get to using more than one of them
+00:19 you would like to be able to ask hey, can any of you serialize this particular value,
+00:23 so given some value true or false can you serialize it?
+00:26 Now, specifically that functionality is not part of the built in ones, right
+00:31 and we might as well even though the function already implemented as we've seen
+00:35 we might as well add the constraints for these as well onto the built in one,
+00:39 so let's add a json renderer, and put it here,
+00:44 this is going to be a pretty simple class
+00:47 so we're going to say class, let's call it just like the others json renderer factory
+00:52 and it's going to need these various functions;
+00:55 however, we've already seen there's a built in one over here, that, right
+01:01 so let's go ahead and leverage that, let's say this thing derives from json
+01:05 and that helps, let's import this right, so it derives from this,
+01:09 and that gives it most of the functionality, so you'll see
+01:12 that we could actually come over here now and say
+01:16 we're going to implement one of these,
+01:18 not a renderer abstract base class but one of these
+01:20 and everything should still work, let's see,
+01:22 all right so it runs, that's a good start, if I go over your postman and I say
+01:25 give me all the autos, and I ask for this, look, it is still serialized as json, just fine.
+01:30 Okay, but if I try to go to it and I say you are also a renderer abstract
+01:38 let me just copy this, a renderer abstract base class
+01:42 and we try to run it one more time, it's not going to work out so well
+01:47 because it doesn't implement can serialize value, alright.
+01:51 So in order for us to sort of interrogate all of our renderers,
+01:54 we got to be able to ask this, can you serialize this value
+01:57 and right now obviously the built in one doesn't,
+02:00 that's why we're going to this whole exercises, we want this function to exist.
+02:04 So we'll come down here, we'll implement this
+02:09 but this is just straight up json, like how do we know whether it can serialize it,
+02:13 how do we know whether inside of the json type some adapters have been registered
+02:18 or whatever, right, via the base class here.
+02:21 So let's just say true, yep, I can probably do this, how do we know,
+02:27 I mean we could try serializing it, but that's going to have a performance cost,
+02:31 I'm going to go with this for now, but maybe
+02:34 there's a better option we'll find throughout this class as we work our way through it.
+02:37 Okay, so now does it run, does it work, yes
+02:40 let's go over here and get a first auto and we'll get the image,
+02:43 we got a different one, that's a cool classic,
+02:47 now this one should give us json, actually
+02:51 I think I commented that one out didn't I, for the browser, let's go put it back.
+02:55 Put that back, try again, we should get a different picture of the same one,
+03:04 so there's only a few options, actually let's go over here and add an accept,
+03:08 I think we got to be more explicit, json, there we go.
+03:12 Alright, so we're getting json for this one and if we go back
+03:16 ok, it looks like our custom json renderer, which is not very custom for sure right
+03:23 it's just basically adding that function and those constraints to the json
+03:28 that comes from pyramid, but it looks like this custom json renderer
+03:32 is working just like it was before, so the next thing we need to do
+03:36 is instead of doing all of this work up here, right,
+03:39 like oh yeah this content type goes here, that content type goes there
+03:43 we would like to be able just to say hey system, figure out what the renderer is
+03:47 and give us the best option that you can,
+03:51 and if you can't support any options that have been requested
+03:53 or any of the defaults, give us an error,
+03:56 so that's what the next chapter is about, right.
+03:58 So now we have all these different renderers, let's put them together
+04:01 in a way that is basically transparent to all the api methods.

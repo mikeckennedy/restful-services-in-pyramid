@@ -1,0 +1,85 @@
+00:01 In this chapter we're going to look at what makes a service a restful service, 
+00:05 what are some of the core building blocks 
+00:08 like http status codes, http verbs and so on 
+00:11 and we'll compare and contrast restful services with the broader service landscape.
+00:17 Generally speaking, restful services are services 
+00:21 built upon http that follow the restful principles,
+00:25 and you want to think of this more as a spectrum of options, 
+00:29 how restful are you, not yes it's restful, no it's not. 
+00:33 So the most important thing is that we're communicating over http, 
+00:38 we have a service, it's using http or https
+00:42 and it's explicitly using all the concepts and mechanisms built into the http itself , 
+00:48 so http status codes, the verbs, get post put delete, 
+00:53 content types both for the inbound data and the outbound data,
+00:56 there are many services that have been built 
+00:59 that technically use http as the transport layer 
+01:01 but they ignore all of these things, and they layer their own concepts on there,
+01:04 those are not restful services.
+01:07 Next, the endpoints that we're talking to are urls 
+01:09 and this typically means that when we design our service 
+01:12 we're thinking in terms of nouns, 
+01:14 so maybe I'm designing a bookstore and I might have /api/books
+01:18 I wouldn't have /api/getbooks, or /api/addbooks or even /api/books/add,
+01:27 no, you just have /books and you apply the verbs, 
+01:31 http verbs to them to modify them,
+01:34 do you want to get all the books, we'll do a git request against /api/books;
+01:38 do you want to add a new one, let's to do a post or a put to that, all right.
+01:42 So you combine these http concepts, codes and verbs,
+01:46 and you apply them to these endpoints,
+01:49 so really the takeaway is when you design these APIs, 
+01:51 you need to think in terms of nouns, what are the things being acted upon in your system.
+01:55 The responses from your request should be cashable 
+02:00 not every single type of request that's made you a service will be cashable 
+02:04 but in general, when the http verb says it can be cashed, 
+02:08 it should be possible for it to be cashed, 
+02:11 like a get request against /api/books may be intermediate proxy server 
+02:15 should be able to cash the response from there.
+02:18 We also want to make sure your system is a layered system 
+02:21 and what that means is your service clients they cannot see past your API.
+02:27 If your service is calling through to other services,
+02:32 and it's composing them to basically make up its own functionality
+02:36 that should be opaque to your consumers.
+02:39 Your services should also be stateless, you should be able to make requests
+02:44 get a response and that's all you need to know, 
+02:47 what goes in, what goes out, you don't like log into it 
+02:50 and then do a bunch of operations and then log out, right.
+02:53 If you have to carry that authentication,
+02:56 maybe you have to pass some kind of token as a header value or something like that.
+02:59 Mini restful services support content negotiation, 
+03:02 so let's take our book example /api/books/one might give us book one.
+03:08 Well how do you want that, do you want that in xml, do you want it in json,
+03:12 do you want the picture that is the cover page?
+03:14 Well how do we know, you could have a bunch of different end points 
+03:17 but typically these restful services will support content negotiation 
+03:21 so if I make a request to that url and I specify I want json 
+03:26 well I should get a json representation of the book back;
+03:29 but, if I specify one image png 
+03:32 maybe I should get back the cover picture for that book,
+03:34 so that's content negotiation.
+03:37 Finally, we have a thing called hateoas
+03:40 or hypermedia as the engine of application state.
+03:43 Now, this is used less but some restful services do make use of hateoas,
+03:47 and the idea is I make a request just to the service,
+03:51 in that response maybe I have other urls that the current state of the service 
+03:57 my interaction with it maybe I can follow those further
+04:02 so I go hey book store, what do you got; and it says well,
+04:06 I have /books and I have /authors, 
+04:08 and if I follow /authors maybe it says well, here's a bunch of the people 
+04:12 that you go look at, you could maybe add a new one, things like that.
+04:15 So this sort of dynamic response and traversal 
+04:18 is very much like the web works now 
+04:21 you don't go to like cnn.com/ some long url, 
+04:25 you just go to cnn.com and you look around 
+04:28 and it tells you what the current news items are,
+04:31 you click on them, you go into them further and you see maybe the related items 
+04:34 that's hateoas, but think of that at the service layer. 
+04:37 So remember, I said you want to think of this as a spectrum,
+04:40 the more of these you include the more restful your services are.
+04:45 You will run into some folks that say if you don't have all of these
+04:49 and maybe something I'm maybe forgetting, then your service is not restful,
+04:52 and that's one way to see the world but I think it's a little too black and white, 
+04:55 the more of these that you adopt the more restful that your service is. 
+04:59 You start with a basic http service and you build restful principles into it.
+05:03 So I would say most services probably make it down to 3 to 5, 
+05:10 6 and 7 are possible, 6 is certainly used some of the time, 
+05:14 7 is used but it's the least used of all of these.

@@ -1,0 +1,128 @@
+00:01 Now let's come back and add another type of renderer.
+00:04 I think seeing this a couple of times you guys will totally have this down,
+00:07 we're going to take two variations on this,
+00:09 one, a kind of simplistic one and another one a little more advanced.
+00:12 So what I want to add to our app next
+00:15 is this ability to request an image about the car,
+00:18 so let's go over here and see if we can do this,
+00:21 so let's duplicate this and we're going to go ask for an individual car,
+00:25 let's actually run this again, okay, and we're going to ask for an individual car here,
+00:30 close, no, copy like this, so now we have a json one and that's fine,
+00:36 but let's go over here, and we want to accept image/png,
+00:40 well, we're still getting json, we have no renderer that knows about images.
+00:45 However though, if you look carefully, we have an image,
+00:49 it is right there right, that's the image;
+00:52 somehow what we'd like to do is have our system come along
+00:55 and actually when we get this request with image png
+01:01 say you know what, let's somehow give that image back to them as a png great,
+01:06 so that's what the job of this image redirect renderer is,
+01:10 and the redirect part we'll talk about what that means in a second.
+01:12 So standard, we have our adapters, right,
+01:15 we want to work in a general way, so the rules around this one is
+01:19 the thing it can get an image from is
+01:22 if the type can be adapted to an individual dictionary
+01:26 and that individual dictionary contains a link under the image key,
+01:30 somewhat restrictive, but it's not too hard
+01:34 to imagine adapter that we can add for almost any type if it has some link,
+01:38 we want to get the request, we want to set the response type,
+01:41 and let's just go over here and we'll do some work with the adapter;
+01:46 so we'll say adapter self.adapters we'll get the type of value
+01:51 now this time, I don't really know how to return
+01:54 a single image that represents like a list of cars
+01:57 so it's only going to work if you pass individual items
+02:00 of the type to ask the image for not in a more general sense, right.
+02:04 So let's go ahead and say if there's no adapter
+02:08 and the type of the value, let's ask it this way, and not is instance value and dict
+02:16 so either there's an adapter that we can use
+02:20 or the instance is a dictionary, those are basically the two types
+02:24 let's actually do this in reverse, let's say if adapter here
+02:27 and we'll do the adapting and then we'll deal with this in a minute,
+02:29 so we'll say if adapter then value equals adapter. the value
+02:34 and the way the generalized framework works is
+02:38 we pass in a second item there so we'll just use none,
+02:41 adapters are not making use of this.
+02:43 So now, now I have to go on the right track
+02:45 so we'll ask if it's not a dictionary then we have no idea how to deal with this,
+02:48 so we'll raise exception, could not convert type whatever,
+02:54 and we'll put the type here, ok, so now our job is just to implement this renderer
+03:01 so we have a dictionary, our rules are it has an image value, right
+03:07 so let's go over here to say image url equals value.get image
+03:13 if not image, then something went bad,
+03:17 so we'll say it couldn't find the url, now it's pretty simple
+03:20 we have an image url here, and we just need to say hey go there, right,
+03:26 so in this one, this redirecting version, what we can do is
+03:30 we can send a redirect response by raising an http found exception
+03:36 this lives in pyramid, http exceptions right,
+03:39 so it's basically hey this is like a soft redirect to 302 moved over there , image url.
+03:46 Okay, so this is good, and as long as we pass the right adapter
+03:51 we don't want to do this trick here, we'll get the type if the type exists
+03:57 actually we don't need to even do this, do we,
+04:00 here we're just getting the adapter straight,
+04:03 the conversion is so simple, we don't have a method for it.
+04:06 Okay, I think we're ready, so we'll come in,
+04:09 because we're using a redirect I guess we don't need this,
+04:11 and the new one, I am going to comment this out
+04:14 in the next version we're going to need this, this is the more advanced variation.
+04:17 So we get the adapter, if there is one we adapted
+04:20 and then either there was an adapter which made it a dictionary
+04:23 or already is a dictionary, if one of those cases doesn't match
+04:26 this is a problem we're out here.
+04:29 Get the image, and we're going to redirect.
+04:31 This is pretty straightforward, so let's go up and add this again
+04:35 remember we have to register these, so I'll call this image renderer equals that
+04:41 of course I've got to imports that again,
+04:44 I said it's just png because I don't want to deal
+04:48 with the nuances of all the different content types, right,
+04:50 we could look for something more complex, like image
+04:53 and it could look and say is that image png is it a jpeg, and so on.
+04:58 But, for now, let's just go over here and let's go to our individual car
+05:02 a single car and make a change there.
+05:05 So first, I want to request the single car one more time
+05:08 and of course, because we're not using our database,
+05:10 not yet, very soon this problem is going to go away
+05:13 but for now, we need to keep updating that.
+05:15 Okay, so you see we want to get this url here a
+05:18 and right now we are accepting the png but it's not doing anything,
+05:21 let's go over here and we can say what did I call it png, yeah,
+05:26 we can get png and this is going to be accept equals this
+05:32 all right so this is a more restrictive one, it should do bidding for us,
+05:36 let's try— first of all, let me turn this off to see if we still get json,
+05:40 no we don't because we got to keep redoing this,
+05:44 like I said, this is temporary, it's going to go away,
+05:46 could not convert, yeah that was not so good, was it?
+05:51 Let me just for now do you like this, like i said,
+05:55 we're going to get a better version of this,
+05:59 where you have to have separate image, right,
+06:02
+06:06 so well just do that one,
+06:12
+06:17 ok I guess for this to work I have to set accept type on both of these,
+06:20 that's too bad, but like I said, this is all temporary,
+06:23 we're going to sort of add a more general model
+06:25 so we've got our car going— oh and here's little trick that I want to start using,
+06:29 notice this first here, so instead of putting this, we'll just put underscore first
+06:34 and whatever the first car is we're just going to get that back,
+06:37 it will save us a lot of rework, we'll take this away for a real api of course
+06:41 but for this little development work is nice.
+06:45 All right, so now if we come over here and we say I do want an image,
+06:50 it's going to crash, it says I can't convert this type for cars
+06:55 so we need to come over and look where we're setting up this renderer,
+07:00 now the csv renderer knows about cars, so does json, but this one doesn't,
+07:04 so the next thing to do is to add to our image renderer this adapter,
+07:10 so now it should know how to adapt cars, so it's good,
+07:14 so we've already seen that if we just go default we're going to get json,
+07:17 if we add this we should get an image, let's see.
+07:20 Ta-da, there it is, how awesome is that! It's pretty cool right?
+07:26 So we said we wanted an image, at this url, give me the first auto, give me an image,
+07:30 I get that, if I go to the first auto and say I want json
+07:34 by default I think it passes json over and here is like what it will accept
+07:39 but anyway we'll get json here, if we go to header,
+07:44 put it back, boom, there is our car again.
+07:47 Okay, so this is super cool,
+07:49 what's not super cool is all the work to juggle this around up here like this.
+07:54 Also, maybe we don't have a straight url to point at,
+07:59 what if this is stored as a blob in the database, then how do we deal with it?
+08:04 We should still be able to get it, but how do we do that?
+08:08 We need to somehow like embed this as a binary object
+08:12 and then scream it out of the server—
+08:14 which turns out we could totally do and we'll do next.

@@ -1,0 +1,60 @@
+00:01 Time to review the concepts behind content negotiation
+00:04 and using our multiple content renderers to create a negotiating renderer.
+00:11 The idea is we would like to provide multiple return types from the web API ,
+00:15 we return one object and it gets converted based on what we've asked for;
+00:19 so, maybe we go and we ask for application/ json
+00:23 and you can see at the bottom here of postman,
+00:25 we got some kind of json response, exactly what we asked for.
+00:29 On the other hand, if we ask for text/ csv , well text comes back ,
+00:33 and if we ask for image/ png , the image renderer kicked in
+00:38 and it gave us back our image, this is to the same url for each one of these,
+00:43 and it's the negotiating renderer selecting
+00:45 which specific content type renderer was activated.
+00:49 So creating one of these, it's pretty simple really,
+00:52 it's just the composite pattern applied to these renderers.
+00:56 So here's a simplified version, we've got a negotiating renderer factory
+00:59 and we have a renderer look up, so we're looking up given a content type
+01:03 what renderer should be used to generate that,
+01:07 so this is just a dictionary and we have the ability to add renderers
+01:10 given a content type in a renderer, we kind of strip off the white space
+01:15 and case sensitivity of it, and map that particular renderer to that content type.
+01:19 Then we have just this standard call really delegate to the renderer function ,
+01:25 now renderer gets a little bit interesting, if we're given a value
+01:29 and we go and get the request and we have to say give us the request,
+01:32 give us the headers and get the accept header, right, what would you like,,
+01:37 what would you like us to give you in terms of format?
+01:41 Now, we saw this was kind of ok, as a single string until it wasn't ,
+01:44 until somebody asked, said I will actually take the multiple types
+01:47 like browsers for example, they don't like that so much,
+01:50 so we wrote this parse accept header
+01:52 to generate a list of various types that they're asking for
+01:54 that list may be and frequently probably is one type.
+01:57 Alright, so then we just go through and say
+02:00 hey do you have a render for the first type, the second type, third type
+02:02 and if we do, great we're going to use it.
+02:04 And finally, if we go through all the types and we don't have it
+02:06 sorry we have no idea what to do with this ,
+02:08 you're going to have to adjust your system a little bit.
+02:10 Maybe add an adapter, maybe transform it in the API
+02:14 to something that we could adapt
+02:16 who knows, but we can't give you a renderer right now.
+02:18 Then of course, we need to register this,
+02:21 so to register it, we have to still create all the individual renderers,
+02:24 and create a json one with an adapter, create a car image redirecting one
+02:27 or a direct one where it just pulls it down and passes through, however you want,
+02:32 I want to create a csv renderer, and this one also needs an adapter
+02:35 to figure out how to get cars into dictionaries;
+02:38 and then finally, we'll create the negotiating renderer,
+02:40 we'll set the accept all renderer, so like json is used if you ask */*
+02:44 like if I'll take anything, fine you're getting json .
+02:47 And then we're going to add the individual content type renderer ,
+02:49 so application json goes to json , text/ csv goes to csv ,
+02:53 image/ png goes to image, right.
+02:55 And then finally, this negotiating renderer needs to be installed into pyramid
+02:59 so we're going to say a config.add_renderer ,
+03:02 we're going to call it negotiate, right, you make up that string,
+03:05 you can call it whatever you want, but I'm calling it negotiate
+03:08 and then, when we want to use it, we just go to our route and we say
+03:11 the renderer=negotiate, and it's going to figure out given the type that you ask for
+03:15 find the appropriate renderer to turn it back, to send it back to you.
+03:20 That's content negotiation in Pyramid.

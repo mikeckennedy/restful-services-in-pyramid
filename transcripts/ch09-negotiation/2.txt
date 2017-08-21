@@ -1,0 +1,261 @@
+00:01 Now let's pick up where we left off with our app previously.
+00:04 We have our csv , our image and json renderers,
+00:07 we have our abstract base type that enforces some of the common functionality,
+00:11 and notice, this green one, I've now added a new type a negotiating renderer factory,
+00:16 and this is just a totally empty implementation here,
+00:19 we've got our ability to have adapters, we've got our call
+00:22 our renderer, our can serialize and add adapter,
+00:25 this is just basically what we need to be a renderer abstract base type.
+00:29 So what we're going to do is we're going to apply a design pattern here
+00:32 we're going to apply something called the composite design pattern,
+00:36 so let me just give you a quick background if that's new to you,
+00:39 so the idea is we may work with fundamental types that kind of do individual things,
+00:43 but if we can somehow put the same interface on a group of things
+00:46 and then we could treat that group as a building block in our system as well,
+00:51 so maybe you think of like a gui type of thing, right,
+00:55 maybe you've got buttons, you've got windows, you've got text boxes,
+01:00 things like that, and those all have a common api let's say;
+01:04 well, what if you want to have a frame that can contain many of them;
+01:07 well, if you could add on to that frame object to have basically
+01:11 all the behaviors, buttons and whatnot,
+01:13 but also has a collection of children and somehow could manage those,
+01:16 well then you can treat a frame like you could a button
+01:19 and move it around and position it and render it, things like that.
+01:22 So we are going to apply the same basic idea here for renderers.
+01:25 So you can see, the negotiating renderer factory
+01:27 implements the renderer abstract base
+01:29 but we're going to actually have a few more pieces of functionality,
+01:32 so let's go down here and add a renderer,
+01:35 so we are going to add this function where we can pass in a renderer
+01:38 and it will be used when a certain content type is asked for,
+01:42 so we'll ask for the content type, so we could say something like
+01:45 for application/ json use this renderer,
+01:48 for image/ png use this other renderer, and so on.
+01:52 Now we'll just call this renderer, but we can enforce
+01:54 that this is a render abstract base class.
+01:56 Now of course, this does nothing right, this is a suggestion to the editor
+01:59 by enforce I mean if not is instance, then we'll raise an exception.
+02:04 Renderer must be abstract based, must be a based renderer or something like that
+02:08 Ok, so from then on, we pretty much are guaranteed like hey
+02:14 we're actually working with a known type, that we can call on,
+02:19 we can serialize values, we can add adapters, all those kinds of things.
+02:23 The next, let's do a little bit of normalization on our content type here,
+02:26 so we'll say, so we're going to lower case it and strip it
+02:32 we're going to use this for a key, and so if somebody says
+02:35 capital json versus the system passing the lower case json or something like that
+02:39 we don't really want to have that be a variation right,
+02:41 it doesn't really matter, it's not case sensitive as far as we're concerned.
+02:44 And now we need somewhere to put these renderers
+02:46 and so well put them like so, in just another dictionary
+02:49 and how are we going to find them, we're going to find them by content type,
+02:52 so just like we looked up adapters by type, and then we got a function,
+02:56 now we're going to look up renderers by the type that they can transform to,
+03:01 like text/ csv , and then we'll have the type which is one of these,
+03:06 this would be like a json renderer or a csv renderer, something like that.
+03:10 You're going to see that this is all well and good, but depending on the situation
+03:13 the client may not even pass a content type,
+03:15 and so we might want to explicitly say well if the client just says
+03:19 I'll take whatever, what renderer is supposed to handle that situation?
+03:23 So let's add something like this, like default renderer ,
+03:27 or let's say accept all, because that's basically star.star
+03:32 alright, so I have a renderer that's going to come in here
+03:36 and all we're going to do is say self.add renderer,
+03:38 and the content type is going to be */* and this is going to be the renderer.
+03:43 Okay, this is looking pretty good, now I think we have this kind of generalized thing
+03:49 let's go ahead and integrate it into our system down here,
+03:53 so we've got our json renderer, our csv renderer, an image renderer,
+03:56 and let's go down here and have a negotiate renderer,
+04:00 it's going to be one of these types here,
+04:03 and now we need to basically say hey all of these renderers are available for you
+04:07 in what particular content type are those is going to be;
+04:10 now, you might say well, we still need to have these lines
+04:14 we still want to register them independently, it's up to you,
+04:17 but if you want to be able to say this one is not negotiable, this one is json
+04:20 then you want to leave line 56 for example.
+04:24 All right, so let's go over here to our negotiate renderer and say add renderer,
+04:28 and let's say application/ json is going to be the json renderer,
+04:33 and also, let's make json the default, accept all renderer,
+04:38 and then for text/ csv , grab the csv renderer,
+04:43 and for image/ png , we'll have the image renderer.
+04:49 Now, this is configuring this object, but still, the last thing we have to do
+04:53 of course is to register with pyramid.
+04:56 So it's going to go like that, and let's pick a name that we can put here
+05:00 we'll say negotiate, if we say negotiate, that means we're going to pick this renderer,
+05:05 which actually has this functionality built into it. Well, it almost does.
+05:10 Okay, let's go to our API and focus on let's do this all cars thing here ,
+05:16 and here we have a bunch of different versions let’ s get rid of this,
+05:19 let's go over here and say okay this one if you do a get
+05:25 we're going to let you negotiate what it is, and we're just going to return the cars.
+05:28 Now, remember, we've already taught all three of these to deal with cars
+05:32 and so we don't have to worry about anything here,
+05:34 this should just delegate to those other pieces and you'll get cars
+05:37 so if you ask for application/ json , it'll find its way over to here
+05:42 which knows how to deal with the car;
+05:44 if you ask for text/ csv , it will find its way over here,
+05:46 which knows how to deal with the car.
+05:48 So , as far as what we do in our code it's totally simple, it just return cars.
+05:51 Now, this is not quite perfect yet,
+05:54 because we haven't finished implementing the negotiate renderer,
+05:57 but let's go and just make a request and see what we get.
+06:00 All right, do ascend and you can see we get nothing,
+06:02 although it does come back ok, so that's kind of cool, sort of,
+06:05 and why did it come back ok, well, because we just return none.
+06:09 So now, the question is what are we going to do when we render this,
+06:12 well first thing, let's go ahead and get a hold of the request,
+06:15 the next, we need to figure out what are they asking for, right,
+06:20 so what they're asking for is sent over in the headers, here.
+06:25 So in this case, I said accept is application json
+06:28 so let's go and actually get the headers and pull those out
+06:32 so we'll say accept headers and this should be accept, like this okay.
+06:36 You can print out really quick, found accept header,
+06:39 and who knows what format that is,
+06:43 so let's say accept headers like this, so if we run this again,
+06:47 we go over here and click this, what are we going to get,
+06:49 you can see we found accept headers this,
+06:51 so let's take a first pass and say all right, we're just going to like use this as the key
+06:55 it turns out that that's insufficient, but let's go ahead and just say
+06:58 we are going to use that as the key,
+07:01 so let's go ahead and apply this lower case normalization to it
+07:04 and we'll say something like this, we'll say if not accept header,
+07:07 so maybe if they don't pass anything here, what are we going to do
+07:10 we're going to return, we want to get the renderer,
+07:13 so self.renderer , that has */*
+07:16 now this assumed somebody's called that function
+07:18 so you want to be a little careful but it's okay,
+07:21 so we're going to have it render with a value and system
+07:24 who knows whatever that means, okay.
+07:27 Next, we need to find the renderer, so renderer, let's do it like this
+07:30 we had to come over here and we'll say accept,
+07:33 self.renderer.get , and we'll just pass it the accept header.
+07:37 This is not good enough, but for the simple request it's going to work,
+07:43 so we'll say if not renderer we'll raise an exception like could not
+07:49 alright, so if we don't find one, we're going to complain and say hey
+07:53 we didn't find one, you asked for say application/text or text/ I don't know,
+07:59 some type that we have no idea about it,
+08:02 there's many mime types and content types.
+08:05 So then, once we have this, now we're just going to go down there and say
+08:08 if we do have one, let's just return renderer.render ,
+08:13 pass the value, pass the system, okay.
+08:16 This is looking good, let's see, I think we might be good
+08:24 let's go ahead and run this and see if we get, if we got it working yet.
+08:27 We don't want to see non down here, we want to see a list of json ;
+08:30 and, it has no render, oh yes, yes, yes, okay I'm calling this incorrectly
+08:35 so let's do something really quick here, let's say self.info and down here
+08:41 let's store this, okay, so instead of doing this renderer
+08:45 we need to do the call to get a hold of the object, self.info, and then
+08:50 we're going to get back the render function, and then we'll do this,
+08:55 so yes, that was a little bit off, wasn't it.
+08:57 Alright, remember these renderers are render factories
+09:00 and so this call right here creates an instance of it
+09:03 by calling this function which returns this render function
+09:08 and then we're calling value, passing value system to the function return there.
+09:12 All right, try again— there we go, perfect, json .
+09:16 I think that other code that I wrote would have worked fine for images, for csvs ,
+09:22 but because we're using just the built in json 1
+09:25 for this type with a little adaptation, it doesn't have that _render,
+09:29 let's ask for something else, let's go have a different accept type, and we want csv ,
+09:34 look at that, that is awesome, that is great,
+09:40 so we're going to this one function right here, let's look up with api ,
+09:44 we're going to this one function, and we just said,
+09:47 I don't care what renderer you get me, you do your best that you can
+09:50 to provide the type that they're asking for,
+09:53 so if we come over here and ask for text/ csv , we get this
+09:56 if we come over here and ask for json , we get this;
+09:59 now if we ask for something that can't handle like image/ png
+10:03 which the individual one can handle, but the list like I said
+10:08 would you make a composite image, what the heck would this be,
+10:11 it'll say error, could not convert type list to an image basically,
+10:16 which I think that's reasonable, I can't imagine we could do much better than that.
+10:20 So it doesn't mean that it's always going to have a good answer
+10:24 but I think it makes a lot of sense.
+10:26 Put this negotiation thing in there, and let the client ask.
+10:29 Now, we can just set the default, like hey, if we don't know what it is,
+10:32 then do json , so for example one adaptation we could make here
+10:36 is right now I'm raising an exception, say look if you ask for a type
+10:39 and we don't have a renderer that maps to it
+10:42 we could just return the default type, right, we could say okay fine
+10:46 give me the one for this, right, this will be the all, the accept all renderer,
+10:51 so that would be a possibility, or we could just say just return json or whatever
+10:56 but we chose to say look, we have no way to deal with this,
+10:59 if it's a type that we haven't preset up, so you can be
+11:03 more precise, more restrictive, less precise, less restrictive
+11:08 by just falling back to json or something to that effect.
+11:12 Ok, but that is how we work with our renderer,
+11:15 now we don't have to do any of the adaptation stuff because it's already happening,
+11:19 we may want to delegate here, like we might want to say something like this
+11:24 for renderer in self.renderers.values , right, so if somebody calls
+11:30 here is how you move a car over like, suppose I take this off here for now
+11:35 and try, this should crash when I call this function,
+11:39 don't have a converter right, but if I go and I add this adapter to the generalized one
+11:44 now careful, it has to be done at the end, copied a little too much there didn't I,
+11:50 there, now that should add it to all of them,
+11:53
+11:56 it looks like that little bit here— let's go and fix up that json renderer,
+12:04 add adapter, it looks like I misspelled add adapter,
+12:09 okay, so there we go, now let's just check if I remember this didn't convert
+12:17 because we had no adapter for car, now we've added it back in.
+12:21 All right, so this is probably a good implementation,
+12:25 where we have this adapter add in for each one of those,
+12:29 but we still need to be over here, if we're going to use it individually
+12:35 we still need to add it on this one as well,
+12:39 so how much value is that, you know it's up to you guys— let's put this back as well,
+12:43 okay, so this is the composite pattern in action, right,
+12:48 this thing really holds a bunch of these, it's made up of a bunch of renderers
+12:51 but in fact acts as its own renderer, which means that we can just go here
+12:55 and say render=negotiate, and however we've configured the system
+12:59 it's just going to handle that for us, and that's quite a cool thing.
+13:03 Let's go down here and fix up this other one,
+13:06 we have single auto and single auto image, that's super annoying, isn't it,
+13:09 let's apply a little fix here, for this as well;
+13:12 so we have this, we have get, but this accept type can now go away
+13:16 and this is now also going to be negotiate, all right,
+13:19 how about post this one, it's your call,
+13:23 does it make sense to put it here, maybe it does,
+13:26 it doesn't, the renderer doesn't mean you can post like csv ,
+13:29 so you have to post json right, from here right, really from right there,
+13:33 but the type you're going to get back does it make sense—
+13:36 I'm thinking for the creating auto since you got to post json ,
+13:39 I am going to leave that one alone, the put, this one doesn't have a renderer,
+13:43 it doesn't do anything, same with delete, it doesn't do anything.
+13:45 So this one I think I'll go and leave this as json
+13:48 like if you're creating an auto, maybe just it's json in, it's json out.
+13:52 But everything else here is fine,
+13:56 now notice, this one this responds 404
+13:59 and this json body again, if there's an error, you're getting json back,
+14:02 basically but if there's no errors, you get what you ask for.
+14:05 I'm okay with that to keep it simple, we could do a lot of work
+14:09 we could actually like somehow work with the renderer here
+14:13 but let's not do that right, error cases, they can just look at the status code right
+14:18 404 is going to be telling them everything they need to know
+14:21 and that works with all the different formats.
+14:23 But this one I think is really sweet, right
+14:25 we've added this negotiate and now it can do whatever it wants,
+14:28 let's get rid of this, I think I had copied that from duplicating it somewhere and so on
+14:32 but we don't need the csv , just all autos, right,
+14:34 let's see this one more time, we've added negotiate to the single auto so let's go to that;
+14:37 so here, for all the autos let's start with json , do we have it, we have json for text/ csv
+14:45 we have csv , now we don't have image because who knows how to do that right
+14:49 error 500 internal server error, maybe that's what we want
+14:53 it could be bad request, like we could catch that, determine that,
+14:57 return a bad request, but we're not doing that.
+14:59 Now, let's get one of these individually, and let's start out with json again,
+15:02 remember my little trick, first, so if we go ask for first, now we get json
+15:07 pretty cool, go up here and ask for text/ csv ,
+15:13 name is not defined, what have we done wrong here?
+15:16 Oh, again, that's supposed to be none,
+15:22 we'll get the bugs out of the system all right try again,
+15:25 so we ask for text/ csv , we get text/ csv , it's just one car
+15:27 but you know, maybe your parser is expecting csv ,
+15:30 so here's the one car right, again json works.
+15:33 Now, if we ask for image, we should get which one do we have configured,
+15:36 I think we have the direct one configured
+15:39 and boom— there it is, status 200 ok.
+15:43 Let's just double check which one we've got running here
+15:46 we have the image direct factory running,
+15:48 so when we hit this, it goes off to the server, right
+15:51 and sucks it down and then resends it through our web server, pretty darn cool.
+15:56 Now, again, we can do this against an individual car,
+16:01 we can do not that, but we could do this against all of the cars
+16:05 if I can put that together correctly, because we just said negotiate.
+16:09 Now, there is one more little catch that we have to be aware of
+16:12 and we'll come back to that next.

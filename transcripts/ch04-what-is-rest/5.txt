@@ -1,0 +1,47 @@
+00:01 Our next building block is configuration.
+00:04 Now, these web apps come with two prebuilt configurations 
+00:07 a production one and a development one,
+00:10 but you can make as many of them as you like, 
+00:12 and just pass them to the start up for the web app.
+00:14 So here's a typical configuration file, 
+00:17 we've got some stuff about running our web application 
+00:20 in this case when we created it we called it my_webapp, 
+00:24 not very creative, but that's what it was called. 
+00:26 So we can say the main entry point is to use basically the package my web app 
+00:31 and then we can have our specific things 
+00:34 that we care about in our web application,
+00:37 so maybe we need to be able to specify a different db file 
+00:41 for when we're running in debug versus development 
+00:45 rather than when we're running in say production or test.
+00:48 So here we can say db files can be db connection, right 
+00:50 in this case we're using sqlight but either way, we can put this key in here 
+00:53 we can also put like an API key. 
+00:56 Now a case where this might vary is, if you're using Stripe,
+00:59 so Stripe has both test API keys and production API keys, 
+01:04 the test one accepts test credit cards and does not charge you 
+01:07 or charge whoever's card you put in there, 
+01:10 but the production one you obviously want it to take a real credit card, not test ones, 
+01:14 and you actually want it to charge when it says that the charge succeeded.
+01:19 So you very much might want to have different API keys 
+01:21 say for your Stripe keys and so on.
+01:24 You can also have different includes, 
+01:26 here we're using the Pyramid debug tool bar 
+01:28 and this might only appear in the development.any but not production.
+01:31 Similarly reload templates maybe it's false and production to be faster, 
+01:35 but true here to be simpler like you make a change to our template file 
+01:41 and they just automatically appear, so you don't have to restart the web app.
+01:44 Now, once you set this up and you run your app,
+01:46 this will be passed over to our __init__ where we have our main entry point again,
+01:51 and inside here we get our config right, this is already set up by Pyramid 
+01:55 and we can go to this config and we can say give me the settings 
+01:58 that I found, or that you found in this configuration file,
+02:02 so I can go get me the settings, so there is a config.getsettings 
+02:06 and from there I can say let's take that db file and get it out,
+02:10 so config settings is just a standard dictionary, and I'm using the safe way 
+02:15 rather than the type that will throw a key error if it's not there, 
+02:18 so the safe way to get db file, so I'll say .get db file and get none if it's not there.
+02:23 Similarly API key get me the API key,
+02:25 and now we can just take these and pass them off 
+02:28 to whatever part of our web app, whatever subsystem we might need 
+02:32 so the db file might be passed to the data access layer 
+02:35 and the API key may be to the credit card service and things like that.

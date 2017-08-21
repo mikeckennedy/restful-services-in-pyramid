@@ -1,0 +1,51 @@
+00:01 To this point, we've worked with something that acted kind of like a database,
+00:04 we could query it and it would give us things like give me this car by this id
+00:08 we could create new ones that would be there, but that would all vanish
+00:12 when we would restart and that's just because we were basically
+00:14 using dictionaries in memory as if they were databases.
+00:16 It's time to get real about databases and actually create a real database
+00:21 that has persistence, potentially cross process, access, things like that.
+00:27 So we're going to look at using sql ite and sqlalchemy
+00:31 to have a persistent back end for our web API.
+00:35 Sqlalchemy is open source, it's been around since about 2005 if I recall correctly,
+00:40 and it's certainly one of the most powerful, flexible
+00:45 and popular ORMs or object relational mapper for Python,
+00:49 so very, very popular especially if you're not using Django ORM,
+00:53 then it's very likely that if you're talking to
+00:55 relational databases, you're using sqlalchemy.
+00:58 So, that's what we're going to use here in this course
+01:01 just beware this is not a comprehensive course on sqlalchemy,
+01:04 we're just going to cover just enough sqlalchemy so that you can follow along,
+01:08 just enough sqlalchemy to basically have
+01:10 cars and users in our application in the end.
+01:15 So we're not doing much with sqlalchemy, but certainly this is a good jumpstart.
+01:19 So let's look at the architecture really quick;
+01:21 now in Python, we have this thing called the db api
+01:25 and this is just the built in way, the built in API for talking to databases
+01:30 and it's consistent across different types of databases
+01:34 like sqlalchemy, microsoft sql server, oracle, mysql, all these things
+01:38 can be talked to with the right implementation of db api.
+01:42 Now of course, sqlalchemy itself is built upon db api
+01:46 and talks to many different types of databases,
+01:49 we'll see that sqlalchemy is made up of two parts
+01:51 there's what's called the sqlalchemy core
+01:54 which manages schemas, tables, there's this thing called engine
+01:57 that does connection pulling and translates the queries that you sent to it,
+02:01 into the dialect of the database you're talking to, like for example,
+02:05 microsoft sql server and oracle have
+02:08 different ways to express parameterized queries,
+02:10 when you are in sqlalchemy, you don't care,
+02:12 it translates that into the various styles of sql
+02:15 that each of these database engines use.
+02:18 And so that's really helpful, and you can work just in the core layer
+02:21 like an example of a website that just uses the core is Reddit,
+02:24 they just use the core, they don't use all the other
+02:27 higher order features of sqlalchemy, but we are going to;
+02:30 we're going to use the ORM, we're going to create a car object
+02:34 and a user object and model what we're doing in our application
+02:38 in sqlalchemy and it will automatically create the tables from this,
+02:41 it will automatically translate queries in terms of the objects to and from sq l,
+02:45 the language, to the particular dialect of the database that we're talking to.
+02:50 So there's these three levels that you'll be working at
+02:54 and we're going to pretty much focus on the ORM part,
+02:57 but you'll see we'll have to work in the core layer a little bit to get things set up.

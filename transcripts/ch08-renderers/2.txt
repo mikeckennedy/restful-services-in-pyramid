@@ -1,0 +1,175 @@
+00:01 All right let's start adding some custom renderers to our web api .
+00:05 Now, notice over here, I made a copy of this web app
+00:09 and moved it into content negotiation,
+00:12 so we're going to come up with different contents
+00:14 and then we're actually going to add content negotiation
+00:16 and I try to structure all of that together
+00:18 so if you want to follow along you can start from here,
+00:20 there's a starter copy of the site just as we're starting from right now in there.
+00:24 So , what do we want to do? The goal of this first part would be
+00:28 to change that to csv , and have csv comma separated values
+00:33 come out of this method, now we don't want to really lose json
+00:36 I'm going to do this here, we can actually if we really wanted to
+00:41 we could come over here and set the accept type I believe,
+00:44 equal to something like /text/ csv and then only apply that renderer
+00:52 in the case that this type matches, but where we're going
+00:56 is actually going to be a better place than having separate methods
+00:59 so we're not going to do that,
+01:01 and also it turns out that the accept type is more complex,
+01:04 we need some logic not just a string match there, okay.
+01:07 So for now, I'm just going to switch this to csv ,
+01:09 and then we'll switch it back to enable both json and csv as well.
+01:14 Now, if we run this, how well is it going to work?
+01:19 It turns out probably not so well, let's find out.
+01:22 So we come over here, all right, are we ready to get all the autos, we are—
+01:25 oops, we're not, no such renderer factory csv , sad face.
+01:29 Okay, so our job is going to be to create such a renderer scv
+01:33 so let's go over here and because we're going to make many of these
+01:36 and we care about having a well structured web application, let's make a folder,
+01:40 so come over here and I'll call this renderers
+01:44 and we'll come down here, for now we won't worry about base classes
+01:47 or inheritance or type checking sort of like do an abstract type or anything like that
+01:52 we're just going to come down here, I'll call this csv renderer,
+01:59 let's just do it like this for the file name,
+02:02 and in here, we're going to add a class called csv renderer factory.
+02:07 Now remember, the api that we needed to follow here is
+02:11 we had to have a call and it just took an info here
+02:15 and then the call has to return a function, and we don't want this to be—
+02:19 we do want to be an instance,
+02:23 and then it will return self._render , something like that,
+02:28 now not calling it, but just return the function, and then we're going to define this
+02:32 and this is going to take the value and the system,
+02:36 remember the system gives us access to things like the request and so on.
+02:40 Okay, so we'll say something like if not value return nothing
+02:45 let's just say we'll return empty string for our csv
+02:47 if it's the case that nothing is going on there.
+02:51 It says it may be static but let's just say don't bother me for now ,
+02:56 I don't think it can remain static for long.
+02:59 Alright, so what do we need to do? In the end, our goal is
+03:02 to come up with a csv string equals something
+03:05 and in the end it will return the csv string, right
+03:09 so that's going to be our implementation, but the question is
+03:11 how do we take this value and convert it over?
+03:16 So, we need to be a little bit careful here,
+03:19 because we may be given a single object, we may be given a list of objects
+03:22 and it turns out doing this in a super general way is not easy
+03:26 but let's write this function here, assuming initially that we're given
+03:32 a list of dictionaries or a single dictionary and we got to turn that to a csv ,
+03:38 that's pretty general, and then we'll see that we can do a little bit better.
+03:41 So we'll say something like this, if is instance value
+03:45 and it's a dictionary, then we're going to say the value is going to come
+03:49 a list of one item containing that, we'll say if value is not, if not is instance
+03:59 value list, we'll raise value error, something like this;
+04:05 can only process lists, something to that effect,
+04:09 and then we should check, maybe inside there's only dictionaries
+04:12 there's a little bit of annoying tests that we have to do here
+04:15 so what we're going to assume is,
+04:17 we're going to assume that this is either just a dictionary or a list of dictionaries
+04:23 and those are the only two types that we can handle.
+04:26 Like I said, there should be probably more error handling here.
+04:29 So the first thing that we're going to do
+04:31 is we're going to also assume that all the types are the same right
+04:33 that the list is homogeneous in terms of the types it contains
+04:38 so the first one is representative of all of them.
+04:40 Alright, great, so how are we going to do this
+04:43 let's come down, we'll get the headers, and this is going to be- let's save first,
+04:47 now we want to call this here like the value of zero
+04:52 how do we know that this is ok— because if it's a list
+04:55 it's going to be false here and will return nothing,
+04:58 if it's not a list, it's going to be a list of one item, right;
+05:02 so either way this should be okay, there should be a first
+05:06 and in here, we're going assume this is a dictionary
+05:09 so we are going to go and say give me all the keys,
+05:12 this is going to be the header, so we'll say
+05:14 this is going to be the comma separated value of header—
+05:18 now I probably should be using the csv module,
+05:20 but I'm just going to just type it out of here
+05:22 just for simplicity sake, I want to introduce more things.
+05:25 So what we want to do is come over here and join this on all the headers
+05:30 so we'll put commas between all the items and make a single string out of it,
+05:33 great, then what's next— we'll say for let's call them row in value
+05:39 all right so remember value is a list at this point we've adapted it to that pretty much
+05:44 and each row is going to be a dictionary,
+05:47 so let's come up with the line data so we're going to store all the values
+05:52 and we need to of course store them in the same order, alright,
+05:56 so we'll say something like this, for k in header
+05:59 so we're going to get the key out of the header,
+06:02 and then we'll say line data append, row of key right
+06:07 this is one of the parts we're assuming
+06:10 every entry in this list is going to have all the keys right
+06:13 otherwise this is going to crash, and then we'll say something like this
+06:17 the line is going to be again join this on the line data
+06:21 and then let's store up the rows here, let's go like this,
+06:25 so we'll create this list here and then we'll just store each line
+06:28 and then finally we'll like generate the lines with having the header up here,
+06:33 as well as all of these, so maybe the first thing we want to do is response rows
+06:38 csv string, and let's go ahead and just inline that,
+06:42 all right, so we'll go like this and then we're going to come down here
+06:46 and we don't want this anymore, we want to put new lines after each row
+06:50 so again we'll join and then response rows, there we go.
+06:54 So I think this is going to do it for a basic version here
+06:57 so we're going to come through and just like this,
+07:02 so we're going to come though and we want to create this list of rows
+07:06 the first row is going to be comma separated values of the headers
+07:10 and then we're going to go through each row
+07:12 and make sure we put in the same order,
+07:14 because dictionaries are not ordered by default
+07:16 so we're going to go through the headers and pull out the value
+07:19 for each one of those and then we'll get to join that to a line,
+07:21 add it to our response generate the whole response here.
+07:24 Now, the final thing is we're not using this yet ,
+07:28 so let's go ahead and let's do that down, I guess we'll do it at the top.
+07:32 So we'll get the request, we can go to system, say get request
+07:39 then to the request, we can say response—
+07:42 the request always has the response objects on it
+07:46 and then we want to set the content type
+07:50 text/ csv , let's try this again; now it's going to turn out to still not work
+07:57 well, first I guess we have to install it, but let's go ahead and just verify
+08:00 it still didn't do, there is as if no such thing as csv .
+08:04 So our next step will be to install this in our dunder init,
+08:08 just like where we configured our json ,
+08:12 we also want to do another one of these add renderers but not for json
+08:16 but this time for csv , okay, let's make that csv renderer,
+08:21 we're just going to have to import this, allocate instance of it,
+08:24 now that should almost work, it's not going to work
+08:27 you're going to see it's still not going to work but we'll get a different error.
+08:30 Car has no object attribute keys,
+08:34 remember our data layers now returning rich objects
+08:37 that's good, that's how we wanted to work but it's not so happy about this car thing
+08:41 okay so let me just hack something in here for a minute
+08:44 it's kind of not great, we'll come down here and say
+08:47 if this is car, we're not going to leave this here so don't worry, we'll go like this
+08:53 if it's a car, then it's not to dict , yeah
+08:57 down here we'll go through and we'll say if it's a list,
+09:02 go through each item and convert it, not great, but that's what we're going to do,
+09:09 let's do it like this idx , and we want to enumerate this we can put it back.
+09:13 So, we can ask the same question, if it's a car set back in that same location
+09:18 we want to set item.to dict this better be item,
+09:23 okay so that's not amazing, so if it's a car, we'll turn it to a list of dictionaries,
+09:30 if it's a list and it happens to contain cars,
+09:34 we're going to turn those into their dictionaries
+09:37 and we know how to do that right there, okay let's see if it works now.
+09:41 Ready, set, go!
+09:45 We've chosen to download a csv file, amazing
+09:48 what do you want to do, let's save that, come over here
+09:52 and let's change that to . csv , we're good
+09:57 now let's see it in excel, you can always see in the preview ,
+10:00 it looks like it's going to work; oh would you guys like to see what's new in excel?
+10:04 Look at this, all right so this is totally working here
+10:08 we've got our price, we've got a year, we've got a little bit of damage
+10:11 yes it has damage, ja , ok so we've got all the pieces that we need
+10:15 represented as a csv , we've got our header at the top and everything
+10:20 this looks great, even when there was no item
+10:22 when it was like null basically,
+10:24 we still generated that correctly so this looks really good.
+10:27 Now, of course if commas are in our values that's not so great
+10:30 like I said we should really use the csv module
+10:33 but the point is just like keep it simple, right.
+10:35 That's great, but what if we want to go back, what if we wanted json again?
+10:41 Well we could, let's go and run postmen against that same url .
+10:46 We could get this to work with both, but we're going to need to do a few things first
+10:49 we're going to need to fix this car thing
+10:52 because obviously hard coding car into the renderer
+10:55 like what's the point of the renderer then
+10:58 so there's a few options on how we can deal with that ,
+11:01 and the other is how do we keep json around; those are up next.

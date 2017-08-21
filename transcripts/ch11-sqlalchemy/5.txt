@@ -1,0 +1,133 @@
+00:01 Okay so we have the basic foundational stuff that we need for sqlalchemy in place,
+00:04 we have our base class, we've got our connection string,
+00:07 we've got our engine, we've got our session factory,
+00:10 alright that's all like boiler plate, basically it doesn't change at all per system.
+00:13 What is very unique to this particular app, is the type of data models, right,
+00:18 so let's go over to this car and change how it works,
+00:22 ok so we've got this stuff about parse, we're not going to need that anymore,
+00:27 let's create this car but this time instead of doing this stuff here
+00:30 we're going to leave this to dict , but instead of doing this
+00:33 we're going to want to make this car a database object, basically
+00:37 so we're going to come over here, and we're going to say
+00:40 this will be the sqlalchemy base, we're importing
+00:43 this is the one that we made at the beginning of this chapter
+00:46 so then we're going to come down here and we need to define
+00:49 the things that are associated with this object
+00:51 and the way you do this in sqlalchemy is you basically say
+00:53 you define what look like fields, but they are really descriptors
+00:56 and they basically both tell sqlalchemy what kind of data
+01:01 and how to model it at design time and then at runtime
+01:04 when you can instance of it, it'll become that value, all right,
+01:06 so what we're going to start out by saying is we're going to have an id
+01:09 and this is going to be id just like we had before, this id right here
+01:14 and it's going to be a string, so in sqlalchemy , let's go ahead and import sqlalchemy ,
+01:21 we'll come down here and we'll say things like
+01:25 this is going to be a column,
+01:28 then we have to say what type sqlalchemy.string , ok,
+01:33 and I guess I'll leave the name space module name on there for you
+01:37 just to make it really clear where this is coming from, okay.
+01:40 Now, it doesn't have to be a string, it could be an integer
+01:42 but I think we want to leave it to be a string ,
+01:46 so this is interesting, let's say this is the primary key, the id is the primary key
+01:50 now how to get a value, we'll come back to that in just a second.
+01:54 The next thing we have to have is a name, which is again a string
+01:59 but this time it's not the primary key obviously, damage also a string
+02:05 we're going to have the year, now the year is actually not a string,
+02:10 it shouldn't be a string, anyway, it's going to be an integer,
+02:14 this is like 1973, okay we're also going to have to last seen,
+02:18 which is another type of date that's different, so we'll have last seen
+02:21 this is a datetime , okay, so it's a datetime object here
+02:26 and these are basically the two ways in which we're managing the date,
+02:30 one was the year it was created which is obviously just a number
+02:33 and then the last seen, we might want to sort by these
+02:36 or somehow usually sort by these, or maybe even match
+02:40 like I want to see all the cars of 2001, whatever, right
+02:45 so we'll probably want to consider the kinds of queries that we're going to do there
+02:49 let's go and say we're going to have another one of these,
+02:52 and we're going to have an image, also a string,
+02:54 but unlikely that we need to say index on that or anything.
+02:58 okay, so here we have our class and let's see if I miss anything
+03:02 oh we don't have a brand, let's do a brand, brand, name, price as an integer,
+03:08 no, price is not there, price, we could say that's a float, but it hasn't been a float yet
+03:14 it's just an integer in our data set, so integer it is,
+03:17 price, year, damage isn't there, last seen, image and id, great.
+03:23 Okay, so now we've got this object again here, this is good,
+03:27 and the other thing we might want to control is
+03:30 where does it go in the database, like how does it get represented
+03:35 so we can come here and say table name equals
+03:39 and we can put whatever we want like autos or whatever,
+03:42 I find that life is basically easier if it exactly matches the type
+03:45 when you get into complex systems, because you have to talk about relationships
+03:49 and sometimes it refers to the table and sometimes it refers to the object
+03:53 and if they're the same, then you don't have to think about which is which,
+03:56 so that's all good, now the other thing we want to do
+03:59 while we're already here and already doing this modeling
+04:02 is how do we want to query this and how do we generate a key, primary key.
+04:10 So, let's talk about the queries first, when you're working with databases,
+04:13 it's super important that you think of all the queries you're going to do
+04:16 and that those are almost always—
+04:19 there is certainly times where it doesn't have to be the case
+04:22 but if it's anything that you care about the performance,
+04:24 is that it has an index, some things have to be unique
+04:27 some things have to be just fast, but this is where you're doing a where clause
+04:32 or an order by clause, so let's go through and add the indexes,
+04:36 so you might want to say show me all the brands, right,
+04:39 I want to see just the Chevrolets, just the Opels whatever.
+04:42 You also might want to sort by brand, if you're getting multiple ones
+04:45 maybe you want to group them by brand, so either way we'll have index=true
+04:49 and that will make both of those operations faster.
+04:52 Name, it's unlikely we care about quering by the name,
+04:56 it's very funky thing, we referred so far in our API everything by id anyway
+05:00 same thing for damage, image as well, you might want to check,
+05:04 show me all the things that don't have images, maybe,
+05:06 then like having an index might help, but we're not going to add one.
+05:09 Sort by price, minimum price, maximum price, absolutely
+05:13 so price is going here, same thing I want to find
+05:16 all the modern cars that are less than five years old index right there ,
+05:20 and also you might want to sort by most recently seen
+05:23 so let's add an index to make sure the sorts and filters there are also quick.
+05:28 The other thing that we might care about is that certain ones of these are required
+05:31 like brand is required, name is required,
+05:33 and we have our validation and our view models
+05:36 but we also want to have that validation at the database level
+05:39 in case somehow someone skips that, right.
+05:41 So let's go here and we'll say this is nullable , equals false
+05:45 by default nullable is true they are not required
+05:49 but if you say this then it's basically in order to insert this object
+05:52 it's going to have to have a brand, a name, damage is optional
+05:55 image is optional, price is required, year is required
+05:59 and the last seen, let's say that's also required,
+06:04 but for last seen maybe like when we first created what we actually care about is
+06:08 is well we are just seeing it now, we just put it in there,
+06:11 so instead of saying you must supply value
+06:13 let's let sqlalchemy actually supply the value for us,
+06:16 so instead of doing nullable = false,
+06:18 let's say default and give it something for the default.
+06:21 For the default, we can give it a function and it will call that function
+06:25 to generate the default value when it saves it, when it inserts it,
+06:28 so let's go up here and say import datetime
+06:31 and the function I would like called is now, datetime.datetime.now
+06:35 so make sure you don't put it like this, no parenthesis, just the function
+06:40 the default is the function, right so it's going to call that
+06:43 and it's going to set that value and you can imagine that the return value here
+06:47 should be that type and of course it is.
+06:51 Okay, so this is all good, the other place where we need to worry about
+06:53 how this gets created, how these default values are
+06:57 when we insert an object, let's just have this thing create its own id,
+07:03 if this was an integer, we could say auto incrementing is true
+07:06 and it go 1234 and that would be fine, but it's not
+07:09 so let's use this default thing again here, now the thing I want to use
+07:12 if we come down, let's just go here, I want to use this
+07:21 like that, uuid4, so I want to take this and basically have the primary keys look like that
+07:26 when those are basically what we had already
+07:29 so lets just do that here now, if it wasn't for the string
+07:32 I could just pass it this, right, and that would be cool
+07:35 but I want to call string on it as well, so we can give it a lambda,
+07:39 a no argument lambda that's going to return this
+07:43 and of course we have to import right at the top, right,
+07:46 so here our default value is going to be
+07:48 something that we create in terms of function
+07:51 and down here we just say call this other function that already exists.
+07:53 All right, I feel like this type is good to go ,
+07:56 we're pretty much ready to create this and insert it
+07:59 but again, we have no database, how do we do this?

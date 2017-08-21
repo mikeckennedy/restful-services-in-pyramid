@@ -1,0 +1,66 @@
+00:01 The first building block that we want to look at are views 
+00:04 or in mvc nomenclature controllers.
+00:06 Now, these can be individual functions or they can be methods on a class 
+00:10 and we can set those up either way in Pyramid.
+00:13 Right now, we're keeping it as simple as possible, 
+00:16 here is just a function called album list 
+00:19 and onto this we're going to add a decorator 
+00:21 that says this is actually a view method 
+00:24 and we state the name of the route, so In this case we are going to register a url 
+00:28 and we're going to give it a name called albums 
+00:31 and when we return something, we need to tell it how to translate that data.
+00:36 Often in Pyramid or many web apps, you'll see this
+00:39 being some kind of template engine, Chameleon or Jinja 2 or something like that.
+00:43 In this case, we're using a custom json serializer called readable json.
+00:48 So think of it as a json serializer that does indentation, more or less.
+00:52 So we've set up this function to respond to a particular url,
+00:57 which is possibly passing data to us, in this case it's not but it could be,
+01:01 and we're telling it to render json back to the user.
+01:04 We'll look at this render stuff in detail, but let's focus on the method.
+01:08 So all of these Pyramid methods take a request object 
+01:11 and this has all the things that you could possible want to learn about the Request-
+01:16 cookies, headers, url query string, user agent, all that kind of stuff.
+01:21 And now we're just going to return some kind of dictionary
+01:24 that can be converted back into json,
+01:27 so we're turning the dictionary it has one key called albums 
+01:30 and in there it has a set basically the value is a list of albums 
+01:35 and by default those individual items either need to be 
+01:40 fundamental types like strings and numbers 
+01:43 or in this case probably sub dictionary, so each album, 
+01:45 album 1, album 2 represents a dictionary.
+01:48 However, we can do more interesting stuff with a serializer or renderer later 
+01:51 by default that doesn't happen, so we're just going to return this json object,
+01:54 so somebody does it get requests to let's say /api/albums 
+01:58 we return a json object based on this data.
+02:02 The way it works is we define our view method taking a request object 
+02:07 and then we're going to return a model in the form of a dictionary 
+02:10 and pass that to some render, in this case a json serializer.
+02:15 That last view, while representing many of the pieces 
+02:19 of what goes into creating a view 
+02:21 wasn't very realistic, let's look at a more realistic one here.
+02:25 So, in this case we're going to let the consumer of this API 
+02:29 pass in some kind of id for a car, 
+02:33 and we're going to return the details about that car,
+02:35 so again we have the view config with the route name and the renderer,
+02:39 but notice this time we're only responding to get methods,
+02:42 that means if we wanted to let them say
+02:45 update via a put method to the same car with the same id,
+02:49 that could be a separate method, so this one just shows the details of the car.
+02:53 Now, we need some way to pull that car id out of the url, 
+02:57 and when you define the routes, you can put a little place holders, 
+03:01 little route cutouts for values that match, and then 
+03:04 those keys and values show up in this thing called the match dict.
+03:09 So here we're asking for the car id, we're going to go to our data layer 
+03:12 via the repository and ask for the car by id and notice that if there is no car 
+03:17 rather than returning none or something silly like that,
+03:20 we're going to respond the way the web should respond,
+03:23 a web server should respond to something that doesn't exist 
+03:26 we should return a 404, and just for a good measure 
+03:29 we're going to go and throw in some kind of error message
+03:32 as a json response as well,
+03:34 but, if we do find the car, we're going to return that car back to the caller.
+03:38 And like I said, unless we go and do something special,
+03:42 this car must be a dictionary or something that's natively serializable to json, 
+03:47 but as we get further into this class, 
+03:49 we'll see that those can actually be rich objects 
+03:52 if we set up the renderer correctly. 

@@ -1,0 +1,148 @@
+00:01 Let's change our service around just a little bit
+00:03 so that it returns or basically uses rich types in the data layer.
+00:08 So if we come over here, and we look at this load car bit,
+00:11 you can see right here we're using a dict reader on our csv file here,
+00:15 now this is just a temporary thing, until we get to a real database
+00:18 which as I said, we'll get to later.
+00:21 So, right now, everything that we're storing
+00:23 is basically straight up dictionaries and python dictionaries,
+00:26 json super, super similar so those are really easy to serialize to and from.
+00:31 But, keep in your mind, we want to have a better architecture
+00:34 than just passing dictionaries, and we're probably using an orm
+00:37 which itself works in these rich types, not just in dictionaries, again.
+00:43 So let me change this data access layer around a little bit
+00:46 so that it works in terms of a car class that I'm going to create ,
+00:50 and then we'll try to run the same code and see that we'll run into a problem
+00:54 because we won't be able to serialize it by default in the json serializer .
+00:59 All right, after a little bit of juggling, I got this all working great,
+01:03 so here you can see I have created a car class, now imagine like I said,
+01:07 this is coming from an orm , like sqlalchemy or mango engine
+01:11 and really the thing that's important is just that it's its own custom type
+01:15 and what we learned here, we can apply to all different situations including orms ,
+01:19 so we have the ability to create one of these
+01:21 and it has basically exactly the same properties that we had in our dictionary, right
+01:26 so there's not really a major change there,
+01:29 and it also has the ability to be given a dictionary convert itself
+01:33 and because I use the names to be identical to what's in the dictionary
+01:37 we can use this ** dict you know convert dict to keyword arguments thing here
+01:42 and that will create it nice and easy.
+01:44 I also taught it how to go in reverse so given one of these instances
+01:48 how do I create a dictionary out of it and this little bit of functionality
+01:53 is going to be super important,.
+01:55 Next, let's look over here, I made some very very minor changes
+01:58 let's just look at the put update auto method
+02:02 this is basically the same for all of them that work this way.
+02:04 Recall we were getting the dictionary back, as using the json body here
+02:08 well, now that's not enough because our data layer wants cars not dictionaries,
+02:12 so we just use this car from dictionary thing to convert the dictionary into cars,
+02:17 right, there's still a validation that we're kicking further down the line
+02:20 we'll come back to that later, but for now,
+02:22 this basically is the only change we have to mess with.
+02:26 Now, how are we doing— let's have a look,
+02:30 so I come over here, great so here's the same code
+02:33 and if we do the same get, remember this gives us a list of json objects
+02:37 it's all the cars, except for now it's not, right
+02:40 this is exactly the error we saw in the slide, this thing is not json sterilizable ,
+02:44 So now what do we do?
+02:47 Well, now we need to start looking behind the scenes
+02:50 at how these renderers actually work,
+02:52 and we'll see they're very configurable and we can plug in new ones,
+02:55 we can create our own, and it's a really nice system
+02:58 but by default, this wouldn't work.
+03:00 Now just to be fair, if I imported json , so here I go something like this
+03:05 import json and I say json.dumps (car)
+03:10 that crashes, right, it's basically that the json module doesn't know what to do
+03:16 and so pyramid just delegates at the json module what's it supposed to do right.
+03:20 And we can't call like I said stir on this because it'll just give you
+03:25 basically the type name and the memory address, also unhelpful;
+03:28 but what we do have that's helpful is this method
+03:31 if we could somehow say, hey json serializer , if you run into a car
+03:34 here's how you turn it into a thing that you could then know how to serialize
+03:38 because dictionaries obviously serialize well, so let's look at that.
+03:42 Down here, we've got our allow_cors , our register_routes ,
+03:48 this is basically the setup for the main entry point for our web apps,
+03:51 so let's add one more, let's call them configure renderers
+03:57 and we'll pass the configure, so let's put this down at the bottom
+04:02 we'll do a little def, so we've got our config thing here
+04:07 and our config has an add renderer here, and what we can do is
+04:13 we can give it a name like json and put some value here
+04:16 so we'll call this json renderer and there is already one of these created right
+04:21 we can say json , and our view config says I want the renderer to be this
+04:26 and there's one of these created, but it's just the default one
+04:28 so let's go and configure this a little bit differently;
+04:31 we can come here and there's a thing called json
+04:34 which is part of the pyramid renderers, notice that
+04:37 so we're going to create one of these,
+04:39 now there's all sorts of stuff that we can set here
+04:41 but one of them is the level of indentation, so right now
+04:44 everything we get is minified, maybe I want to have a more readable output
+04:49 so we can set it to indent like that, but the thing that we really need to do
+04:54 is go to this thing and say add adapter, notice how it takes the type
+04:58 and then an adapter and the adapter is a callable function really
+05:01 so the type, car and what can I do to give it a callable
+05:09 that will take a car and then convert it into a dictionary or something like that,
+05:14 let's go like this, let's go given a lambda that passes a car right
+05:18 so a function that takes a car as an input
+05:20 what's the return value car.to_dict like that, ok
+05:24 now this looks like we're pretty much set up and ready to go
+05:29 PyCharm thinks that is misspelled, I don't think so.
+05:32 Okay, so we're going to, instead of using the built in default json implementation
+05:36 we're going to create a new one, we're going to tell it to do like pretty print basically
+05:39 and we're going to add this adapter so if you ever run into a car,
+05:43 and no matter where it is in your object graph
+05:46 here's how you convert it to a thing you can deal with,
+05:49 this should fix our problem, all right try again,
+05:54 moment of truth, refresh button—
+05:56 oh, two positional parameters, that's right
+06:00 there's not just the car, there's some other contextual information passed here
+06:03 so I don't care about it, I'm going to put the underscore
+06:06 but of course, we do have to have the position all place if we're to go
+06:11 this isn't javascript right, it's a proper language.
+06:13 Okay, here we go, now look at that—
+06:16 so we come over here look at the raw data,
+06:19 look, now the raw data is like this, like if I do a view source,
+06:22 if I can get it to do a view source, the view source is now pretty printed
+06:26 just to show you what we got before let me turn that off for a minute
+06:29 and refresh this page— now you can see it's the minified version,
+06:33 maybe you want to ship the minified version,
+06:35 but it's probably really not saving you that much,
+06:37 and this is a little bit nicer for people to look at and try to understand
+06:41 so you've got to balance developer friendliness readability
+06:45 versus peer performance of dropping a few back slash ends.
+06:49 It's up to you, but if you want it pretty printed,
+06:52 we can configure the json renderer to do that,
+06:55 and more importantly, we can add these adapters like hey,
+06:58 if you want to serialize a car, like we give it a list of cars,
+07:01 and for each one of the items in the list,
+07:03 it's going to call this function, pass in the car and some extra info,
+07:06 and then for that car instance, we are just going to use our little to dict method.
+07:11 So we should be in business.
+07:14 Alright, so things are looking good over here,
+07:17 now let's take one of these individually,
+07:19 and see what happens if we try to get it, right,
+07:22 if we look over here, make some room,
+07:24 if we ask one individually, it's going to call this,
+07:27 which is going to return a car and it's using the json
+07:30 whatever the name json means, right,
+07:32 we've kind of overwritten that in that sense,
+07:35 go here, we'll try that one, again, it comes out looking great,
+07:38 in fact, it's even pretty printed.
+07:41 If I click pretty print, it indents a little differently,
+07:45 but otherwise, other than that right,
+07:47 these things basically agree on what pretty printing is,
+07:49 if they could agree on tabs, right.
+07:51 Awesome, so now we've fixed our problem,
+07:55 we've taken this renderer, and we've added an adapter
+07:58 and we've done some more stuff,
+08:00 but this also starts to unlock some more possibilities, right,
+08:03 so down here, what we did is we created some instance of an object
+08:06 and we registered it, in pyramid to say
+08:09 if somebody says json do this, right, use this,
+08:12 and if we go and look at this object,
+08:15 you can actually see some of the things that it's doing
+08:19 it has add adapter, this is a really important part, callabale ,
+08:22 it defines an internal implementation of how it renderers at each step along the way.
+08:28 So, pretty much that, this callabale , this function, and some initialization stuff,
+08:35 that's really all you need to do to add any sort of renderer.
+08:40 So we're going to use that concept to add a csv renderer,
+08:43 an image renderer, and maybe even more.

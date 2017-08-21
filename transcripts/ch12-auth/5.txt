@@ -1,0 +1,46 @@
+00:01  Let's review what we had to do to add authorization to our service.
+00:04  First of all, we have to have users who are going to authorize
+00:07  so we added a user type by creating class user deriving from sqlalchemy base,
+00:13  setting the table name, creating the columns,
+00:15  the id we don't really do anything with
+00:17  so autoincrementing id that seemed totally fine,
+00:20  obviously having idea when these users were created is handy
+00:24  so we added a create a datetime column
+00:27  and we added now as the function to be called during inserts,
+00:31  so that we don't have to think about it just magically the created time gets set;
+00:34  then we have their name, in the code we actually added a hashed password
+00:38  because you got to have some way for them to log in,
+00:41  but it didn't really matter for the example we used,
+00:43  so we have their name which has to be indexable and unique,
+00:46  and we gave him an api key which is also unique and indexable.
+00:50  And we just used the uuid function to generate
+00:54  a nice long random global unique identifier type of thing,
+00:58  so you can use whatever you want there, but I think that's a pretty solid bet.
+01:02  Remember we also had to import this somewhere
+01:06  before that table would get created,
+01:08  now in reality, it really kind of depends on how you interact with this code
+01:11  whether or not that's required, but it's a good practice
+01:13  to just explicitly import all of those sqlalchemy types,
+01:16  where you're calling create all on the sqlalchemy base.
+01:20  So we said let's pass this api key in the authorization header
+01:24  in the slides you have this function parse api key from header
+01:27  and it just grans that and returns a value or none if it's not there
+01:29  so if there's no api key, we're going to return missing api key
+01:34  then we're going to go try to find the user with that api key
+01:37  and we'll say if there's no user, sorry there's invalid api key
+01:41  really like there's no user found corresponding to this api key,
+01:45  it was validly formed but there's no user, and if that worked
+01:49  we have the user back then we set the request.api_user
+01:52  so if we need to work with them later, we can,
+01:54  and we just delegate the call we just pass the call
+01:57  along to that API function called func,
+02:00  and we of course have to pass the request along.
+02:03  And this is our decorator that we can use to authorize our api calls.
+02:07  How do we use it— super simple, we just use @auth.require_api_key
+02:12  and this function will never even get called
+02:15  unless we've already made it through the authorization process
+02:18  and along the way we've set the request.api_user
+02:22  so we can do things like request.api_user.name and api_key and so on.
+02:26  This is definitely not the only way to set up authorization for apis,
+02:31  but it's a very common one and very easy to do,
+02:35  easy for you and easy for people consuming your API.

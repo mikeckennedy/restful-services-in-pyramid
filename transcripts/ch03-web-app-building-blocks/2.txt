@@ -1,0 +1,59 @@
+00:01 When building http services, it's really important 
+00:03 to make proper use of the http verbs.
+00:06 Now, there are many esoteric verbs, but the four that appear all the time 
+00:11 in restful or http services are get, post, put and delete.
+00:16 So let's talk about those quickly and then we'll see an example.
+00:19 So get is the one that happens by default,  if you go and type a url into your browser 
+00:24 and you hit enter, that's a get request, right, just send me the resource there.
+00:29 And the idea is that this should be basically read only,
+00:32 it should have no other effect other than retrieving the data.
+00:35 You don't want to initialize the service this way,
+00:38 you don't want to require that you do a get request to something 
+00:41 before you can do something else, this is just a read this property type of thing.
+00:46 And notice that I have it marked as item potent, and what that means is 
+00:49 if I call it once, if I do a get request to some url certain parameters, 
+00:55 then I call it again and again and again, it should have no effect,
+00:59 the second, third and fourth time.
+01:01 So if I apply this operation more than once, it shouldn't change it, that's item potent.
+01:06 And item potent is super important for services 
+01:09 because the item potent verbs are casual,
+01:12 if you do a request and it goes to some kind of proxy server 
+01:15 or even cashing in your browser, it can see that you did the get request to this 
+01:19 and maybe we don't need to run this operation again,
+01:23 we can just return the cash local copy, 
+01:26 because we know it's item potent we know it should have no effect.
+01:29 Now, the other popular one that you see all the time in web pages and stuff is post.
+01:35 If you submit a form that typically submits something as a post 
+01:39 and the idea with these post operations is that there is 
+01:42 some kind of body submitted to the server 
+01:45 maybe this is form and coded data, key value, key value, key value 
+01:48 like you might have an html form, it is also a very common for that to be json,
+01:51 but however it's represented, you basically go into the server
+01:54 and saying I would like you to accept this new piece of data,
+01:58 maybe this new book, I'm trying to create a book in the service 
+02:01 or a new user or something like that, and then the service is supposed to respond 
+02:06 and say I have created it and you can find it over here,
+02:10 this is the one operation of the popular ones that's not item potent.
+02:14 If I say create a new book and I give it some information
+02:17 and I ask you to create a book again, 
+02:20 chances are you now have two books with the same title or something like that,
+02:23 unless you have good validation, so this one is not item potent and that's important.
+02:27 And the idea here is, you're going to submit this book, 
+02:30 but you don't really know like what the url 
+02:32 or the primary key or whatever it's going to be, 
+02:35 just hey here's a new book create it and tell me where it goes.
+02:38 Similar to this, but if you know where it's going to go, 
+02:40 like if you're creating a cms say, and like I want to create a new page in this site 
+02:45 and the url is going to be the this, well possibly we would do a put instead of a post 
+02:50 and we put it to that address to say create this page here 
+02:54 and so it's much like a post, you submit a body 
+02:57 and the server except it and creates a thing, 
+03:00 but you're telling the server you're letting the client decide what is the id basically.
+03:03 And finally, if it makes sense for an item to be deleted 
+03:07 so in our book store we want to delete the book 
+03:10 or maybe delete a comment or something like that,
+03:13 we could do an http delete operation against some resource 
+03:16 and just like if we put the same data to the same url over and over, 
+03:20 it's still the same data, the same url, deleting the thing 
+03:23 one or a hundred times, it's still gone.
+03:25 So these other two put and delete operations are also item potent.

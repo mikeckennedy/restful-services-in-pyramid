@@ -1,0 +1,70 @@
+00:01 So it looks like we have Pyramid installed, our web app created,
+00:04 registered, and we've been able to run it,
+00:07 but it's no fun to have a web app if you can't edit it, right,
+00:10 and we're going to use PyCharm to do that.
+00:12 So let me show you how to configure this in PyCharm.
+00:15 So basically we want access to the directory we're in
+00:18 so I'll say open. on Windows it's start.
+00:21 and here's the project structure that got created,
+00:24 and in here, you can't see it, is the hidden.env
+00:27 so on MacOS, I can drop this on PyCharm
+00:31 and it will automatically open it up and understand this project,
+00:35 I believe you've got to open PyCharm and say
+00:38 file open directory on Linux and Windows.
+00:40 So it comes to life you can see it's thinking about
+00:43 all of the dependencies and libraries that are installed
+00:46 so give it just a second to come to terms with that,
+00:48 and notice it's also automatically detected
+00:51 the project up here as a Pyramid project and it's created
+00:55 what's called a run configuration, this requires PyCharm Pro,
+00:59 PyCharm Community edition doesn't support web apps
+01:02 or any sort of web development really,
+01:05 so we can come over here and we can expand this out and see what we got;
+01:08 Alright, this is what this is generated from our setup
+01:11 we can just basically ignore that,
+01:13 here's our hidden virtual environment, also ignore that,
+01:15 but this is the stuff we really want to edit, here's our views,
+01:18 here's our entry point with our routes, all of those kinds of things.
+01:23 So I let's just go ahead and run it and make sure everything is working,
+01:27 it is, everything is working, so if we click it
+01:30 it should come up just like we did before on the command line.
+01:33 All right, that's cool, now in case it doesn't come up like this
+01:36 you may need to do a couple of things,
+01:38 you may need to add a run configuration,
+01:41 so you might need to come over here and say plus Pyramid server
+01:44 make sure you don't do the default you just hit plus
+01:46 and give it a name and you got to browse to the configuration file
+01:49 I'll click here so you see give it a name,
+01:52 browse to either the development or production any
+01:54 set the working directory to be the same
+01:56 and make sure you pick your virtual environment
+01:59 if it's not there, you've got to go browse, I'll show you how to do that in just a second.
+02:03 One final thing that will make life easier is say single instance only,
+02:06 only one process can list on that port anyway
+02:09 so you just get weird errors if you don't do that.
+02:12 So the other thing you do is to go to settings, the preferences here
+02:15 and if you go to the project, project interpreter you can see
+02:19 you can actually go here and say add a local virtual environment
+02:22 or even create a new one, but then you've got to run
+02:25 the setup steps again in that new environment.
+02:27 So if for some reason it doesn't show up,
+02:29 then you can browse over to this, but as long as you follow
+02:31 those naming conventions that I went through
+02:34 .env for the virtual environment that it's in the root of your project here
+02:39 then it should automatically detect it.
+02:41 We also have a little terminal down here,
+02:44 and the terminal automatically comes with that,
+02:46 that virtual environment activated,
+02:49 so you can come down here and a lot of that stuff that we did
+02:51 with the setup.py and so on, down in this area.
+02:54 All right, other than that, it looks like we're up and running and ready to go in PyCharm.
+02:59 So, for the rest of the time working on this,
+03:01 we'll basically be working in this editor.
+03:03 Oh, one final thing before I go, notice it says that
+03:06 the version control, the route was not registered,
+03:09 so I can come down here, and I can add this
+03:12 and this will add version control support to this project,
+03:15 notice how everything turned red, that's because it's not yet committed,
+03:19 it's not staged in get, so it hasn't been added basically.
+03:23 So I've got to go through that, and then it will turn to either white or green
+03:27 or blue depending on how I've edited it.

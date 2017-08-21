@@ -1,0 +1,145 @@
+00:01 Now that we can create cars, we better be able to update them,
+00:04 what if we make a mistake, what if something about the car changes, right,
+00:07 we no longer want to sell it, we crashed it, we want to change the price;
+00:10 so let's make another method here, we just copied the post one
+00:14 because this is actually closest to what we're doing
+00:16 but we're not going to do a post, we're going to do a put and remember
+00:19 make sure you change the name or you'll mysteriously get 404.
+00:23 So, we want to do some similar stuff
+00:26 for example we want to get the car data out but in this case,
+00:29 we need to figure out what car is it they're actually trying to update.
+00:32 Let's just pull back our home screen here, pull this us up again, there it is,
+00:38 we're going to do a put against that url
+00:41 so you're going to need to say I want to update this car with this data
+00:46 so we're going to want to actually go and get the car id out here
+00:49 very much like we do in the get details
+00:52 and recall that the way we did that was something like this.
+00:55 We do the request and here we looked in the matchdict ,
+00:59 that's where the route data goes,
+01:01 I'll do a get for car id, that is basically a plain dictionary
+01:06 and we can get stuff out of dictionaries in a safe way like that,
+01:09 and then we could try to get the car,
+01:12 so we'll go to the car and say repository.car by id, car id,
+01:17 and if this is none it's just going to return none
+01:19 so we can do a quick check here and say you know what
+01:21 if there's no car that you're trying to update in our database
+01:24 we're going to tell you— what should we tell you—
+01:27 404, no car with this id, in fact we already have that code written right here
+01:31 so let's just rob that and put it here, ok
+01:35 so if we try to get the car and there is no car
+01:38 you can't update the car because it's not found so 404, okay.
+01:41 The next thing we need to do is get the data
+01:44 that they're going to update it with, which is just like this, right,
+01:46 we're going to do the same thing here
+01:49 again validation probably a thing that we want to do
+01:52 are the fields there, are they of the right type, right
+01:54 is it something that could be an integer for the price
+01:57 or do they pass us a list where there should have been a number
+02:01 crazy things like that, or does the field even exist,
+02:04 alright but we'll come back to the validation.
+02:06 So we'll assume this works, we'll come in,
+02:08 and here we can do an update car which is very similar to the add car
+02:12 except for that it just copies over the values, it doesn't actually generate new ids,
+02:17 and we technically could return this, but we're not going to,
+02:21 let's suppose that we're not going to do anything like that,
+02:24 instead we want to be very careful with the status codes here,
+02:27 let's go back to httpstatuses.com.
+02:31 So if we come down here we have created,
+02:33 oh we were not that careful before were we, we probably should do this as well
+02:36 so what we want to do is say that's great, you updated it
+02:40 but there's no content, so we're going to return 204
+02:43 and this is the right one update ok,
+02:46 so instead of returning the updated car here
+02:50 we're going to return a response or the status is 204
+02:54 and I can go ahead and set the body, but I think
+02:57 sometimes the browsers don't download it when they see a 204
+03:00 they are just like great 204 in the header we're good
+03:03 but let's say a car updated successfully, there we go.
+03:06 And while we're at it, let's go and fix,
+03:09 I completely overlooked this before,
+03:11 let's go and fix this as well, so we'll go up here and we'll say this case 201
+03:17 and what do we put for the body like here we have the serializer , right,
+03:22 for json let's go ahead and put the body here,
+03:26 we're going to say not body but json body is the car data
+03:29 okay, we'll test both of these, because we're going to need to run update anyway.
+03:34 Okay, so this is looking good, we've got our status codes in place
+03:38 201 created we'll give him back the car down here
+03:42 and we are saying we've accepted your response
+03:46 there's no more content, but everything was okay and we'll give him that
+03:50 but like I said, you probably won't actually see that
+03:52 if there's some kind of error we'll change that word to update
+03:55 although I think it still applies, let's save,
+03:58 let's go back to postman here,
+04:03 so we come over, do a response, and we get all these various ones here
+04:06 we're going to create our opel concept again, and there it is,
+04:09 that's the key that was generated, and notice importantly 201 created right there,
+04:16 the request has been fulfilled, and resulted in a new resource being created
+04:21 guess what— details are in the body.
+04:24 Cool, so now that this has been updated, notice there's no damage
+04:27 let's do a get over here, for this new thing that we just created,
+04:33 okay, so no damage, the year and price are this, 29 thousand.
+04:39 Let's say we're going to update the price because it has to go down
+04:42 since we like scraped the car or something;
+04:44 so here we've got our post, let's do a put to do an update
+04:51 and we're going to update against the exact url here,
+04:55 all right and I don't recall if it looks in here,
+05:02 I think it's a good idea to pass it here as well just to be clear
+05:05 and we should probably check that match
+05:08 or make sure that if it's not in here,
+05:11 that we basically only copy over the values that are passed something like that
+05:14 but just to keep things simple, let's make sure the id is in the body.
+05:17 So what we're going to do is we are going to make some changes
+05:20 let's say small scratch driver's door, otherwise fine, something like this
+05:25 and even though it is the concept car, we're going to take it down
+05:29 to 28.8 right, instead of 29 thousand.
+05:34 So what we want to do is go review the flow here,
+05:38 is we're going to do an update I am going to call this function,
+05:40 I am going to match the route, oh it almost didn't work
+05:44 we need auto api , that would be a very bad thing, and here we go, auto api
+05:48 we want to make sure it's going against the one that has the car id not the other one,
+05:52 we want do a put and then we're going to do the response in json
+05:57 although nowhere are we returning that
+06:00 so let's say there's really nothing to go there,
+06:03 there's no place in which we are using a renderer, if you return a response,
+06:07 instead of some kind of object renderers are not involved, you're short circuiting that.
+06:12 So we are going to call get card id, use that to find the car
+06:16 if there's actually no car to be updated then off that goes
+06:20 and then it does assume the car id is in there
+06:23 so that's kind of important,
+06:25 all right let's rerun this really quick because I had the wrong route there
+06:29 which means we're going to want to run this one again.
+06:35 And we just need the new url , once we switch to a real database
+06:39 these ids won't be sort of random every time we restart ,
+06:45 the ones we create they will stick.
+06:47 Finally, put this here, like I said, we should probably write the code
+06:51 to make sure that we just copy that id across,
+06:54 but for now, let's just run it like this, let's go over here and do a get
+06:58 just to make sure there's no values, look no damage, price is 29 thousand,
+07:02 we are going to make an update, put to the location, go,
+07:07 204, no content, everything works, the server successfully processed the request.
+07:12 Great, now if we go back and say all right, cool,
+07:17 so show me the details about this car,
+07:19 now you can see the price is going down 28800 euros
+07:23 and there's a small scratch on the driver's door otherwise it's fine
+07:27 isn't that cool? Let's suppose we loaned it to our teenage daughter
+07:31 and now something else has happened to it
+07:34 and there's a dent in the bumper right
+07:37 we can send that update again, go back over here get the details again
+07:40 and now we've updated it once more price has changed again,
+07:44 there is a small scratch and so on.
+07:46 So you can see how this works, we've gone over here
+07:49 and we're doing a put to the individual resource on the server
+07:52 and the body contains all the details,
+07:55 like we could set it up so that we only pass the things that are changed
+07:59 and we look in there and like do an update that would be nice to do,
+08:02 like if we don't pass the brand that means the brand just stays the way it is,
+08:06 that would be pretty easy to write, but that's not how I wrote it;
+08:09 so you want to be real clear what it means,
+08:11 and of course we use the 204 response code,
+08:13 let's just check if I do like an extra five on the end
+08:16 now it's 404 and you see at the bottom
+08:19 the car with the id such and such was not found
+08:21 but if we look for one that is, here we go, perfect,
+08:24 and as well as if we make some malformed stuff here,
+08:28 could not parse your json 400 bad request,
+08:31 very nice, okay let's put our json back, it looks like everything is good.

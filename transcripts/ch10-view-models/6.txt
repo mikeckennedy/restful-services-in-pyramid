@@ -1,0 +1,35 @@
+00:01 We saw that our API method once we tried to add validation
+00:04 and proper object creation, really blew up crazy
+00:06 so it was view models to the rescue,
+00:09 and in the end what we did was we created a view model base class
+00:12 that held a few things, and one is the errors— oh and we could have also,
+00:17 I have it here in the slides for you but we didn't do it in the demo
+00:20 was we could have the error status, so like 400 versus 404 versus things like that
+00:26 if you want to return different values, we'll see how to do that.
+00:28 So we have the errors, the error status and the error text or error message,
+00:32 we could put all those into a view model base
+00:34 and then, we create our view models based on that base class.
+00:38 So here we have an update car view model
+00:41 in our demo we wrote a create car, here's what update might look like,
+00:44 so update, you have to have the car you're going to update
+00:46 and the data that you are using, so the post to data dictionary
+00:50 in this case, we are holding the dictionary, the car id and not the car
+00:54 and then we call compute details we're actually going to go and find the car by id
+00:57 and if we don't find it, we'll say hey, we couldn't find that car that's an error message
+01:02 the error status is 404, right because the car wasn't found;
+01:06 then later, we'll go and actually create the car and do validation
+01:10 and say well, if some of the validation fails, that's a 400 error
+01:14 and the various errors in the submitted data that you got to deal with
+01:20 those are the problems right, like the price was required,
+01:22 the year was negative, things like that.
+01:25 Now with this in place, if we go back and look at our API method
+01:29 you can see it's much, much cleaner, so in the gray section
+01:34 we're juggling a little bit of the inputs we have to in the web framework
+01:36 all of that validation is focused just in that little reddish area in the middle
+01:40 and no matter how much we add to this, it doesn't really expand or grow this
+01:44 and then the thing we're actually trying to do,
+01:48 update the car or create the car happens very clearly here,
+01:50 so you can see you we're using the view model,
+01:53 we're creating it and passing the data it needs to get started
+01:55 calling compute details, if there were errors
+01:57 you respond with the error status and the error text.

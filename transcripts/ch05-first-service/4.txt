@@ -1,0 +1,58 @@
+00:01 Let's look at the steps that we had to take to create and run our web application.
+00:06 Remember, the first thing we had to do was make sure
+00:09 that we actually had cookiecutter itself installed
+00:12 because pyramid is now switched to a cookiecutter template model
+00:15 for all of their projects, so we need to run cookiecutter
+00:17 against their template, that means we've got to have cookiecutter .
+00:20 So we did a pip 3 the install--user cookiecutter
+00:23 you may have to set the path depending on how is system setup ,
+00:25 it may just run, I've seen it sort of work both ways;
+00:28 so we install cookiecutter , once we have cookiecutter working
+00:32 you can pick a template, for the purpose here I think
+00:36 the Pyramid cookicutter starter is totally fine.
+00:40 There is one that you can pick that has sqlalchemy set up
+00:43 but you'll probably want a lot of control over that anyway.
+00:46 So we'll do that in the later section, and it will set up sqlalchemy ,
+00:49 the data access layer, but here we get pretty simple one page basic website,
+00:54 so cookiecutter space the url to the github repository,
+00:58 not the . git part, although I believe that would also work
+01:01 but actually just the url to the github repo page.
+01:04 Cookiecutter asks you a couple of questions before it actually creates the website
+01:08 so here we gave it the name auto service api
+01:11 and auto_service_api for the lower case name
+01:15 and then we chose Chameleon, and it ran correctly
+01:18 and gave us a few steps on hey here's what you might do next.
+01:21 So you see the next thing it says it's to go into that directory
+01:25 and create a virtual environment, we do almost that
+01:28 we do create the virtual environment,
+01:30 we give it a slightly different command.
+01:32 So then we go into where the web app was created
+01:35 to its primary directory, we create a virtual environment
+01:38 and we use the . env rather than straight env , that makes it both hidden
+01:43 but also PyCharm automatically detects and uses that,
+01:46 which is very handy, and we give it the --copies at least on MacOS ,
+01:51 because the resolution of the symlinks doesn't quite work right in PyCharm ,
+01:57 and possibly other environments as well, this is the one reverend to issues
+02:00 and copies fixes that, so we've now created our virtual environment ,
+02:04 but it's still not active, if we do pip or python is running the system one,
+02:07 notice of the prompt is unchanged, so the next thing to do
+02:10 is to activate the virtual environment,
+02:12 so we say source or . env /bin/activate like I said,
+02:17 on Windows it's scripts and activate that, source not required
+02:20 and our prompt should change.
+02:22 Then if you ask things like which or where Python,
+02:24 it will pull up the actual path to the one
+02:27 that's in that virtual directory, so you know it's working.
+02:30 After that, we need to install Pyramid, all the dependencies of our web app
+02:34 which depending on how the scaffold runs is often beyond just Pyramid itself,
+02:39 things like pyramid debug toolbar and waitress and so on;
+02:42 so to accomplish that as well as register the package itself,
+02:45 remember, pyramid projects are python packages
+02:48 we run python against the setup.py and we give it a developed argument
+02:52 and that's going to tell it to install all the dependencies, and install it locally.
+02:56 After this, we're ready to run, so we just use the p.serve command
+03:00 which comes along as part of that setup process
+03:03 when we install pyramid it comes with p.serve ,
+03:05 and t hen we can p.serve development.ini
+03:08 that starts up our web app and we're off to the races.
+03:11 We have a wonderful new website that we're ready to start adding a web services to.

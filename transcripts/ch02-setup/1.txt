@@ -1,0 +1,53 @@
+00:01 I want to take just a moment and talk about the course prerequisites 
+00:04 this course is best if you follow along, if you build these apps along with me 
+00:09 or even experiment on something similar, but not exactly the same as what I'm building.
+00:14 So what we're going to talk about in this video is what you need actually to do that,
+00:18 what tools do you need especially if you want to follow exactly what I'm doing.
+00:22 So first of all, we're going to need Python 3.5 or above.
+00:26 Now, chances are any reasonably new version of Python 3 would be fine, 
+00:30 but I want to make sure that we have at least that possibility 
+00:34 of using some of the 3.5 features, so make sure you install Python 3.5,
+00:38 and after this video, I am going to show you three other videos 
+00:43 that show you how to set up this and the other tools 
+00:45 on Windows, on OS X and on Linux.
+00:50 So if that's new to you, then you can follow along on those 
+00:53 to see how to get your machine set up, but just know,
+00:55 you're going to need Python 3.5 for this course
+00:58 and for all of the demos and the code which hopefully is a large portion of this course 
+01:01 it's going to be primarily you watching or working with me writing code not just a bunch of slides; 
+01:06 for those sections of the course I'm going to be using PyCharm,
+01:10 I think it's a very good tool for working with Python,
+01:13 I think it's great at debugging, but it also is really good for web development,
+01:17 for working with the html templates and javascript, and things like that, 
+01:21 so this is a great tool and as we go through this course,
+01:24 if you're new to PyCharm you'll see why, 
+01:27 you'll see all the great things that it has to offer,
+01:30 but if you want to just take them in a go I just want to solve this thing,
+01:32 what really is different about it, I wrote a blog post a couple years ago 
+01:35 called "9 reasons you should be using PyCharm"
+01:38 you can follow that link there, and go read them, 
+01:41 and that's touching on some of the reasons why it's good for this course,
+01:45 so if you want to fall along exactly with me, you can use PyCharm.
+01:48 There is a couple options, the upcoming videos talk about it.
+01:51 When you're working with APIs it's really nice to be able to test them,
+01:54 sometimes your web browser is good for testing them 
+01:56 you can put the url into the browser and stuff comes out 
+01:59 you might see some json or something, that's fine for like a basic get 
+02:02 but what if I want to do an http put request, how do you do that in the browser?
+02:07 If I want to do an http put request and customize the headers 
+02:10 I'm not even sure that's possible, maybe you can with the dev tools 
+02:13 but the browser is not really the best way to do it, you can do it in Python 
+02:16 but you know you could do something like request or even curl,
+02:20 but there's a tool that records your settings and it's really nice,
+02:25 runs all on all the platforms, called Postman.
+02:27 So Postman is a free app that you can get, they have a paid version 
+02:30 but the thing we're going to use is the free one 
+02:32 and you can get it, you can see the download is right there at getpostman.com 
+02:36 and we'll be using this to consume the API as we create it.
+02:40 Finally, make sure your github repo is set up 
+02:43 so by the time you watch this video this repository here should be full 
+02:47 of all the demos and code that you've seen me write throughout this course, 
+02:51 so right now make sure you visit 
+02:54 github.com/mikeckennedy/restful-services-in-python
+02:59 and star and consider forking this so you have all the code that we've written 
+03:04 and all the links and resources I put here as a permanent reference for you.

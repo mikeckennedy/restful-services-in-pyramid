@@ -1,0 +1,51 @@
+00:01 The final method that we're going to write
+00:04 to make our service read/write is the ability to delete a car.
+00:07 Now this is going to be based on the auto api url
+00:11 not the autos, the singular one that takes the car id
+00:14 so let's duplicate this function, this is the put one when we just wrote
+00:18 and right away say change the name, so you don't forget that
+00:22 and we'll put a delete here, so we're only going to process this function
+00:26 or map this function to a delete request, to that url, not a get or post or whatever,
+00:32 ok so this is good, and we're still going to need to get the car
+00:35 and we want to verify the cars there,
+00:38 but we don't need to send a body do we?
+00:40 We don't care what else you're saying, if you say delete the car
+00:44 and you give me an id, that car is gone,
+00:46 the only option is either the car is there or it's not,
+00:48 or maybe you don't have permission, but we don't have authentication
+00:52 they're not passing like api token or something
+00:55 so there there's no check really but either way,
+00:58 getting the body here doesn't make a lot of sense
+01:00 and so then the last thing we want to do is just come over here
+01:03 and say delete car, and I think when we delete the car
+01:06 status everything was okay but there's no content is probably the way to go,
+01:11 so this is going to be car id, and let's just say car deleted,
+01:15 I don't really think that go es through, but I will go and put it there anyway.
+01:19 Alright, so let's go ahead and add this final function here
+01:21 and this is going to be the car id and we'll just want to work with this—
+01:26 this actually, so because this is just an inmemory dictionary for now
+01:31 we're going to convert this to database operations later,
+01:34 but for now, we'll just use the del operation and the key is going to be car id.
+01:39 So we just want to delete that, and that should do it, super simple,
+01:42 okay, so we come in, we get the car id, we do a little validation just to say
+01:46 yeah the thing you're going to delete actually exists
+01:49 and then we could call delete, we could change this
+01:52 so it raises an exception if it's not there and then catch it here
+01:54 like there's some variations we could apply, but I think this will do it.
+01:57 So, I'll run this, everything is good, let's go back to postman,
+01:59 and go through these steps a little bit here,
+02:02 so we'll get all the cars they're all loaded up, let's go and create this one,
+02:08 now it has a new id because that's always regenerated
+02:14 the way we generated them here
+02:16 let's go see the details about it, edits were gone which we created
+02:19 so it's back like this, now let's change this, let's actually change this one
+02:24 let's make a duplicate here and say we're going to do a delete to this url,
+02:28 there's no body, there's no headers, there's just a delete request to this,
+02:32 go— alright, what do we get back, status 204,
+02:37 ok that sounds really good in seven milliseconds nice and quick;
+02:40 let's see if we can see the details about this one now,
+02:43 refresh, the car with that id was no longer found, why—
+02:47 because we just deleted it from the database.
+02:50 Perfect, so it looks like we got our delete operation going very well,
+02:53 like you probably thought it would be complicated, right,
+02:56 not too bad, not too bad at all.

@@ -1,0 +1,158 @@
+00:01 Finally, let's compare how an http service works,
+00:04 some of the benefits and drawbacks of that,
+00:06 to things like soap services, raw sockets, queuing and so on.
+00:10 So let's start with our topic of this course http services.
+00:14 We've got our app, it's going to make a request over to our web server 
+00:17 and this is just going to do a straight http get,
+00:19 again some kind of uri, a noun, in this case a particular user with id 7
+00:26 and the response is probably some kind of json, right, 
+00:28 here there's something with an id 7 and the name of it is Michael, 
+00:34 here are your details. Ok, so what are the benefits and drawbacks?
+00:37 Well the benefits, this is universally accessible, 
+00:40 there is almost no more broadly spoken protocol than http, 
+00:43 so Python, Javascript, .net, C++ whatever you're doing,
+00:47 it can probably talk to this service.
+00:50 Firewalls are all about letting the web out and blocking many other things,
+00:54 and so it's very firewall and http proxy friendly, 
+00:57 meaning it can get out of enterprise environments and things like that.
+01:01 It's cashable, right, this get is item potent, 
+01:04 theoretically it's cashable at the many layers throughout the whole request,
+01:08 at the proxy server, at the client, even on the server side.
+01:12 You can look at it, it's understandable and humanly legible, right, 
+01:15 you can easily read that response, 
+01:17 you don't need a lot of training to understand what that response means.
+01:20 Here's a person or user with a name Michael and id 7, done,
+01:23 this is relatively lightweight, I'm thinking as opposed to 
+01:27 like a soap service with an xml payload or something like that.
+01:31 Now, there are drawbacks of course, it's not self describing,
+01:35 so just because you have an http service that has endpoints 
+01:39 it doesn't mean there's like a documentation page 
+01:42 or on some of the protocols that actually generate client side things 
+01:46 that look like functions and you just treat it like it's a local thing,
+01:50 but it goes to the server right, we don't get that with http services 
+01:52 and if you're looking for the highest possible throughput 
+01:56 it's not as fast as say binary data over raw sockets,
+01:59 but among the services, this is a pretty lightweight protocol.
+02:03 So this is what we will be focused on pretty much for the rest of the class,
+02:07 these types of services, but just so you can do sort of a compare and contrast 
+02:11 and see the rest of the world what are the other options, 
+02:13 what else can you run into, let's look at a few other ways in which services get built.
+02:18 Almost from the dawn of time we've had this concept of raw sockets 
+02:21 you just open a socket bidirectional and you say you 001
+02:26 and the service might say 1101 and you have to know what that means, right,
+02:30 a lot of times you'll say okay, well the first integer we're going to send 
+02:34 is going to be a operation code, and then if it's this operation 
+02:37 the rest of the message is this shape, there's like two integers and a string 
+02:40 where the first value part actually describes the length of the string;
+02:43 now it's very custom and it's kind of a pain, 
+02:46 but it you can create the tightest, fastest possible operations 
+02:52 because you are literally exchanging bytes 
+02:55 like the way they are on the wire as bytes 
+02:56 and there's no extra overhead, right 
+02:58 so there's no extra negotiation or encoding, decoding, 
+03:02 serialization, deserialization it's just this, all right.
+03:05 Now, there are benefits of course, it's very fast responsive 
+03:09 like you can do basically minimal bandwidth, 
+03:11 you can even bitwise or stuff onto a single integer or single byte 
+03:15 and then send that along, but there is a lot of drawbacks,
+03:18 you have to come up with these protocols 
+03:21 or if these are some platform specific ones like dcom or java rmi or .net remoting, 
+03:27 and that means in this platform specific cases,
+03:30 those can only talk to other java servers or clients,
+03:35 they can only talk to other dotnet or windows 
+03:37 or if you're doing distributed corba type stuff, 
+03:40 this is not a very flexible protocol, 
+03:44 maybe no standards in the case where it's just truly raw sockets, 
+03:49 it's far well unfriendly, it's hard to implement and it's definitely not legible,
+03:52 but we do have that super high performance little latency low bandwidth thing 
+03:57 and this is something people do do often.
+04:00 The other major sort of cross platform service way of communicating 
+04:06 was something called soap, simple object access protocol.
+04:10 And this worked in some way like what you're familiar with,
+04:13 that would do actually http post to some url 
+04:16 and it would actually pass this action header to say 
+04:19 this is what I'm trying to do, and instead of getting json back we get, 
+04:22-- and we passed this thing called the soap envelope here,
+04:26 we've got you can see just a little bit of it, there is actually no data here 
+04:31 that's just like descriptive goo that wraps it, 
+04:33 and then as a response we get a soap envelop back with the response in it,
+04:38 so you can see this is quite heavy weight, 
+04:41 but there are some advantages as we'll see.
+04:44 It turns out that these services have a way to describe themselves, 
+04:48 which is partly why they look so nasty in xml, 
+04:51 but the xml says here are the operations, these operations take these types 
+04:55 they have these names and so on,
+04:57 so because of that there's actually excellent tool support 
+05:00 and certain things java and .net in particular 
+05:02 but even in Python there are some tools to work with these 
+05:05 and they are easy to work with, provided you have the tools, 
+05:08 they are basically impossible to work with if you don't have the tools 
+05:11 but they're not http rest services, and the reason is every operation is a post
+05:17 even if it's reading it's a post, you're not using the verbs 
+05:20 you are not using the content types, 
+05:22 you are basically using the http transport layer 
+05:25 to move across this other protocol on top of it, right 
+05:30 so http post only breaks this whole internet architecture 
+05:34 right, cashing for example is completely out the window 
+05:37 as well as a bunch of other things. 
+05:40 Tooling is required, if you don't have the tooling to generate 
+05:43 these little clients to talk to the stuff, it's way too complicated.
+05:46 Another challenge is that these services are often built around functionality 
+05:50 so remote methods are usually the focus, log in, create user, things like that.
+05:56 It's also extremely bandwidth heavy and serialization heavy 
+06:00 and even though its words, it's not really legible as you see.
+06:04 Real quickly if we expand this out, like let's suppose 
+06:06 we want to call a function on a server called double an integer,
+06:10 it's going to take an int and return an int.
+06:12 How much should we have to send back and forth for this to happen, 
+06:15 not very much, but here's what it looks like in the simplest version of soap.
+06:18 Let's send this, and see way, way, way down in the middle somewhere 
+06:22 there's the 123 we're going to send, what do we get back for the response,
+06:25 way there in the middle you see 426.
+06:28 So this is soap envelope exchange is something that happens on the internet, 
+06:33 it's much less popular now than it was five years ago,
+06:36 but if you work inside companies, there's still 
+06:39 a lot of enterprise systems doing this kind of stuff,
+06:42 the world is better with http services and things like that, 
+06:44 but you'll probably run into these, so you should know what they are.
+06:47 Finally, inside companies or in data centers, you will often see queuing
+06:52 as a way for apps to communicate with each other,
+06:55 although this really almost never happens over the internet,
+06:58 it's still sort of possible, okay.
+07:00 So maybe we have an app and it's going to say I'd like you to perform this operation 
+07:03 so what it will do is it will post a message to this queue,
+07:06 some time later, this other app is going to say 
+07:10 hey there is a new message on the queue, give it to me I'll process it.
+07:13 So this works really well, it could even be the same app by the way
+07:17 with just some different functionality or whatever, pulling that back to process it.
+07:20 So why would we do this, right, 
+07:23 well, we don't use it very often for a direct communication
+07:25 but it does have some real benefits, it's highly scalable in a couple of ways,
+07:29 suppose you have extreme peaks and valleys in the usage of your service 
+07:34 for a moment it's really busy and then it kind of dies off for a while
+07:37 and then it comes back;
+07:39 with standard services, you'd have to basically create a service 
+07:42 that is capable of handling load at that peak,
+07:45 whereas with queuing, you can kind of say I need a service
+07:48 that will handle the average, as long as it can keep up 
+07:50 or maybe if it can't, right, maybe in the evening it goes to sleep 
+07:53 or you spend up another server, whatever.
+07:55 The idea is you can put all that work under the queue 
+07:57 and then pull it off best as fast as you can 
+08:00 and really long as you handle the average load you will be able to keep up,
+08:02 you can also have things like the server go down for a moment 
+08:05 wake back up and just backlog on the queue and it'll pick it up and go 
+08:10 so you can handle intermittent processing and restarts and stuff like that.
+08:13 But, it takes a special protocol, it doesn't really go through firewalls 
+08:18 obviously it's not super easy to use across the different technologies 
+08:21 and there's no request response like login 
+08:24 well what are you going to do, 
+08:26 you're like I want to get this information about the user 
+08:28 okay well come back later, I'll tell you if I found it, right 
+08:30 that's not a great experience.
+08:32 But queuing is something people often use to create asynchronousy
+08:36 and independence between different parts of your app 
+08:39 and different scaling mechanisms at different parts of your architecture and so on.
+08:42 So these are interesting services as well, 
+08:44 but we are going to spend the rest of the class 
+08:47 focusing purely on building http restful services.

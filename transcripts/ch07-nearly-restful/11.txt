@@ -1,0 +1,43 @@
+00:01 So as we've seen, if the thing we want to return back to the renderer
+00:05 to the json renderer, somehow somewhere inside of its object graph has a thing
+00:10 that the json serializer , the json module can't deal with, all bets are off,
+00:14 thing crash, right, like it just says nope, we cannot help you.
+00:18 But, it's also not a big problem to fix.
+00:21 So, if the object knows how to serialize itself,
+00:25 or if you're willing to write a function
+00:28 that will take the object from what it is into a dictionary or something like that,
+00:31 something the json module can deal with, then you're golden, right;
+00:35 so in our case, I put this method on the car
+00:38 because it seems like a great place to keep it as we add field
+00:41 we just got to update this method, which is slightly error prone, but not super hard.
+00:45 And then, in our __init__ the entry point for the main app when we're starting it up,
+00:50 we're going to call, we are going to write and call this function register renderers.
+00:54 And here instead of taking the default one, the default json renderer,
+00:58 we can actually create either a new one
+01:01 or replace the one that is configured at startup by default.
+01:04 So here we're going to create a json renderer
+01:06 using the json type built in the pyramid renderers,
+01:10 notice I am setting indent=4
+01:13 that basically tells, passes through to the json module
+01:16 which tells it to do pretty printing and indenting 4,
+01:19 I guess if I wanted Firefox to agree exactly on the pretty printing
+01:22 I could put the number 2 there,
+01:24 but the fact that I am setting indent to something means
+01:27 that it's going to do pretty printing,
+01:29 and then we can also add this adapter, say given a car object,
+01:32 you can call this lambda function and it takes two parameters,
+01:34 the first one is the thing we care about the car
+01:37 and then we'll just call the to_dict , or whatever function it is
+01:39 that transforms the car instance into something serializable .
+01:42 And then we're golden, and then we just have to make sure we register that with pyramid
+01:45 so we say config , add renderer, and we pass the json renderer
+01:49 and we can pick either json which will replace the built in one,
+01:53 or in this case, we're going to say pretty json ,
+01:55 so if you want to call this function and have like pretty printed json ,
+01:59 you can put that, just make sure if you're really depending on that,
+02:02 you could also add the adapter to the built in json one.
+02:05 And that's all there is to it, now we can get a lot more mileage
+02:07 out of the built in json renderer.
+02:09 But, by looking at this, we also see how we can add new types
+02:13 csv renderers, image renderers, xml renderers, and so on,
+02:16 so that is what we are going to look at next.

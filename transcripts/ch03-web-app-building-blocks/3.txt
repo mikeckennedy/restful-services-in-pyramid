@@ -1,0 +1,92 @@
+00:01 We've seen that http verbs are super important for the client 
+00:04 to communicate with the server.
+00:06 I would like you to do this type of operation get me the data, get;
+00:09 create an item here, put, and so on.
+00:13 The opposite of that, the server communicating effectively back to the client 
+00:18 that has to do with http status codes.
+00:20 Now we all know status codes from playing with the web right, 
+00:23 200 means everything's good, 404 means gone,
+00:27 500 means server broke, whoops, things like that.
+00:30 But there's actually a much wider spectrum of options 
+00:33 and using those wisely means your service is really a proper restful service,
+00:40 and not just something hijacking the http transport layer to move stuff around.
+00:46 So let's look at status codes and pick out a few of the important ones.
+00:50 So I'm here in this site called httpstatuses.com,
+00:53 created by a company called Runscope they do like API monitoring tools and stuff,
+00:57 that's not important, what's cool is here we have a bunch of status codes
+01:03 all broken down for us, and we can click on them and see what that means,
+01:06 like everything is going to be ok, 200 ok right, 
+01:10 you can see well this means the request has succeeded 
+01:13 and you can see the various situations where it might make sense 
+01:17 for a get or a post, or a put, something like that.
+01:21 So 200 ok, this is great for get and things like that.
+01:25 Now if we're going to do an http post, you don't want to say well that's just okay,
+01:29 remember you need to say we've created an item for you 
+01:32 that was the intent anyway, and maybe we need to tell you where it is;
+01:35 so let's look at 201 created.
+01:37 This means the request has been fulfilled 
+01:40 and has resulted in one or more new resources being created, 
+01:45 and in fact, the request is probably identified by a location header field
+01:49 if not, maybe there's like some kind of redirect or something like that.
+01:52 And even have like the Python status codes 
+01:56 if you want to try to get the enumeration for them, but that's not so important.
+02:00 So the two important ones, for 200 are 200 ok and 201. 
+02:05 We also have 202 and 204, these are both interesting 
+02:09 so accepted means it's kind of like what you might give for a post operation 
+02:14 like hey, you sent me something and I'm working on it,
+02:17 but what if you're using like queuing, 
+02:19 and I'm going to put this in a background queue,
+02:21 eventually we'll pull it off the queue and process it 
+02:23 but I can't be sure it worked ok now;
+02:25 so this is what you would send to them instead to say 
+02:28 I think it's all going to be ok but I can't be sure because we haven't processed it yet.
+02:31 Also, no content, this is like the servers fulfilled the request 
+02:36 and I have nothing more to tell you,
+02:38 this would be a great response to an http delete 
+02:41 or maybe even like http put, something like that, right,
+02:43 you've asked me to delete it, that was fine, everything worked, it's gone.
+02:48 So those are the two hundreds, now if we go into three hundreds, 
+02:52 these are the redirection ones, most important one is probably either found,
+02:56 a soft redirect at 302, or a permanently moved over at 301.
+03:03 So this is like I changed my domain, it's over here,
+03:06 and it's always going to be over here now, it's never coming back.
+03:09 Then we have client errors, four hundreds, and down here 500, server error.
+03:14 Hopefully you don't see any five hundreds but it's going to happen, isn't it.
+03:18 Okay so 400, you can say I have request this is really important for services 
+03:22 it might mean you've given me some kind of data,
+03:27 you said it was json but it's malformed, I can't process it.
+03:30 Or it could even be, you've given me a piece of json
+03:34 but not all the values I require are there, 
+03:37 so you could somehow say no, this is a bad request,
+03:43 unauthorized permission stuff right, payment required, we all want to get paid, right
+03:47 but 403, you don't have permission, even if you're authenticated,
+03:51 and 404 not found, this makes a lot of sense if somebody does a get request 
+03:55 against like /api/book/72, and there's no book with id 72,
+04:00 you want to return not found, okay, there's no way we can give you this it's not here.
+04:05 Now, there is one other one, that's really worth talking about here,
+04:10 I guess maybe a couple, we have payload too large for certain things 
+04:14 you might be uploaded to large, 
+04:17 gone- just gone, timed out, these are all interesting,
+04:20 but I want to direct your attention to a very important status code 
+04:23 what we're here anyway, number 418, I'm a teapot, 
+04:28 and the official server response is any attempt to brew coffee with a teapot 
+04:31 should result in an error code 418, I'm a teapot, I can't brew coffee,
+04:35 the resulting body may be short and stout,
+04:38 so this is actually a joke played with the html http team committee,
+04:43 and some kind of joke on April Fools' or something 
+04:46 and they decided to leave it in, it's kind of funny.
+04:49 If you ever want to make somebody laugh 
+04:51 and you're doing some testing, just return 418.
+04:53 And of course, we have the server 500 errors, 
+04:56 you really shouldn't be sending these back, right, 
+04:59 maybe not implemented internal server error, this is really an unhandled exception 
+05:05 you should probably catch the error and somehow
+05:07 return it in some other form, right, if the reason there'll be 500 error is
+05:14 because maybe you tried to access an object
+05:16 but it didn't come back for the database, it was none, 
+05:18 so you got some kind of exception there, you probably want to return a 404 
+05:21 instead of letting that crash the server and return 500.
+05:25 So that's http status codes, if you are unsure that's a pretty good site
+05:29 just go to httpstatuses.com and pull up the detail page for any one of these 
+05:33 and try to decide is this the best thing to send back,
+05:37 does this make the most sense for my service.

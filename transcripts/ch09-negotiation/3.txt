@@ -1,0 +1,93 @@
+00:01 So it looks like we have our negotiate renderer working just perfectly.
+00:04 If you look down here, one of the key steps was
+00:07 we add an adapter, we add a renderer, we map the content type down here
+00:14 to that particular renderer, and that works perfectly, nothing needs to change here.
+00:19 However, this part right here
+00:21 turns out to be more complicated, let me show you why.
+00:24 So as we saw if, I come over here and I do a get,
+00:27 it's working great, content type equals text/ csv
+00:30 and let's go over here and try this in Firefox.
+00:34 Look at this, that's not so amazing, is it? What went wrong?
+00:39 It says could not find a renderer for the content type text/html
+00:45 application xhtml , application xml and some other stuff.
+00:48 Well then, that's a little bit weird right, and then notice down here */*
+00:53 this is the accept all, like okay, fine if you don't have any of those I'll take that.
+00:57 But the way this really works is for the header you can say I would prefer this,
+01:01 if you don't have that, I'd prefer this, if you don't have either of those
+01:04 I prefer this and I would prefer that with like a certainty of 90 percent ;
+01:09 and then finally, at certainty of 80 percent I would prefer this, right.
+01:15 So it's going to say like between these two server you can decide
+01:20 you can send me either of those equally, and then this and then this,
+01:24 I think that's how you read it.
+01:26 So we can't just take the straight text, we basically need to parse this string
+01:29 into something that's better, right, so let's go here, let's say this
+01:36 accept_headers = parse_accept_headers , plural,
+01:45 this function doesn't exist, but let's go ahead and write it.
+01:48 Ooops , not function, method, so I'll just write it down here if PyCharm won't help me
+01:53 so deaf parse_accept_headers , header value, okay
+01:56 so I'll put this here just to remind you of hey this is what it could look like
+02:00 and what we're going to return, we could even be explicit here and say
+02:03 this is going to return a list, so the system up here knows hey you have a list.
+02:10 That means this needs to be self
+02:14 and if I had said self, PyCharm would have saved me,
+02:16 but if I go over here now and say this, you can see
+02:18 append, copy, like list behaviors, to remind me of that,
+02:23 so we could do regular expressions, we could do all sorts of stuff,
+02:26 but let's just do a little bit of low end string work here,
+02:29 so we'll say first of all, if not header value return nothing,
+02:33 or empty list I guess is probably a safer thing.
+02:38 Then, we'll say values= header_value.split and we'll split on the comma.
+02:44 So we'll get like text/html, but we'll also get say */* ;q =such and such.
+02:53 So then say for value in values, let's make a list here,
+02:59 so accept types, right, so for each one of these
+03:06 we'll come down here and we'll say parts= value.split on this,
+03:11 if length of parts is one, accept types.add , parts zero or just part.
+03:23
+03:26 Let's do a strip, add this lower, right,
+03:32 that's what we're looking for before in our dictionary
+03:35 so let's make sure we do that, so if it's one, but if it's actually two,
+03:38 say else, let's be a little bit careful here, if it's two,
+03:43 then what do we want to put in here, not the value, but parts of zero;
+03:48 and we're just going to use the order in which they are specified
+03:51 like you can use this q and you can do some sorting,
+03:54 but I am just going to say that one first, then that one, then that one, and so on,
+03:58 and we're going to do that by the order in which we add here,
+04:01 okay so now we just got to return this accept type
+04:04 and we should be golden, almost, ok.
+04:07 So we're up here, we don't want this to be static, I guess we could make it static,
+04:11 but we're not going to, okay, so let's come up here,
+04:15 now this bit is not going to work, right, we can't get an accept header by a list
+04:20 those are supposed to be strings, so we'll say this instead
+04:23 for header or more accept type in accept headers, plural
+04:29 we'll do this, we'll set the renderer=this and I think I need to change this
+04:37 let's change this to be if there's a renderer,
+04:40 we're going to grab the first one and return its value.
+04:43 And now, if we make it all the way to the end, and nobody,
+04:46 let's be a little careful here, still use this type,
+04:51 so we're going to go through each one of these text, html whatever
+04:56 and if we can find one, the first one we find, that's the one we're going to use.
+05:00 If we go through all of the options, and we don't find one
+05:03 then obviously, that's a problem I think we got this working, let's try this now.
+05:07 So, does it work like it did before— attribute has no value spit, I should hope not
+05:14 where is that— where did I write spit, sorry about that
+05:19 you're probably watching it, oh it's spit, it's spit, it's not going to work,
+05:22 no, it's not going to work, alright, try again.
+05:24 Okay, there we go, we give it text/ csv , it works fine
+05:27 and we give it json it works fine, we give it images, this is plural it should just crash
+05:31 but that's okay, now the problem that we actually ran into, it's over here
+05:35 the browsers can pass more, but now they don't
+05:40 it says I'll take all bunch of different things, which one did it use—
+05:43 remember it had a whole bunch of stuff, and actually copied it so we can look down here,
+05:47 it said I want text html, we say no, don't have that,
+05:50 it said okay, I'll take this, next time do the loop, do we have this,
+05:53 next time do the loop, do you have this, no
+05:55 and then, next time do the loop we said */*, yes, I have */*
+05:59 and the reason I have */* is we've set the accept all renderer to be json ,
+06:05 if I set that to the csv one and I run it again,
+06:08 and I do this request we should have csv , and we do,
+06:11 tries to download it, sort of annoying, works fine.
+06:14 Alright , let's put that back I don't want csv to be the default,
+06:16 but you get the idea, right.
+06:18 So we went through that list and got the different things.
+06:20 All right, now I think we have a very solid negotiating renderer factory
+06:25 and I'm pretty comfortable with how it works.

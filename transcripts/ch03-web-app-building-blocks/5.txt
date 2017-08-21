@@ -1,0 +1,64 @@
+00:01 The other example of http service that I want to talk about has to do with basecamp. 
+00:06 So a basecamp is like a project management system 
+00:08 you've probably heard of it, it is actually most notable
+00:10 for being the thing that was created from which Ruby on Rails was extracted 
+00:15 so David Heienmeier Hansson and some other guys created basecamp 
+00:18 and they said oh, as part of creating this project, 
+00:21 there is this really cool thing that we've created with Ruby 
+00:23 and we'll pull them out, we'll call that Ruby on Rails, right,
+00:26 we're not talking about Ruby now, but it is notable for that.
+00:29 So these guys have been building web apps for a long time
+00:31 and they have an interesting take on APIs and I think it's generally really well done 
+00:36 but it's also interesting on how it's different than many other things. 
+00:40 So let's go down here, so here's the Basecamp 3 API,
+00:44 it says well how is this different, every request must end in .json that's interesting,
+00:49 they are also using oauth 2 here, and they've renamed 
+00:52 what used to be called projects to basecamps, okay.
+00:55 Now, notice all of the requests have this access token 
+01:00 authorization, bearer and then the value of the token,
+01:03 you can see down here they actually give you an example,
+01:06 well, not much of a token, huh.
+01:08 But they show you how to store it in your account.
+01:10 Ok, so let's go look at how they use this API to interact with projects 
+01:14 or what they've renamed to basecamps,
+01:16 so we can get a basecamp, we can get all of them, plural,
+01:19 we can get a singular one, we can create, update or trash one.
+01:22 Now, check this out, so they're going to do a get against /projects 
+01:26 they haven't changed the name because 
+01:28 I guess that would be too much to ask for people to change their urls,
+01:31 so /get/projects but they've decided that everything is going to be json 
+01:35 and they want to be extra, extra explicit about it,
+01:38 so they've had you put a .json on.
+01:41 Now, you might say well that's kind of weird, right,
+01:45 that doesn't follow the rules and the thing is when you're making services,
+01:47 there are no rules, that's cool, it's wonderful actually,
+01:51 you get to make the rules, right, they've decided this is how 
+01:53 you're going to interact with our web service, here's the rules right.
+01:57 So what they have decided is .json goes on the end 
+01:59 maybe later there's a .xml, unlikely, but possible I guess.
+02:03 So you do this get and of course you get json back, 
+02:06 you get a list of json objects, all the basecamps, projects. 
+02:10 You can get a singular one, these are specified by id 
+02:14 really more like this id, but you would get something like this,
+02:17 you would say /projects/projectid.json okay.
+02:22 That's again a get, let's look down here when I create one
+02:25 I am going to do a post to projects json 
+02:28 and this is a minimal amount of data you have to pass through, right.
+02:32 You might get an error, you will probably get a 201 created, that's solid,
+02:35 but you might get a 507 insufficient storage, 
+02:38 in the case where your account is out of projects;
+02:42 one of the ways you pay for basecamp is you buy different tiers,
+02:45 and those different tiers have a different number of projects available to them 
+02:48 so instead of just crashing or something, say not ok, 
+02:51 they say 507 insufficient storage, and they pass back an error. 
+02:56 That's pretty cool I think, if we want to update one, 
+02:58 we're going to do a put to that location, again 200 is returned 
+03:02 because they give back the value, if you want to delete it you just do a delete 
+03:06 again to that same url, and this time 204 no content is returned 
+03:11 if that thing works out ok, if you are able to delete it.
+03:14 So that gives you a good sense for the basecamp API, 
+03:18 I really like their API quite a bit, I'm not sure I'm sold on this .json 
+03:23 but like I said, it's their world they are going to make their own rules.
+03:26 If they want .json, that's what they get.
+03:28 But yeah, it's a good API, it's here on github, 
+03:31 you can check it out just basecamp/bc3-api and you could play around.

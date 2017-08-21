@@ -1,0 +1,119 @@
+00:01 Hello and welcome to RESTful and HTTP APIs in the Pyramid web framework.
+00:06 This is your host, author, instructor Michael Kennedy,
+00:11 and I'm really excited to share all the way is that 
+00:14 Pyramid makes an awesome RESTful API platform.
+00:17 Let's start with a quick overview and big picture 
+00:20 of where we're going and the power of APIs.
+00:23 So we have our web applications, it's running over here in some servers 
+00:26 probably has a web app section, probably talks to a database, right.
+00:31 Now, people are going to come using their browsers 
+00:34 and make request to our website 
+00:36 so maybe they're over here on the Macbook or they're on their phone 
+00:39 and they're going to request directly to our html pages,
+00:42 that's going to talk our database, great stuff comes back, right,
+00:46 here's our page, you can watch our courses if this is a course site, whatever right.
+00:50 Now, however, what if we have a native app 
+00:53 what if we have other servers that want to talk machine to machine,
+00:57 technically we could use web scraping but it's really a bad idea,
+01:00 this is not the way it should work- to get at that data;
+01:04 instead, we want to set up a separate channel, 
+01:06 specifically for these types of systems.
+01:09 We want to set up an API, probably http talking json,
+01:13 but as we'll see there's a lot of options here and maybe we want to vary that as well.
+01:17 So now, if we have this API, our native app can pull the data 
+01:21 in a very efficient format and drive the native app itself.
+01:26 Similarly, our servers might be able to talk directly to our server using this API.
+01:31 So, this is one of the primary reasons that we want to create APIs 
+01:35 is we want to take our website or our data and expose it to things 
+01:38 not just for humans, but for machines, 
+01:41 for applications, for other machines and so on.
+01:44 Let's look at another example. Here we have a big monolithic web app, 
+01:47 this big blue cube and it's just one giant web application.
+01:51 One of the trends these days is to create more smaller services,
+01:55 often refer to as micro services,
+01:58 so maybe we want to break the functionality of our app up into little pieces, 
+02:02 maybe one of these is in charge of user authentication and login,
+02:05 one of these little services of separate web app 
+02:08 is in charge of charging credit cards, one does logging, 
+02:11 one pulls back data from some API elsewhere, things like that;
+02:16 how do these talk to each other?
+02:18 Well, very much like our native app, they're going to use services 
+02:21 to glue these micro services together, 
+02:24 so if you want to build awesome APIs using the Pyramid web framework 
+02:28 that's what this course is all about, and it's very comprehensive,
+02:33 it turns out that we're going to cover pretty much 
+02:35 all the things you might want to do with APIs.
+02:38 What exactly are we going to cover?
+02:41 Good question. Let's start the beginning. 
+02:43 We're going to talk about why http and why the restful principles 
+02:46 behind some of these services are useful, and we should follow them.
+02:49 Then we're going to start by creating our initial web application.
+02:52 At this point, there will be nothing API specific about it, 
+02:55 but APIs run generally inside web applications, 
+02:57 they just talk a little bit differently than the standard web app does.
+03:01 We'll write our first http service, and this is going to be 
+03:04 a read only service that exchanges jasn only.
+03:07 We have a couple of end points and we'll do some interesting things here
+03:10 but we're not going to create new data, we're not going to modify data, 
+03:13 things like that, it's just going to be read only.
+03:16 Then, we'll take a little bit of a diversion from the server side 
+03:19 to look at two ways in which we can call these services;
+03:21 we're going to see how we can call the service that we just created with Python,
+03:25 and also how to consume it within our web application using Javascript.
+03:29 Next step, we're going to build a nearly restful service, 
+03:32 and I say nearly because describing something as a restful service or not 
+03:36 it's not a boolean answer, it's more like a spectrum, right.
+03:40 So we'll go most of the way, let's say 85, 90 percent of the way
+03:44 towards what you might consider a restful service at this point.
+03:47 And then, one of the things we're going to add is the ability 
+03:50 to have more than just basic json or html responses;
+03:53 what if we want csv, what if we want images, what if we want xml,
+03:56 we'll see how we can take what is built in a Pyramid and extend it 
+03:59 to add all these different response types.
+04:02 Once you have multiple response types, 
+04:05 maybe you want to let the client, not the server 
+04:07 decide what response it's going to get.
+04:09 So with content negotiation we can look at what except type, 
+04:13 what content type the client is suggesting that they get,
+04:17 so some clients will say I prefer json, we can configure our system 
+04:21 through content negotiation to automatically return json objects.
+04:24 Now if the same services called the same API and everything,
+04:29 but indicating that you'd like to get say image,
+04:32 maybe we'll return an image instead of json, right.
+04:35 So we'll see how that works in this content negotiation section.
+04:37 At this point you're going to see that or APIs while working wonderfully 
+04:41 are going to be quite busy, there is going to be a lot of stuff going on 
+04:45 inside those API methods, with validation, with object creation,
+04:49 with interacting with the stuff coming off the wire, transform it and so on,
+04:53 and we can move much of that to isolated classes 
+04:57 that are dedicated specifically to managing this, and we'll have much cleaner 
+05:01 separation between our validation and the actual implementation of our API.
+05:06 So, we'll do that with this thing I'm calling view models.
+05:09 At this point, we'll have been working with just fake data in memory,
+05:13 but it's time to get real and have a real database 
+05:16 with persistence and all those sorts of things,
+05:18 so we're going to be adding sqlalchemy talking to a sqlight database here 
+05:23 and doing proper inserts and transactions and all that sort of stuff at this level.
+05:27 So we'll do a quick into to sqlalchemy 
+05:29 and then we'll convert our in memory model to a data driven database model.
+05:33 In addition to real data, we might want to restrict who has access to do what 
+05:37 so we'll see how we can add a level of authentication to our services.
+05:41 Finally, we probably want to figure out what has happened on our API
+05:47 what are people doing, are there any errors, 
+05:49 could I get notified in real time of any server side crashes.
+05:54 So in this chapter, we'll see all the techniques and tools 
+05:57 we can use to make that happen.
+06:00 So, at this level, we pretty much have a really nice working application 
+06:03 but how do people get to it?
+06:05 Well APIs live out on servers, on the internet, right?
+06:09 So the next thing we're going to do is focus on deployment,
+06:11 we're going to create a Linux server, set up nginx and micro wsgi
+06:14 to serve this in a very realistic and high performance way.
+06:18 And once we get everything up and working,
+06:20 we probably want people to consume our API 
+06:23 so we'll talk about some of the options and techniques 
+06:25 for documenting our operations.
+06:27 And that's what we'll cover in this course, I think this is quite comprehensive 
+06:30 and I hope you find it to be really interesting and engaging.
+06:33 Thanks for joining this course, now let's get your machine 
+06:36 all set up so you're ready to follow along.

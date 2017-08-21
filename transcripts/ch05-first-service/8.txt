@@ -1,0 +1,165 @@
+00:02 So we have the web exchange part of our API created
+00:05 this doesn't look like a whole bunch of auto data ,
+00:09 we need to add some data and that brings us to Kaggle .
+00:13 Kaggle is a data science competition place ,
+00:16 they have many different data sets
+00:19 so here you can see they've got this used car database
+00:22 with over 370 thousand used cars scraped from Ebay Kleinanzeigen
+00:28 so basically Ebay Germany, and it's got a bunch of German cars,
+00:33 including all the Opels that we want to start selling
+00:36 through our little dealership in our small town.
+00:39 So what I've done is I've taken this, downloaded it,
+00:42 and basically filtered it down just to the Opels
+00:44 and then we're going to use that data in our API.
+00:47 Now, there's no point in you watching me write this,
+00:51 so I'm just going to paste a little bit of code here ,
+00:54 and this is somewhat big bit of code but let's close these all off,
+00:58 now notice, we've got our csv here brand, name, price, year,
+01:04 whether it has damage and when it was last seen for sale.
+01:07 And notice they're all Opels because I filtered it down,
+01:10 it doesn't have as many, there's still like tens of thousands of Opels but not as many,
+01:15 and then we have this fake in memory database,
+01:18 and basically it's using a dictionary
+01:20 with the id of the car which it generates at runtime
+01:23 when it first load s it up, as well as loading in this the file
+01:28 so here you can see it calls load data, and the load data just pulls those in
+01:32 creates a little temporary primary key thing that we can exchange in our API
+01:37 and stores that car, it's important to note that we're using the dict reader
+01:41 so the things here, this row that it represents an individual car,
+01:47 that is a dictionary, that's super important because that means
+01:50 we can serialize it just by straight returning it from our APIs,
+01:53 if it weren't the case, then we would run into issues;
+01:55 We'll switch to better a real database with real database entities
+01:59 and we'll see to address that, but for now these things get loaded up
+02:02 and returned as dictionaries so that helps us a lot.
+02:05 So that's really all I want to talk about this,
+02:08 we're going to come back into a proper database part later ,
+02:11 but we're just going to look at the two functions get all cars and get a car by id
+02:15 car ids are strings, which is handy
+02:17 because that means that no conversion is necessary
+02:19 that's the way they come off our API or of the url .
+02:22 Okay, so let's go over here and do this first part here,
+02:26 let's go over here and say we want to get some cars
+02:28 and it's going to be a repository,
+02:30 we can import that, thank you PyCharm and we can call all cars
+02:33 and notice that there is a limit, so we want to set the limit
+02:36 to 25 cars or something to that effect,
+02:39 so what we're going to get back is a list of car dictionaries
+02:42 that are loaded up there and we can just return those cars, ok.
+02:46 So in a real service, where you have ten thousand cars or twenty thousand cars
+02:51 however many are in that csv file, you don't want to return all of them
+02:55 we'd want to implement some sort of paging,
+02:57 so maybe we'll come back and add paging,
+03:00 you could tweak the url to basically pass like a skip level and a page size level
+03:05 or you could hard code the pages size
+03:07 and just do a page number to implement some kind of paging
+03:10 but we probably don't want to return like everything
+03:13 so we're limiting it to just the first 25 responses.
+03:16 So let's try the all autos bit, okay it still runs, that's encouraging
+03:21 so we can come over here and if I click on all autos
+03:24 it shouldn't be that little test data, instead what do we get- oh that looks real
+03:29 see Opel, Opel, Opel, and this is a little parser display thing that Firefox just added,
+03:34 let's go look at the raw data, that's not so pretty, it's pretty printed
+03:37 all right so check this out, we've got all of our Opels down here
+03:41 I can bet if you count them there's 25 of them
+03:44 you can see the brand, you can see the name,
+03:46 this is basically what was typed into Ebay , what year,
+03:49 how much they're asking in euros and importantly the id right here.
+03:54 So this is great, the next thing that we want to implement
+03:57 is going to autos/ that id and now it just say it is an auto,
+04:05 well it told us that function was called but it doesn't tell us anything that's happening,
+04:09 so this was pretty straightforward, right like all we had to do
+04:12 is go to the database and say give me the cars and return it,
+04:16 and tell it hey, you serialize that, you return that as json .
+04:20 Now, we got lucky that that is json sterilizable ,
+04:23 otherwise it would have crashed, we would have to do some work
+04:26 but it's not insurmountable, we can totally fix that.
+04:28 This one takes a little bit more work,
+04:30 okay so this one is nice, but I'm supposed to get that car id
+04:34 and I can't just do car id that would be nice, Pyramid guys don't do that
+04:39 so the way we're going to get the car ids we have to use the request
+04:42 so we'll go to request, and then there's a couple of things that we can get here;
+04:47
+04:52 here we can basically do a type annotation,
+04:55 and now you can see all the stuff that shows up here,
+04:58 this works because it's Python 3, right.
+05:00 So I can come over here and I can say well it's got a get,
+05:03 notice this is a dictionary, it's got a post
+05:08 which is another dictionary that has the post data,
+05:11 get actually is not the url but this is the query string
+05:15 but it also has one called match dict , which is not obvious that that's what you want
+05:20 but match dict is where those little route cutout pieces of data go,
+05:24 so this is a dictionary, so we can call get on it, and the thing we want is car id,
+05:28 because that's what we called it in our route ok.
+05:31 So, then we can come down and we can go to our repository
+05:34 and we can say car=repository
+05:39 and it happens to have a get car by id, that's not surprising, is it;
+05:43 so we'll pass the car id, now let's just return the car
+05:46 when we make changes to the Python code, we have to re-execute the app
+05:51 so we restarted there, now this is not going to do what we hoped,
+05:55 those ids were randomly generated in our little temporary database,
+05:59 it will be permanent in sqlalchemy , but right now they're temporary,
+06:02 so restarting the app means that probably comes up as nothing,
+06:05 so if we look at the raw data, it's no, sad face.
+06:08 This is not the desired behavior,
+06:11 we definitely don't want to use null as a return value,
+06:14 I'm going to store that there for a second, let's go over and refresh this,
+06:17 so that we can get an id, let's go and get this one here
+06:20 and it's going to give us our Opel,
+06:26 but we're going to get Opel Signum 1.3 cdti ,
+06:29 all right so let's go over here, put that in,
+06:33 now this because this exists in our database
+06:36 should come back and boom, there it is, so we took out the raw data pretty printed
+06:40 here is our nice little Opel, and 4700 euros ,
+06:44 maybe it's in good shape I don't know, I'm not sure if it's a good deal,
+06:47 but there is, it has no damage, that's a good sign.
+06:50 Ok, so now we kind of have our API working
+06:53 but as we saw right here, this is not very API friendly,
+06:58 we're using the http verbs, we're not using the status codes
+07:03 to communicate that something went wrong, so let's go back and fix this up.
+07:08 So we'll come over here and we'll say if not car,
+07:12 so the way the database works and the way sqlalchemy or a mongo engine
+07:17 or lots of things would work if I asked for a thing that's not there,
+07:19 it's going to return none,
+07:21 I could have my repository layer raise an exception
+07:23 but it doesn't, it just returns none and flows that through.
+07:26 So we're going to come down here and say if there's no car returned
+07:29 then we want to somehow send a 404,
+07:31 now we could set the headers and all sorts of funkiness
+07:34 but the thing we really want here is a response,
+07:36 we want to import that from pyramid response
+07:40 and notice it takes a couple of things, we can set the body, not interesting
+07:44 we can set the status, let's set the status to 404, okay;
+07:48 now by the way, if I go back over here and I look at the headers
+07:51 the response headers are, yeah, I don't see where it says
+07:55 whether it's 200 or not but you can bet, it is a 200, okay, even though it's empty.
+08:00 So we're going to say this time 404, and what else we want to set,
+08:04 is we want to set the json body, so here we can pass a dictionary
+08:07 that has the error, let's say there's an error and this can be the message,
+08:12 so we'll create a message,
+08:14 it's going to be the car with id such and such was not found
+08:18 and in case they don't pass one, let's put a little back tick like that,
+08:22 so the car id and creating the response is not enough, we have to return it.
+08:29 So if we don't find a car in the database,
+08:32 we're going to embrace the http response 404,
+08:36 and we can still send a body by sending
+08:38 some kind of model that represents the error
+08:41 so be sure to rerun, refresh,
+08:44 boom- error, the car with id such and such was not found.
+08:48 Now if we go over here and look at this, we still don't see the 404,
+08:51 I'll show you in a little bit where we can find that,
+08:54 we'll use something other than the browser to pull that up.
+08:57 But if we go over to the raw data, you can see now we've got this error.
+09:02 I might be able to do it if I go to the network,
+09:05 here we go, perfect, status 404, method equals get not found
+09:10 and even though it's a 404 not found, we're still returning a nice message
+09:15 so for example if we're calling this from Javascript , not only do we tell them 404,
+09:20 we have a message that theoretically we could show to the user
+09:23 in the front end, something like that.
+09:26 So there you have it, we have our two methods written,
+09:28 we don't have our pretty print json we just have the standard minified json renderer
+09:32 but that's ok, we've got our thing that does all the autos
+09:35 and the basic sort of hard coded limit and given an id,
+09:39 we can go back here and we can call this function
+09:43 by passing / api /auto/id and get an individual car, or not,
+09:48 and get a proper http friendly response or 404 with the error message right there.

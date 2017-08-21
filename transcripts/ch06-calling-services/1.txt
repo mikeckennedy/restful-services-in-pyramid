@@ -1,0 +1,84 @@
+00:01 So we've created a service and we've played with it a little bit with Firefox,
+00:04 but let's look at different ways in which we might interact with it.
+00:08 Now, this might seem pretty simple, I'll just fire up a request and make a request to it
+00:13 but it turns out some of the more popular clients
+00:15 are not so simple to use, and we'll get to those.
+00:19 So here we are back in our project, and I just notice one thing
+00:23 around organization that we want to take care of since it doesn't fit anywhere,
+00:26 this test thing, there should really be a test folder
+00:29 like we should have many test files and whatnot;
+00:31 so, let's go and make a folder called tests, and then let's just move that in there.
+00:36 So now we have a nice clean app all broken into various pieces,
+00:42 we've got our data, we've got our API, we've got our initialization
+00:45 we've got our standard views for basically html functionality and so on.
+00:50 Now, if we're going to call this, obviously it has to be running
+00:53 so let's fire it up again and grab the url,
+00:56 and notice it runs on a particular port,
+00:59 that port is controlled right here in the configuration,
+01:04 so if you want to change the port, notice it's listing in both on ipv4 and ipv6 local host
+01:11 but 6543 if you want to make it listing somewhere else, you can easily change that.
+01:15 All right, so right now, we're listing in here
+01:17 and we're going to start with one of the simpler
+01:20 but really powerful tools for exploring this,
+01:22 basically we're going to look at three things:
+01:25 we're going to look at using a gui API testing exploration tool,
+01:29 we're going to use Python and this could be Python from a client application
+01:35 or this could be Python from one web app,
+01:37 consuming another service somewhere else,
+01:40 it could be your own service, it could be other services,
+01:42 you could be having your service, consume other services
+01:44 to do its functionality, things like that;
+01:46 so we're going to use requests and Python there and finally
+01:49 we're going to look at javascript and interacting with it via javascript.
+01:53 So let's start with postman, so postman you can get this at getpostman.com
+01:59 I think it's .com, definitely getpostman,
+02:01 you can use this to explore and record and test APIs,
+02:05 notice I've got some say for various APIs I'm working with over here.
+02:09 You downloaded it, it runs cross-platform, it's an electron js app, it's really nice.
+02:15 So we come over here and we can enter this url and we can do a get,
+02:19 and notice, it just loads up whatever we got,
+02:22 and it's going to load up this, right, so what we really want to do
+02:25 remember is we want to go to /api/autos, let's do a send there,
+02:30 we get all this data back, and it even gives you the timing here, which is pretty cool,
+02:34 the very first time it has to parse those twenty thousand files
+02:38 out of that csv so it's little slow, 700 miliseconds kind of slow,
+02:42 but if we hit it again, 16 milliseconds, 15 milliseconds and so on.
+02:46 Now, this is not a great view,
+02:49 so we can see the raw view, we can see the pretty view
+02:51 it knows that it's json, so it gives us lots of things.
+02:54 We can look it over at the header, what's the server what's the format
+02:57 what's the content length, we can even create some tests
+03:00 but that's sort of outside the scope here.
+03:03 So there's something funky going on with that json, isn't there;
+03:09 let's have a quick look, I mean notice like, point appears
+03:12 like oh yeah there's definitely there's a weird like a thing here
+03:15 and then this, let's see why that's happening actually.
+03:20
+03:24 So we have all of our cars here, I think it might be because of this,
+03:32 I think we don't want items, we want values, that's definitely it.
+03:37 Ok, so let's do it again. That looks more appropriate,
+03:41 it was sending the key value, ok so we've got this
+03:44 and that was already pretty nice to actually explore this way,
+03:47 and obviously we could do this in Firefox, that was no problem
+03:52 but I could come over here and I could set up the parameterization,
+03:57 I could set up authorization, I could go over here
+04:00 and what do get if we do a post here-
+04:03 right, and if we're going to do a post,
+04:05 well we need to set the body, right things like that.
+04:09 So if we do a post, notice we're getting a 404 not found,
+04:12 remember, we're only listening to the get request
+04:14 things like that, so let's go back to get.
+04:16 So it lets us explore all of these things around this,
+04:19 and then we can save it so I could go over here hit save, create a little collection,
+04:23 notice on the left there is a different little collections,
+04:25 and those actually sync back to my account at postman.
+04:28 So, we will probably be coming back to this, to play with it
+04:31 when we get to post, and other interesting things, okay,
+04:36 but for now, here is the body we could go and change,
+04:40 we can go and actually enter the body is like raw stuff here
+04:46 and we could just type in the json that we want to post up to them, ok
+04:50 so it lets us control all the things we need around post and headers, and so on.
+04:54 If you're building serious APIs, you definitely want to take the time
+04:59 to download postmen, there's a couple of other apps that are like it,
+05:02 but I found postman to be pretty solid and enjoyed working with it,
+05:06 and basically there's a free version so it's worth everything you pay for it.

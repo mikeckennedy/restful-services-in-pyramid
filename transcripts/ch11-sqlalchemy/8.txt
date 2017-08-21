@@ -1,0 +1,142 @@
+00:01 Let's round out this database section
+00:04 by focusing on some core concepts around sqlalchemy ORM.
+00:07 The first thing that we did was we created a declarative base,
+00:10 remember this is a factory function that will create a type
+00:13 and this type will then be used for all of the base classes
+00:17 of all the models that we want, all the objects we want to store in our database.
+00:21 So, we come over here and we say
+00:23 sqlalchemy.ext.declarative.declarative_base (),
+00:26 call that function it will generate a type,
+00:29 now this single base type when you derive from it
+00:31 will register that hey here's another type that I'm going to manage
+00:34 so for example, if we have a class car
+00:37 that derives from sqlalchemy base and service record and
+00:40 owner we can go to sqlalchemy base this type we just generated
+00:43 and say create the database structure to deal with
+00:46 and manage and store all the things that you are derived from.
+00:50 So this is usually the first step in the modeling side of things.
+00:54 Now, once we want to create these individual classes
+00:57 that model the data in our database,
+01:00 we're going to of course as we saw it derive from sqlalchemy base
+01:03 and then add a bunch of columns here
+01:05 and these column types are both at runtime instances of the value they represent,
+01:10 so at run time the id will be an integer, but at design time or query time
+01:15 they will act more like schema descriptors, ok.
+01:20 So the way it works is we name all the fields,
+01:22 so id, name, year, price, image and so on,
+01:26 each one of those is a column and then we can configure that column
+01:29 like the id is an integer, the name is a string, the price is a float and so on,
+01:33 we also should indicate which one is the primary key, so id is a primary key,
+01:37 and since it's an integer, we might want it to just be managed in the database
+01:41 so we can say auto increment equals true,
+01:43 as soon as we save it a new id will be stored there for that record.
+01:47 Notice also we didn't talk about it in this chapter
+01:50 but sqlalchemy represents and models relationships with cascading deletes,
+01:56 lazy loading, all sorts of stuff, so if you need to model relationships
+02:00 be sure to use the sqlalchemy structures to do that.
+02:03 Now, sometimes we would explicitly set the values
+02:06 and sometimes we would like the system to just generate them;
+02:10 an example we already saw was that auto incrementing primary key
+02:13 the default values, you know, whatever the database decides
+02:16 the next id number it's going to be but, what if we have some other type,
+02:20 for example, what if we want to have a last seen field
+02:23 and if we're updating the car in the database,
+02:27 maybe we want to manually set this last seen
+02:29 but the very first time it's totally reasonable to say
+02:32 well we just put it in the database so we're seeing it now
+02:35 we shouldn't have to explicitly set the last seen value
+02:37 which is if you create a new one, its value is when it gets inserted,
+02:40 so how do we do that in sqlalchemy , we can set a default on the column
+02:43 and that is going to be a function that returns the right type of value.
+02:47 So here we have our last seen, it's a datetime
+02:50 and we're going to pass the new function,
+02:53 so remember, don't call the function don't say datetime.datetime.now ()
+02:57 that will actually just basically give you
+03:00 a default value of whatever the time the program was run,
+03:03 you would like this function now to be called during inserts
+03:06 so make sure you leave off the parenthesis,
+03:09 you can see that it doesn't have to be a built in function
+03:11 it could be like some kind of lambda,
+03:13 so what if we want an interesting primary key that it is basically the uuid4
+03:16 32 characters or something like that without the dashes
+03:19 so we can specify a specific lambda expression
+03:22 it takes no arguments and returns the right types,
+03:26 here we're returning a string into our id column
+03:28 which we've now adapted to be a string.
+03:30 We also should add indexes and keys,
+03:32 we've already seen primary key that makes a lot of sense
+03:35 so primary keys automatically have indexes
+03:38 but if we would like to say go to our database and say show me all the cars
+03:42 and show me the ones that are last seen latest,
+03:44 so some kind of sort on the last seen field;
+03:47 or show me the cars that have only been seen in the last week,
+03:51 then we want to make sure we add an index here
+03:53 and all we have to do is say index = true and sqlalchemy will manage that for us
+03:57 but indexes dramatically improve performance when you have lots of data
+04:02 so it's very very important if you want your database to be responsive
+04:05 you have indexes for anything you're going to sort by, or you're going to filter by.
+04:12 Now we can also enforce uniqueness constraints
+04:15 so we didn't do this in this sample because I'm not sure about the data set
+04:18 but imagine the name of the car somehow had to be unique, right
+04:21 we could have an index that is also a uniqueness constraint by saying unique = true,
+04:26 then if we try to insert a car that has the name that already is in the database
+04:30 it will crash and say no, no, no, you're going to conflict with this, things like that.
+04:34 The common use case might be e mail address for a user's table.
+04:37 Right, now once we have it all modeled,
+04:40 how do we create the tables in the database,
+04:42 so one thing that we didn't have to do, it's kind of strange
+04:46 sometimes you have to do this sometimes you don't,
+04:48 it just depends on how you interact with your code
+04:51 before you run this create all step here,
+04:53 sometimes it's important that you explicitly import the types
+04:56 that are going to be modeled in the database,
+04:59 so here we're doing import car, import owner, a bunch of other imports potentially,
+05:03 because if for whatever reason those modules
+05:06 have not been loaded by the time you call sqlalchemy base metadata.create_all
+05:10 you are not going to have that table, it's not going to create it,
+05:12 so you have to kind of show the sqlalchemy base type those things
+05:16 and the most reliable way to do that is just to explicitly import them in this particular file.
+05:21 Then we need to create a connection string
+05:24 our example use sqlight so we use sqlite:/// some file
+05:27 and if it doesn't exist it will automatically create that, and then we create an engine
+05:31 and the engine is a thing that does connection pulling and things like that;
+05:34 you can say echo = false which makes it quiet,
+05:37 or echo = true and it will spit out all kinds of information
+05:40 about what it's doing, that's good when you're getting started,
+05:43 you're not really sure what happens when,
+05:45 flip that to true, watch it for a while get tired of it, turn it back off.
+05:48 Once it's all ready to go, you can say sqlalchemy base ,
+05:51 go to the metadata and say create all,
+05:53 pass it to the engine so it can find the database
+05:55 and it will go and create all the tables, indexes, columns etc.
+05:58 And then, you're off to the races,
+06:01 you have a database that maps exactly to your schema.
+06:04 Now, remember create all only makes new things it does not update
+06:07 so if you make a change to car after the table exists,
+06:11 that change will not be moved to the database,
+06:14 you got to manage that directly in the database.
+06:17 Finally, if we want to talk to the database,
+06:19 we're going to need to use this concept of a unit of work,
+06:23 in sqlalchemy , the unit of work is manifesting this thing called the session factory
+06:28 so we're going to need to create a session factory
+06:31 and that is created by calling this function session maker
+06:36 and passing the engine, so this is basically where the session factory
+06:40 it will behind the scenes manage the connections and the unit of work
+06:45 and the transactions and all that kind of stuff,
+06:47 so we give it the engine that we just work with these sessions.
+06:50 So once we have this, we have one of these in the entire program
+06:52 one instance a session factory basically per connection string.
+06:55 Then, every time we want to do a unit work,
+06:59 a couple of queries and insert an update, and delete
+07:02 and put that all together and commit or don't commit that
+07:05 we need to use this session factory, so we'll say session of factory and call it,
+07:08 it's a callable, and it's going to create an instance of this session
+07:11 we'll do things like ads and stuff, do some queries, maybe add some more things,
+07:16 change some of the items that came back from the query
+07:19 and then when we're ready to push to the database, we just call commit.
+07:21 If you don't want to commit this work, right
+07:24 if you only did a query there's no reason to commit it back, there's nothing to save
+07:26 you might as well just call session.close ,
+07:29 so that's a pretty quick whirlwind tour of sqlalchemy ,
+07:32 but it shows you the vast majority of the moving parts
+07:34 and I think you're ready to get started with sqlalchemy .

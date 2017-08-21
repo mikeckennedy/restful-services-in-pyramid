@@ -1,0 +1,62 @@
+00:01 As you saw from looking at the views, the routes are critical 
+00:04 this is the first interaction the user has with their web app, 
+00:08 they enter a url it's the routes that decide 
+00:11 what functionality actually maps to that url.
+00:14 So when you're working with Pyramid you'll see there is a main start up function 
+00:18 that is basically the entry point into your web application.
+00:22 Now, in real apps, this is probably factored better, 
+00:25 but in this example we're just going to put the routing code right here,
+00:28 what will happen is we will be given some settings 
+00:30 that come from our configuration file, and we'll create this thing called a config,
+00:34 and then we can use this config to register routes,
+00:38 so the first thing that we want to do is we want to register a static view 
+00:43 if you're just doing a purely dynamic API, 
+00:46 you can skip this step it doesn't matter,
+00:49 but if you want to return anything that is 
+00:51 an image, css, javascript, anything like that 
+00:53 you're going to want to set up one of these static folders and register a static route,
+00:58 and by default, none of the files can actually be served off of the server 
+01:03 that have to do with your web app, this is a good thing 
+01:06 you don't want them to grab like your Python source code
+01:09 or your configuration files with your API keys 
+01:11 that would be really bad, but sometimes you do want to serve static files 
+01:14 and so you'll put them in this static folder you register here 
+01:17 and they have a cash age as well, so they don't keep getting redownloaded,
+01:21 and this cash age is in seconds by the way.
+01:24 Ok, so once you have added your static view, you can add these dynamic views 
+01:27 and in this very simple example we're gonna let you explore some albums 
+01:31 and if you hit the home page without going to /api/albums,
+01:35 you're just going to see some basically static html that says 
+01:39 welcome to the album API, here are the functions you can call,
+01:42 so I named this route docs, and it's just going to live at /
+01:45 that just means it's just the basic, 
+01:48 this is the default thing when you type the server.
+01:51 Next up, we're going to let the user get a list of albums,
+01:55 so if they do a get request or I guess put, 
+01:58 they will also get this route as far as the route matches go
+02:03 they can go to /api/albums and and in this case 
+02:06 we can return all the albums to them.
+02:09 If they want an individual album, they maybe want to refer to it by name 
+02:12 like maybe that's the way we have structured it in our url 
+02:15 so we've got some sort of like slug that is associated with the album 
+02:20 so if it's like dark side of the moon
+02:23 it might be all lowercase, dark-side-of-the-moon,
+02:27 so maybe the route we're looking for is /api/albums/dark-side-of-the-moon,
+02:32 so we're going to use this little name fragment here,
+02:36 that will let us actually name a part of the url, 
+02:40 and then as you saw in the previous section 
+02:42 we can actually pull out the value for whatever goes in there 
+02:45 and use that in our query, so this routing matching template thing is really nice.
+02:50 So you can have either one like the api/album that's just static if you will,
+02:56 or you can have one that's passing data to the view methods 
+02:59 with /api/album/{} whatever you want to call it, 
+03:03 in this case I'm calling it name fragment, 
+03:05 and that's how it will be passed to the view; 
+03:07 once you get all this set up, then you tell the system to scan all the Python files 
+03:11 that it knows about in the project, it will scan them 
+03:15 and see if any of them have that view decorator, the view config, 
+03:19 and if they do, then it will wire up that function to the name routes here.
+03:23 Once you have this all up and wired together, 
+03:26 you're ready to just start the app, 
+03:29 so you go to the config and say here's the app,
+03:31 run it, and then you're off to processing requests. 

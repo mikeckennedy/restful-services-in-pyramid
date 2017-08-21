@@ -1,0 +1,88 @@
+00:01 So we've seen that our car renderer, our car image renderer works really well.
+00:05 You can see the image is here, but if you actually look at the network request
+00:08 it goes and it bounces just over to some other web server.
+00:12 And you know, that may or may not be okay with you,
+00:14 but it's probably not really okay if you've got data as a binary blob in a database
+00:19 because then what's the url for that, right?
+00:22 So, let's go and write a second version that actually pulls that data in
+00:27 and streams it straight from our server ,
+00:30 so as far as the clients can tell, it's our data coming through;
+00:33 regardless of whether it comes out of our database,
+00:35 out of our file system or maybe even off of the internet, from somewhere else.
+00:39 So let's make image, call this direct renderer, and redirect calls direct.
+00:47 Now you will know what the redirect part was about there.
+00:49 Okay, so this is all going to work pretty much the same
+00:52 except for now that we're sending a response directly
+00:54 we're going to need to have this type, so let's go and delete it out of the other.
+00:58 And because system is not used if you want,
+01:02 you can put underscore and PyCharm will stop complaining
+01:05 and because we started using some pieces,
+01:07 also the static bit is not necessary, okay.
+01:09 So, we get our request, we send a response type ,
+01:12 we're going to try to adapt it, we're going to try to get the image
+01:14 but instead of doing this, we're going to do something entirely different.
+01:18 So now that we have the url , let's go over here and let's actually download it,
+01:22 let's go and say I'm going to download this off of the internet
+01:26 if this was a binary blob, you would just have the data
+01:28 say out of sqlalchemy or something like that
+01:31 but it's really off the internet, in this case we're going to go and say the response,
+01:34 we'll use request, like who wouldn't want to use request in this class right.
+01:38 So let's make sure that we've got this registered in our system,
+01:43 anytime you have a dependency like an external package like request
+01:46 you want to make sure that you put it here
+01:48 so we install it in production or somewhere else,
+01:51 on new dev machine it automatically has that,
+01:53 so we could click the button, we could open this up,
+01:55 and notice it's got our virtual environment active
+01:58 so pip install requests, just you can imagine how to click the button,
+02:02 this also happened, just fine, so now give it a second, and that goes away.
+02:06 So now we have requests, the one we're actually looking for not this pip thing,
+02:11 or we can do a get image url , and then we probably should check
+02:15 so if so response.raise for status if something is wrong raising exception,
+02:21 and then we want to return like a bytes array, some kind of stream that we can use,
+02:27 so we'll say return, and we are going to return bytes io from io ,
+02:31 and what are we going to do we're just going to give it the response content, like that.
+02:35 Now this one should go, have I changed this car one here—
+02:41 let's turn this off for just a minute so we can test it.
+02:45 Let's click here and let's go get an individual car that's not going to work
+02:50 but if we put first, there, so you can see that we got the car, right
+02:55 let me copy this, google wants to keep changing that around, okay,
+02:59 so if we go there, you can see the car shows up, but notice it redirected, right,
+03:03 there's a three or two redirect to this location, we want to stream it directly,
+03:07 so let's go and switch here, by the way, the reason I commented this out is
+03:12 it's not so easy to set the accept type to png in the browser, right,
+03:17 so we're just having one request, like you can do it, but it's not as easy.
+03:20 So let's go over here and say I want to get a different image renderer,
+03:25 this is going to be direct, import that,
+03:28 so we can pick, right, which one do you want
+03:30 turn on the redirecting one, turn on the direct one.
+03:33 So we'll run this again, notice we're using direct one, so if I go back over here
+03:36 and I enter this address, it should just stay here and show us image,
+03:40 it shouldn't redirect like it just did, right, there's the redirect to opel ,
+03:43 it stays, why does it stay, because as far as we're concerned
+03:49 we make a request to the server, the server says you're getting png back
+03:53 and here's a bunch of bites, perfect, right?
+03:56 Go and view the network, reload the page, you can see get
+04:02 right here set domain and when I restart it I got a different car, yeah perfect.
+04:09 So it's just going straight here, right, it should stay the same now.
+04:13 Right if we switch this back, one more time so you can see the difference here,
+04:17 hit this again, notice we did this request, we got it through
+04:21 to redirect and then we went over there, right.
+04:24 So now we're here it's just staying there, but any time we go to this url
+04:27 you can see we're getting this redirect.
+04:30 Like I said, this may or may not be okay, if you want to stream it
+04:32 straight out the database or suck it through off the internet
+04:36 and stream it back through, then we can switch to this
+04:40 direct renderer and it stays right there.
+04:43 Now we've got a wide variety of options for our renderers,
+04:47 we've got a csv renderer, we've got these two image renderers
+04:50 let's go ahead and add one more before we kind of call this thing done,
+04:54 let's go ahead and add a json renderer,
+04:56 and you might say Michael, why would we add a json renderer,
+04:59 we already have one right here, a built in one;
+05:01 well, we're going to want to use some ability of grouping these together
+05:04 as a common set of objects, and let the api negotiator determine
+05:10 which renderer is best, so having a renderer that exactly adapts
+05:13 to the same functionality as ours, and we can just of course delegate to this one,
+05:18 it will be nice, so we want to add one more of these in our real app
+05:22 and then we'll be ready to talk about content negotiation.

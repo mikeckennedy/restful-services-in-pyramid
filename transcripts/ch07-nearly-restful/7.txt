@@ -1,0 +1,28 @@
+00:01 So how do we go about deleting that car?
+00:03 What we decided the best way to do it was to a delete request
+00:06 to the actual url that represented the details of that car, api /auto/ car_id ,
+00:11 so we're just going to issue a delete request straight to that
+00:14 and submit nothing else, there is no body,
+00:16 so we created this delete auto function,
+00:18 we mapped the route name to the one that contains the car id,
+00:22 the singular auto api , and we have the request method set to delete.
+00:26 Notice there is no renderer, there is no place where we are like returning anything,
+00:29 either we return an error message or we return just hey everything worked.
+00:33 So we don't need the renderer, right.
+00:36 So just like before, we are going to get the car_id out of the matchdict ,
+00:39 and then we're going to make sure the car exists,
+00:42 so we'll go to this little step here where we get the car back from the database,
+00:45 we could do something more efficient but remember,
+00:47 it's in memory, this is as good as anything,
+00:49 and we're going to go and just check that it exists, if for some reason it doesn't,
+00:52 we're going to give them a message with a 404
+00:54 and then we get to the really what we are trying to solve here,
+00:57 so we're going to call delete car by id,
+00:59 this is going to go and delete it out of the database,
+01:02 and then we'll return 204 that worked, everything was great,
+01:04 but there is no content to return, so go for it and be happy.
+01:07 And if for some reason something goes wrong,
+01:10 again, like I said, you've got to decide maybe this should be 500, 400
+01:13 we'd have to be a little more careful about the errors we catch,
+01:16 but because this is just an in memory database, we can't be very specific.
+01:19 So , there you have it, it's actually quite easy to delete things with our service.

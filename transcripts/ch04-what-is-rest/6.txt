@@ -1,0 +1,22 @@
+00:01 Because Pyramid is effectively a model view controller type of architecture
+00:05 models obviously play a very important role,
+00:08 so the idea is we set up our routes, the request comes into our views,
+00:12 our view method here called index, and then we need to do some processing 
+00:16 and return some data back, basically to a renderer 
+00:19 but the idea is to return it back to the user 
+00:22 with some kind of transformation.
+00:25 So in this case, you can see I have set the renderer to xml 
+00:28 so what is passed here is theoretically going to be translated 
+00:31 magically in some way, into xml.
+00:34 Now, the thing that we return from these methods 
+00:37 either has to be a raw response object which we create 
+00:40 or it has to be a dictionary list, list of dictionaries and fundamental types,
+00:45 right, so here we have an album, we saw just like before 
+00:50 we're going to return the json object or a dictionary rather 
+00:53 which is going to be translated often to json, in this case to xml,
+00:56 and it's going to have one top level node called albums 
+00:59 and then in there a bunch of subnodes represented 
+01:04 by each individual album, has preview, title, url.
+01:08 So you'll find in almost every view method that you create 
+01:11 it's either going to return a model or some kind of redirect result
+01:16 but most of the time, things are going good, you're going to be returning models.

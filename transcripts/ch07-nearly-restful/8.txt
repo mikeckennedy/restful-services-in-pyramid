@@ -1,0 +1,62 @@
+00:01 Now let's talk about how we can vary the response type
+00:04 and create different types of renderers,
+00:06 the json one has been really great, but what if we want something like csv or xml
+00:10 or even images or binary data— all of these things are possible
+00:14 in exactly the same way that we're able to render json.
+00:17 But let's look at the overall architecture and role of these renderers.
+00:21 Imagine here that we have our car details view method
+00:24 so this is one that returns all the details about a single car given its id
+00:28 and so a request is going to come in an d it says
+00:31 get/api/auto/ whatever the id of the car they're looking for is.
+00:35 We got to do a little bit of work to juggle things in the web framework
+00:38 like go to the matchdict and pull out the car id and things like that,
+00:41 but pretty quickly we're going to go to our database and return an object,
+00:45 and very likely especially for using an orm or we have a larger application
+00:50 where we've put a proper architecture in place,
+00:53 this is going to be a native python object or maybe even a full object graph
+00:58 in the sense of like it could be a car, the car could have a list of previous owners,
+01:02 it could have a list of like repair history, it could be quite a complex thing
+01:07 that comes back from the database.
+01:09 Now we know that the client that requested this wants that back
+01:14 and for now let's say they want it back in json form,
+01:17 we can't just return this object right, you know,
+01:19 maybe pyramid can convert it to a string, but it would just say you know
+01:24 type name at memory address like that's completely useless
+01:27 we need something that converts this
+01:30 potentially complex object graph into proper json type.
+01:34 We'd also like that thing to maybe set the response type to application/json as well
+01:38 so that's where the renderer comes in,
+01:41 so the renderer is the thing that we're going to hand this object
+01:44 it does its magic and then responds in the actual
+01:49 whatever it's supposed to render as,
+01:51 this one renders as json, so it's going to convert this object graph to json,
+01:54 set the content type, our client gets the response
+01:57 and is happy and everything's working great.
+01:59 So that's how renderers work.
+02:01 Now let's look at the few options that we do have as built in renderers.
+02:05 They fall on basically two categories,
+02:07 the first I would call template oriented renderers,
+02:10 now these are really meant for the web side of things
+02:13 the web site not the web service side of things,
+02:17 so these would include Chameleon, Jinja 2, Mako, right,
+02:21 I'm writing some view method it's going to process a request
+02:25 maybe go to the database, get some stuff
+02:27 and then it wants to return an html page to a browser, right
+02:30 so we can set up the renderer to process a Chameleon template
+02:33 or a particular Jinja 2 template and give that model off
+02:37 to the Ji nja 2 engine and then it will do its magic and outcomes html.
+02:41 These are great, they are super important
+02:44 but they're not very relevant for our services in the actual api methods.
+02:48 Next, we have json, we've played with json exclusively so far
+02:52 and json works great, that one is built in and we are happy to have it
+02:56 we'll see how to configure it in just a little bit
+02:58 we haven't taken it as far as we can, but json is great.
+03:01 There's also json p which is json with padding
+03:04 it's commonly used to bypass cross domain policies in web browsers
+03:08 but remember, we already set up cors the permissions on our site
+03:12 so we don't really care or need to use that in our particular application,
+03:15 but it's available if you need it in yours.
+03:18 And that's it, these are the built in ones, right, basically html templates and json.
+03:21 If you want something else like let's say csv, xml, images
+03:25 well, are we out of luck, no of course not,
+03:30 we'll see really quickly how to build our own for each of those types and more.

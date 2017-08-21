@@ -1,0 +1,109 @@
+00:01 Okay we got our view model working well,
+00:04 let's go back and look at one more thing though that was kind of annoying to me;
+00:07 if I put something wrong here, watch this—
+00:10 500 internal server error, it got an unexpected keyword argument,
+00:14 hm , that's not great, where did that come from?
+00:18 It turns out if we switch back to PyCharm , that's right here,
+00:21 remember I told you this little trick that we did, this */* dict ,
+00:25 this is not great, if the arguments and the dictionary values
+00:30 don't line up precisely, this doesn't work well,
+00:33 now you could say Michael, just drop this and do a ** kwargs
+00:37 I personally don't like that very much, the reason is
+00:40 if I come over here ant type car like this, it will tell me exactly what I need to pass,
+00:44 brand, name, price I can even put type annotations, or type hints on there
+00:48 if I put ** kwargs all of a sudden it's entirely opaque, what I need to pass,
+00:52 that always makes me crazy, I'm not a fan of that
+00:55 so I don't want to do that, but I also don't want to do this, ok.
+00:58 So let's actually move this car initialization bit out, right
+01:04 so for example if I just go and let's just take this out
+01:08 this value instead of x damage, we're taking it damage out,
+01:12 if I try it'll say missing positional argument damage, right
+01:17 well you're supposed to pass a damage and you didn't,
+01:20 do we really want a 500 error, or would we much rather,
+01:23 I can tend to get a hey you're supposed to pass the damage
+01:26 that's a required field, you didn't, right
+01:28 so here you have to like know that the initializer
+01:31 missing an argument damage meant you probably didn't send it correctly,
+01:34 so let's go work on that a little bit,
+01:36 so we're going to take this, and say you know what, forget this, this is out,
+01:40 an we're going to go put that creation instead of doing this,
+01:45 we're just going to put the creation here, say car like that
+01:48 and let's actually switch this, say self.car=this,
+01:56 and we could actually push this, we could do this validation here
+02:02 a little bit above, so we could do things like this
+02:06 I'll go and write this out and then go back over,
+02:09 so here you can see that we've pulled these values out
+02:12 and then we'll go and put them into the car
+02:14 we'll say things like brand, name, price, year, damage
+02:20 last seen image and this one does not take an id
+02:28 but we could go and pass the id, if it's here,
+02:31 so we could say something like car id and it's going to come back none
+02:37 like the default value anyway, so we'll pass the car id.
+02:41 Now, the problem was, we were trying to call this before we did the validation,
+02:45 so let's do this and put it at the bottom,
+02:49 so now we've got the values, we're going to validate it,
+02:52 and we'll say if not self.errors then we'll go ahead and do this,
+02:59 maybe we wrap this around so it's not huge, I don't know
+03:04 but only you set this and try to call this function
+03:06 if it's all looking as valid as we can tell
+03:10 there is probably more validation, in fact his last seen here
+03:13 notice right now it's just coming back like this
+03:16 but we could do something like this if last seen I want to use another module here
+03:21 so we're going to say pip install python dateutil ,
+03:26 this has a really nice date parsing function, so let's take this and remember
+03:33 any time you use something external it has to go over here,
+03:37 ok, great, so let's go over here, now it should know
+03:41 that we could import dateutil.parser.parse of last seen.
+03:47 And that will convert the data, it takes a bunch of different formats and so on.
+03:50 Okay, so we could do validation on this
+03:53 if we want to make sure that it's not in the future or reasonable somehow
+03:57 so Ii think we've done a lot of work here to make this much nicer function
+04:02 let's go and run it one more time,
+04:04 what do we do, we had sent it without the damage
+04:07 now we're not actually checking for damage this time
+04:10 we're getting it, but we're using that right here,
+04:13 which returns none if it's not there and for damage that's okay.
+04:17 Try this again, datetime , okay, now we've got a new problem
+04:24 this is an interesting problem just with straight serialization
+04:27 because we converted this to the correct type of daytime
+04:32 that oddly, is not possible, in json , that's a python thing
+04:37 not anything to do with what we're doing here,
+04:40 so let's go and we could just say well we ’ ll have to do some work here
+04:44 but we actually don't, we just need a different adapter, so this will be nice,
+04:48 if we go over here and say look if you see a datetime.datetime
+04:52 what I want you to do is go over here and just return the string representation
+04:59 I don't think you actually need that, let's put a d for a date,
+05:06 isoformat that's what I want,
+05:09 so we're going to get the isoformat here, let's just try that again;
+05:15
+05:20 Oh, this is a problem here, the problem is that well that's great,
+05:26 this normally would work if we just return the car
+05:30 and yeah, we would need to do that here,
+05:33 this two dictionary thing, this one we need to go ahead
+05:37 and say the year, last seen, we need to go over here and say isoformat like that
+05:45 there we go, because we weren't actually,
+05:48 because we're returning a response object
+05:50 we're not going through the renderer,
+05:53 all right, so here you see now we've got our last seen,
+05:54 but we're going to parse it back into a real object when we submit it.
+05:57 Okay and damage came back as null, let's go over here and say
+06:01 what if we don't have the price, remember this was crashing
+06:05 and saying actually that may make it worse,
+06:07 when we had the x, what that did before was to say
+06:10 oh this is a problem, right, you're trying to pass that to a constructor,
+06:16 now I realize I made a bit of a validation mistake, over here,
+06:19 let's look at it again, as I said, if nothing put a zero,
+06:23 because I didn't want the int to crash,
+06:25 but let's put negative number so that we have something there,
+06:29 alright, let's run it again, now it says, you can't submit your car,
+06:32 the price must be non-negative, so if you don't have a price,
+06:35 it's just going to tell you it can't be negative, right,
+06:38 we could check to see if that exists, create a special error message, and so on,
+06:41 we can get the same thing for the year, if we take the name out
+06:45 it's going to tell us the name is required, right,
+06:47 so let's put all these back the way it was,
+06:51 so now you can see we have a much better validation,
+06:54 and we did that by moving it all this extra work down into the view model,
+06:58 let's grab all of these things, and then we're going to validate them,
+07:01 and then we're going to use them to create this stuff,
+07:03 if we had left it up here, again, this would like balloon up into a big problem.

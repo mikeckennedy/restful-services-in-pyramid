@@ -1,0 +1,36 @@
+00:01 I'd be pretty happy to call this view model done
+00:04 but in a real system, we'll have many of these view models for different situations,
+00:08 there might be an update auto view model
+00:11 that's different than a create auto view model
+00:13 and of course maybe we want to create users and dealerships
+00:16 and like there is just a lot of stuff in practice
+00:19 where you probably end up with more than one of these,
+00:21 maybe more than ten these,
+00:23 so let's do a little bit of work to make this easier to add new view models;
+00:26 so over here, I'm going to add the name will give it all away a base view model.
+00:30 So we're just going to have a class called view model base let's say,
+00:36 I will just put an empty representation for a minute
+00:41 we'll come over here and say you know what, this thing is going to be one of those
+00:44 and let's go ahead and call the base initializer , and things like this
+00:50 like the errors, pretty much any view model that is worth having
+00:57 is going to do some kind of creation and error checking and validation,
+01:01 there's probably a few that don't, but the majority of them will
+01:04 so let's go ahead and give it, like push the concept of errors
+01:07 and handling error messages down to the base
+01:10 all right, so I got that one and then this for now, there are errors
+01:14 with your request or something like that
+01:18 make this little general, and then this can go down there as well;
+01:21 great, so now any view model we want
+01:24 automatically knows how to keep track of its errors
+01:26 and report all the errors that it has encountered.
+01:28 So now it's really just down to the car stuff,
+01:31 getting the values we need, validating them,
+01:34 I guess we probably could leave that empty ;
+01:39 But just take the default and we'll put the values in here,
+01:42 test them and of course don't create the car if it's not possible or valid,
+01:49 let's just test one more time that our new base class here is doing this job.
+01:54 Okay, so maybe we want to omit the name, try to create one ,
+01:59 no, your name is required, so obviously we want the errors field to store it in,
+02:03 and the errors message worked, so we put this back
+02:06 do it again, now we've created a new car,
+02:09 perfect, so I think we're done with our view model section.

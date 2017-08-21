@@ -1,0 +1,162 @@
+00:01 Before we add the modification features to our api
+00:04 let me just talk really quickly about a little bit of reorganization that I've done for you.
+00:07 So, the previous service that we created together
+00:11 I put that into its own folder, and I have given it various safe points
+00:15 and now I've created a new service called restful auto service,
+00:18 so you'll be able to distinguish the two first service, restful auto service.
+00:22 Also, I made a snapshot of exactly what we're starting with
+00:25 and called it like starter or something like that in that folder
+00:28 so if you want to follow along, you can grab that and work from there,
+00:32 it should be exactly what I've started from myself.
+00:34 Okay, so let' s just run it and remind ourselves where we are;
+00:38 okay, so we have our auto service, basic restful auto service
+00:41 and we we're working with two url structures here
+00:45 so one we can get all of the autos, all the cars here, like so
+00:49 and we are going to do a get against that or,
+00:52 if we have an individual car, we could get its details
+00:55 by saying api /auto/ whatever its id there is.
+00:59 Now, if we're going to create a new car
+01:02 do we need a new url , do we want to use the same url ?
+01:05 The way this typically works is, if you know the location
+01:09 of the thing that you're trying to modify, we'll use this;
+01:12 so like if we're going to do a put and update it, we'd probably use that url ,
+01:15 if we're going to do a delete, we'll definitely use that url
+01:18 but with post, usually the server is the thing that ultimately decides where it is,
+01:22 this is often the primary key or something like that
+01:25 that gets generated on the server side, so we don't know where it would live,
+01:28 so we can't do like a post to its not yet existing location.
+01:32 So what we're going to do, is we are going to do a post against that url
+01:35 and we're going to submit the details of the car, like its price and whatnot,
+01:39 and then, the server will return back the finally created one
+01:44 with its location and things like that.
+01:46 Ok, so let's go over here, as you can see if we're starting from this one
+01:50 probably the all cars is a good thing to model off of
+01:54 so let's go over here to the api , and here's the all cars
+01:57 and let's put this modification stuff down below here for a minute,
+02:01 okay so this is going to be all autos, but we're not going to use get
+02:06 that was the one that displayed them, we're going to use post
+02:09 and we're going to keep the same renderer for here
+02:12 and instead of doing this, we're going to do a couple of different things.
+02:16 The first thing that we need to do is get the submitted body,
+02:20 like what car was delivered to us, so let's go over here
+02:24 and we'll just say for now return nothing, so how do we do that?
+02:28 Well, here notice there was this request
+02:30 and I gave the underscore to say I don't care about it,
+02:33 but you know what, I do care about it now, so let's put it back
+02:35 and let's even use the type hints, type annotation stuff
+02:38 so that we could get a little help if you're not familiar with this.
+02:41 Alright, so we'll come over here and we'll say request.
+02:44 now, there's lots of places data gets submitted to us
+02:47 there is the matchdict , there's the get, the post, dictionaries,
+02:50 but what's coming in here is a body, and it doesn't come in as a form body
+02:54 it comes in as json , and the way we get that is there's a json body property;
+02:59 basically what it does is it looks to json text or it looks at the text in the body
+03:03 and then it uses the json library to pars it into a python dictionary.
+03:07 So, this is going to give us our data ,
+03:10 now, that's all well and good, but it just blissfully
+03:14 passes this along to the json serialization, deserialization bit
+03:18 and if there's something like there is no body or there is something wrong with it,
+03:23 this is going to crash, so we're going to need to be a little bit careful there.
+03:27 So let's go ahead and put this into a try except block here,
+03:31 and in case there is an error, we need to,
+03:34 we could just let it crash right, or return something,
+03:37 but we want to be very restful here, so we're going to return a response
+03:40 and the status is going to be 400, number 400 stands for bad request
+03:46 something broke and it's your fault, not the server's fault that it broke.
+03:50 And for the body, we could put some kind of message like
+03:53 could not parse your response as json , something like that,
+03:58 and we're going to of course return this, all right.
+04:01 Now, PyCharm has given us a little bit of a warning
+04:04 let me just tell it to leave us alone for now.
+04:07 Okay great, so we've either told them that what they have given us didn't work
+04:11 or we've now parsed it into a proper object.
+04:15 The next thing to do, we should probably add some validation here
+04:18 but for the time being, let's just put the validation on hold
+04:22 and let's just try to convert this and save this as a car.
+04:26 So we have our repository and it has an add ,
+04:30 it does not yet have an add car, we're going to write an add car
+04:33 and we are going to have the data, and just add that, okay.
+04:36 Now, we're going to do something a little bit funny here,
+04:39 so let's rename this to make it a little more obvious— car data ,
+04:44 now, this thing where we're adding this value here
+04:47 what we're going to do is we're actually going to take
+04:51 whatever is created by the repository the data access layer,
+04:54 and use that and then we want to return this back as well.
+04:59 Now, there's another possibility here that something goes wrong
+05:02 maybe we can't talk to the database or something like that,
+05:05 so we're going to do something like this.
+05:08 Now, whether this should be 400, because some validation at the data layer failed
+05:13 or it should be 500, because we can't talk to the server ,
+05:16 we probably should be a little more careful,
+05:18 but for now let's just say could not save car, all right, great,
+05:23 so one of the reasons we might not be to save the car
+05:25 is there's no add car method, let's add that.
+05:27 All right, so for now, remember we are just using this fake data things
+05:31 we're going to stash it in here, so we'll say cls.car_data of
+05:39 well, we're going to need some kind of key
+05:42 up here notice, we're doing this little trick as we read it from the file
+05:45 to generate one of these fake ids and so it's a key = row
+05:49 the row is what we're after, car data is what we're calling it right now.
+05:54 And then, let's return that, okay
+05:57 so whether this is the same object we're passing back
+06:00 or we're actually generating a new object which might be the case in the database
+06:04 we're going to go and save this ,
+06:07 the most important thing is this now is going to have an id
+06:10 we're going to need that in a little bit.
+06:12 Okay, so let's go and test it.
+06:15 If I click here, you'll find it's not the easiest thing
+06:19 so what do I click, even if I put a thing
+06:21 I guess I could put a little form that submits something to test it
+06:24 but that seems a little hooky,
+06:26 so when we get into things that are not get it's a little bit easier
+06:29 to use something outside the browser,
+06:31 I know you can get plug in for the browser, but they're not as nice
+06:34 so let's go over here and look at postman.
+06:38 So first, we have our get request and let's just run that and make sure it's working,
+06:42 oh it is not— this is very interesting, let's go back and see why this is not working.
+06:47 All right, so it's not the problem here, the problem is down here;
+06:50 remember the way Python works is when you execute that bit of code
+06:55 when you literally parse this file, it executes this
+06:58 which defines an object like name this, all autos
+07:01 and down here, we are executing this bit of code
+07:05 and it's defining the thing called all autos as well
+07:08 and replacing the value of the previous one, but this time it only listening here,
+07:12 so we need to change the name of this to something like this,
+07:16 create auto or something like that, so it no longer is listening to get
+07:21 it is only listening to post, all right.
+07:24 So now we got this back, and let's just take the body of one of these
+07:27 because that's going to tell us what we need
+07:29 and we can come over here and duplicate this ,
+07:32 alright, so we're not going to do a get, we're going to do a post against that url
+07:36 and we're going to need to supply a body, alright.
+07:38 We don't want this form data we want to just do raw,
+07:41 do this, make sure it has no id, it doesn't really matter but it's not going to,
+07:45 and this is going to be the opel concept or whatever
+07:52 and 29 thousand euros and I guess this is fine, we'll start out with no damage.
+07:58 So what we are going to do, so we are going to post this here,
+08:01 it's going to look at the request method as well as the url ,
+08:06 together it's going to say okay this function create auto is the one we should run
+08:10 well, convert this to a Python dictionary by calling json body,
+08:14 come back to validation, we're going to assume
+08:17 that we're entering it, right, that's a big assumption
+08:20 and then we're going to go to the repository
+08:22 and we're going to store this into our little temporary in memory database
+08:25 give it a primary key and return it back
+08:27 and because of the renderer is json it's going to convert it back to json .
+08:30 All right, try this one more time.
+08:34 So here we got a post, here is our body
+08:36 we'll see the response down here, go.
+08:39 And look at that, we got 200 ok that's pretty awesome
+08:43 we can look at the brand, the opel concept, it's pretty much the same
+08:46 except if you scroll down, notice it now also has an id
+08:51 so we could go back and just verify this now is a thing that exists in our database,
+08:55 so let's duplicate this again;
+08:58 I want to do /autos/get/ this id here, and look there's our opel concept
+09:03 and the price is 29 thousand, and the year, and all the stuff that we just set is there.
+09:08 All right, so we've now added this ability to create new things ,
+09:12 new automobiles for sale at our dealership.
+09:16 So, that's great, now obviously we're skipping some validation
+09:19 and we're going to come back and do that
+09:21 but let's work on the other ones as well,
+09:23 throughout this section we'll work on the updating this thing we just created
+09:26 and if we want to take it off we could even delete it.

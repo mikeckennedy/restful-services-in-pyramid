@@ -1,0 +1,94 @@
+00:01  Now we have our users, we want to be able to go to our APi over here
+00:05  and when we do a request we want to pull this out,
+00:09  so let's start by saying this is going to be an authenticated request here,
+00:13  the listing of all the autos, so we can add it to all of them, right,
+00:16  we'll see there's a super handy reusable way to do this
+00:19  but for now, let's just print out, so far we've not needed this request,
+00:24  we are going to temporarily need this here, and then we can get rid of it,
+00:28  we are going to printout request.headers,
+00:31  so if I run this, let's go back to postmen
+00:34  and we'll just do a request against api/autos,
+00:37  notice we're asking for application json accept
+00:40  so that should show up in our headers,
+00:42  well that was super unhelpful, wasn't it, let's do it like this,
+00:47  let's do it again,
+00:52  there we go, force it to be standard dict, not something derived from dict,
+00:57  okay so we're passing the postman token which is unhelpful
+01:01  but this you saw us set their accept header right there
+01:03   the user agent is postmen, the encoding and whatnot, right.
+01:07  So these are the things that we're passing along from our client
+01:12  so let's go and actually figure out how to pass the API key here
+01:18  so I could just try this, I could come along and this to a new key API test
+01:24  and we'll send that and let's see, does that show up— it does, right there
+01:28  so we can put arbitrary headers in here ok
+01:32  there's a convention in the web around authorization
+01:36  so there's an actual authorization headering,
+01:41  you see, postman is saying yep, there is one of these
+01:44  and there is some known formats around this,
+01:46  so you'll see things like if it's blank, it's like username password
+01:51  basic c4 encoded I believe, you might see bearer that's often something like this,
+01:56  if you're doing oauth, but what we're going to do is
+01:59  we're just going to say API key is 1 2 3, something like this
+02:02  so we're leveraging a slightly more well known header here
+02:05  let's do this again, and now here's our authorization like that.
+02:10  So we should be able to go to our headers and say get authorization,
+02:15  if I spell that correctly and restart it, we should just see API key 1 2 3,
+02:19  okay, so now what we want to do is we want to get this,
+02:27  let me write it explicitly here,
+02:29  and then we're going to move this into a much better place right ,
+02:32  kind of like with our validation, then moving to view models
+02:34  we're going to do something way better.
+02:37  So, let's just start by manually doing this, we'll say if not authorization,
+02:42  if authorization is not in rather, request.headers
+02:48  we'll return response status = 403 permission denied, body no auth header.
+02:59  Now we're just going to make sure that you're passing this,
+03:03  so let's go ahead and say well what happens if we don't pass this
+03:05  boom, 403, no auth header, if we do pass it
+03:10  now we make it past this first step, cool.
+03:12  Next, notice the format here, we have API key and then something else here
+03:17  so let's get that something else out, alright,
+03:21  so we'll say parts equals this, grab the actual value,
+03:29  a cleaner way to do this might be auth_header =request.headers.get
+03:37  and just go like this, so we don't have to get it twice
+03:40  so now we know we have it, let's go down here we can do a split on the colon
+03:44  API:something that has no colons,
+03:47  we'll say if the length of parts is not equal to two
+03:50  return invalid auth header, something like this,
+03:56  or let's say parts[0].strip is not equal to API key.
+04:04  Okay, so we can go check over here again,
+04:08  put this as without a dash or whatever invalid auth header,
+04:12  put the dash back, all right, we're still going through, okay.
+04:15  So the final thing to the look at here is we're going to have
+04:18  the actual API key is going to be parts[1].strip
+04:24  so let's get rid of this little print,
+04:27  now, the goal is to go and get the user, so let's say user = repository
+04:32  find user by API key, and we pass the API key here
+04:35  and we'll say if not user, one more of these return
+04:38  invalid API key no user with this account or something like that, right
+04:46  whatever you want to have here.
+04:49  And then huuuh, if we pass all these through,
+04:51  we pass the header, it's in the right form,
+04:53  it is the right value, we can find another database
+04:55  we should be golden, right let's test it,
+04:57  this should fail because 1 2 3 is not in the database no user with this account
+05:00  but remember, I copied this, let me past it, get back in the clipboard,
+05:04  let's set it to a real value, right, that's mike
+05:06  and I suppose we could even print out who it is,
+05:10  let's just do a quick print listing cars for, list their name, right
+05:18  that's good, so come over here and let's do this, it should work— it does,
+05:25  this API key is being passed in, and listing cars for mike,
+05:30  not for sarah, not for chloe, not for jeff, for mike, because this was mike's API key
+05:34  if we chose a different API, we would get a different user.
+05:37  Let's be jeff, alright, so now we should be jeff,
+05:43  still works but now we're listing cars for jeff, okay.
+05:47  So we're totally passing this across, how do you guys feel about this?
+05:50  Do you like having this in the front of every one of your functions—
+05:53  I think this is dreadful, if I want to change what I call that header from
+05:57  api-key to something else, there's so many reasons
+06:02  why having this not hidden away as a function is a bad idea.
+06:07  Also, we don't want to necessarily make sure
+06:11  that people require to call it all at the beginning
+06:13  and if they call it but they don't somehow return, like invalid response or whatever,
+06:17  there could be a lot of problems, maybe forgetting this
+06:20  and having an unauthorized method when it was meant to be authorized;
+06:24  so what we're going to do next is we're going to improve this with a decorator.

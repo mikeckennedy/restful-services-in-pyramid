@@ -1,0 +1,33 @@
+00:01 It's really important to have validation for our methods
+00:04 you should never trust input that's coming off the internet
+00:08 not for security purposes or validation purposes.
+00:10 So here you can see that we've added some validation to this particular method
+00:15 and I realize actually it was too simple in my little demo I just did,
+00:18 actually I forgot to return an error in the case which things weren't good right,
+00:23 so there's a little bit more we'd have to add to round that thing up
+00:26 but you can get the idea, we're not going to stick with it anyway, so it doesn't matter.
+00:32 If we look at this code, notice there's one thing we're trying to do
+00:36 take the car and save it to the database,
+00:40 there's a little bit of work to juggle to get the car and the id
+00:43 but this is basically what we want to do,
+00:45 how clear when we go back is that that's the key thing we're doing here,
+00:50 that's the essential point, I don't think it's not terribly hard
+00:53 but it's certainly not obvious, right, not as obvious as it should be,
+00:56 we want this to stand out more, and we want the validation
+00:59 to be some more separate so we can test it more easily
+01:01 and not necessarily go mock out a bunch of things to be able to do that,
+01:05 so if we look at this, we'll see the majority of the code we've written
+01:08 is actually validation, so all that is validation
+01:12 and a little bit more of this is actually just to take what was submitted
+01:15 and convert it into the car as well, right
+01:18 so this stuff right here is taking the raw data and pulling it back
+01:23 into what we're actually looking for.
+01:25 So we're going to see that we can move this stuff here
+01:28 all the colored stuff that's not green, we can move that somewhere else
+01:32 in something like I said, testable, readable, more clear
+01:36 single responsibility principle type things
+01:39 where its job is to parse and validate the data.
+01:42 And then we hand it off to this function,
+01:45 like here's the car they wanted to update,
+01:48 it's valid, or it's not valid, what you want to do with that, right?
+01:50 So that's what we're going to do next with this concept of view models.

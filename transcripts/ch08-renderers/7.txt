@@ -1,0 +1,54 @@
+00:01 So let's go and adjust our renderers one more time here
+00:04 to make them a common thing.
+00:07 So first of all, let's add another type, we'll call this abstract renderer,
+00:11 so let me copy over this type here, renderer abstract base
+00:16 and notice its metaclass is set to be an abstract based class meta
+00:20 which means we can do things like say these are abstract methods
+00:24 and that means anything that wants to use this type
+00:26 is going to require that it implements these methods,
+00:30 that it implements a call, a can serialize value
+00:33 this is not something we've needed yet, but we're going to need,
+00:36 and this add adapter, which we have done.
+00:38 So besides this can serialize value, all of our renderers are really already this thing
+00:42 so let's go ahead and make them actually derive from that type.
+00:48 So, we've got this, we're going to say implement abstract method
+00:53 and it says alright, which one, this can serialize value
+00:55 that's not surprising, we could import this type here
+00:59 but it doesn't really matter, and we don't need to worry about that
+01:02 I just put it in the base class, this type annotation
+01:04 so you can see what we are expecting but we don't need it here.
+01:07 So, how do I know that I can do this— I'll say whether the type of value
+01:10 say return type of value is in self.adapters
+01:17 or which one of the csv type value is list,
+01:24 let's just say is instance, unless, alright,
+01:30 so if it's a list, we're pretty sure we can serialize it,
+01:33 we could also look through the items and say yes or no
+01:35 but we're just going to go this way and if we could adapt it right
+01:39 so either of these two would work fine,
+01:41 and I really don't like having something other than the initializers
+01:44 the first so let's stick this at the bottom.
+01:46 Okay, great, so that's our csv one, this image one,
+01:49 let's go over here and make it also— we don't need this anymore
+01:53 make it derive from this thing, like that,
+01:58 and again it's going to have to implement this can serialize value
+02:04 let me copy a little bit over here, put that down;
+02:07 now, whether this one can serialize a value is if it is a dictionary right
+02:12 or it can adapt the type, so that's pretty straightforward
+02:17 and let's go and do this last one here, right
+02:24 same exact thing except for we need the base.
+02:27 Lastly, let's go he and run this and see if it still works,
+02:33 okay we were able to create it, that means we were able
+02:36 to allocate the things derived from the abstract base types
+02:38 which means they exist, like for example, if we don't have this
+02:41 I don't k now if you've played with this before,
+02:43 if you don't implement all these abstract types you can see right here
+02:49 if you don't implement the abstract types and try to allocate one
+02:55 so in the dunder init you'll see boom— cannot instantiate abstract class
+03:02 because it doesn't implement this right.
+03:05 So this just basically verifies that anything that wants to be used in our system
+03:09 is going to be one of these known renderer types.
+03:12 All right, so we've got some structure around our renderers
+03:16 we've implemented a variety of them, the last thing to do is
+03:20 we want to have this built in one here also adapt to our functionality,
+03:27 to our common base type, so we're going to create a class
+03:31 that derives, basically that just models or derives from this.

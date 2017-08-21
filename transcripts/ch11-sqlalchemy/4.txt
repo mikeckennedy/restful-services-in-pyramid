@@ -1,0 +1,82 @@
+00:01 So now that we have our connection string figured out
+00:03 let's actually print this out really quick, print connection string,
+00:07 and of course, we're going to need to call this function
+00:10 we want to make sure to not forget that, we want to do it once right, at start up
+00:13 so you can imagine down here into the under init we go
+00:16 and let's add something here that says config or init db, something like that.
+00:23 Now, we could pass this config file here, we're not actually passing anything,
+00:28 but if we did, so over here if we passed in
+00:31 say like the base file name something like that,
+00:33 then we could store that file name here, we could just add it
+00:38 it's super easy, just like this, like db file, just go ahead and do it, huh
+00:42 so let's go here, db file name, so we can pass that in there
+00:49 and we'll just put it let's make the file name the same, db file name
+00:54 and we just put this here, now it doesn't go in quotes, we'll just put it like this, okay
+00:58 so we can go grab and we make sure this is in production as well,
+01:01 or things are going to go bad later, I'm sure,
+01:04 so I am going to put this here, so we can go grab this value in our dunder init,
+01:09 so we're given a config , you can say settings= config.get_settings , like this
+01:18 in the settings it's a dictionary, so I can say
+01:21 db_file = setting.get (' db_filename '), like this, standard dictionary stuff,
+01:29 and then we'll just call, let me copy the name here,
+01:32 DbSessionFactory.global_init , so import this
+01:39 and call global_init and pass the db file,
+01:43 over here it's going to print out what the connection string is
+01:46 based on the file, so if I run this, everything should be looking good,
+01:49 connection string is really long, oh my goodness look at that,
+01:54 but it's restful auto service db sqlite .
+01:57 And that's looking really good, notice there's no file over here yet
+02:01 but when we interact with sqlite , if there's no file it's going to create it,
+02:04 so that's not a problem, so we comment that out
+02:07 but that's going to be very, very helpful.
+02:10 Now the next thing we need to do is basically work with connections to the database.
+02:13 It doesn't matter what kind of database we're working with
+02:15 we configure it basically the same, right
+02:18 so it's going to create a pool of connections and when things get returned to the pool
+02:22 is going to close them, roll back transactions, things like that
+02:24 so what we're going to do is we're going to create this thing called an engine
+02:27 so we continue to have access to sqlalchemy up here like so
+02:32 and then we're going to create an engine, say sqlalchemy.create engine
+02:37 now there's a couple of things we can pass here,
+02:40 first thing we got to pass is the connection string,
+02:43 again, this makes me crazy * args ** kwargs , thanks for the help folks,
+02:48 so anyway, we pass the connection string,
+02:51 the other interesting thing is we can say echo,
+02:53 here we can say echo=true and now you want this off in production for sure,
+02:56 you probably want it off normally, but if you're new to sqlalchemy
+03:00 and you want to see what's going on, this will basically make
+03:03 sqlalchemy log all of its behaviors, all those sql queries that sends off to the database
+03:07 things like that will spit to the console or the terminal;
+03:10 so this is kind of helpful, we'll go ahead and keep that there.
+03:13 Now finally, you would think what we need to do is store this engine somewhere
+03:17 so we can use it for stuff, but not really,
+03:20 the idea is we're going to work with these things called sessions
+03:23 and the session needs the engine to do its work, so what we're going to really store
+03:27 is we're just going to store this thing called a session factory
+03:30 and once we have the session factory and we associate the engine to it
+03:34 it will just hold a reference to it, so we'll be golden.
+03:37 So let's go over here and tell this thing that it has a session factory,
+03:42 that is nothing for the starter here, and we'll go ahead and allocate this
+03:46 we'll need it in just a little bit when we want to do anything interesting
+03:49 so we're going to go over here and we're going to need another piece of sqlalchemy ,
+03:52 we're going to need the ORM layer,
+03:55 because this session unit of work business is only an ORM thing,
+03:58 so I'll come over here and we'll have a thing called a session maker
+04:02 now the session maker is going to need things
+04:06 like to know how to talk to the database as part of its session in life cycle
+04:10 so we're going to give it this engine here, right,
+04:12 so this we're going to hold and let's make this a little simpler,
+04:16 make this a class method like so, we'll come down here
+04:19 and say cls.session_factory is this, okay so this we're going to need later
+04:24 and because we're holding it here it's implicitly holding on to the engine
+04:28 which had a connection, so everything will be all wired together
+04:31 and all we have to really keep track of is this session factory,
+04:34 let's go and just do the one thing that we're going to have to do while we're here
+04:37 let's define add another class method, we will say something like create session,
+04:41 and we'll just go to the class, to our session factory,
+04:48 and we'll call it and return that value.
+04:51 Okay, so the way sqlalchemy works is we want one of these
+04:54 for basically one of those per connection string
+04:57 but every time we create a session, we're going to have to allocate a new one
+05:00 because that more or less represents a transactional set
+05:04 of processing, a transaction in the database.

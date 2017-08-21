@@ -1,0 +1,44 @@
+00:01 So we've modeled our car, and I think we have that thing
+00:04 pretty much dialed in at this point, the next thing to do is
+00:07 actually create the database so that we can start working.
+00:09 Now, relational databases need the schema builtin ,
+00:13 all that kind of stuff, and it turns out sqlalchemy is great for doing that
+00:16 so we can come over here and if we have access to the sqlalchemy base class
+00:21 which if we import it of course, we will, it has this thing called metadata
+00:28 now it doesn't show up here but just roll with me on this
+00:31 and the metadata you can call create all and provided the engine
+00:34 and that line right there will go look at the database
+00:37 if it doesn't exist at all, like sqlite here, it will create the database
+00:40 and then it will look at the tables and create any that are missing,
+00:43 it's important that it will not update existing tables
+00:46 so if I run this then I make a change to my car class
+00:49 it's not going to work right, this create all will not refresh that schema
+00:54 but it will get you started, right;
+00:57 afterwards you have to run migrations or scripts and things like this,
+01:00 or if there's data that was auto generated just delete it and generate it again.
+01:04 So let's run this and because we have echo= true going on
+01:08 we should see some stuff happen,
+01:10 look at all that, boom, boom, boom, we're doing all sorts of stuff
+01:14 going over here, creating index on year, index on last seen,
+01:19 a bunch of stuffing you can see it's creating the table car
+01:22 that's what we told it, with all of these values,
+01:24 varchar , integer, datetime , things like that,
+01:26 so let's look over here and see what we got
+01:30 notice, nothing here, click, now wait for it synchronize db,
+01:35 ha, there it is, sqlite , how do we look at it, over here we have a database view,
+01:39 I'm going to drop it over here and it's not going to work,
+01:42 by the way the database view only works on PyCharm Pro,
+01:45 the database features are not part of the community edition,
+01:48 alright, so let me drop this over here, and it kind of gives you a squiggly
+01:53 and you open it up and things are not great,
+01:55 so the reason is I've got to do one little bit of configuration to PyCharm ,
+01:58 so let's go to properties and notice it thinks this is sqlite ,
+02:02 that's pretty solid of it, but it says the drivers to understand this
+02:06 to basically manage this are missing from PyCharm , so you want to install that.
+02:11 Ok now we've got it downloaded let's hit test connection, just to be sure—
+02:14 success, all right cool, so if we go back over here and we hit refresh ,
+02:18 now if we look in there, we have the car and look at all the pieces
+02:22 it's got our indexes, it's got our column types,
+02:25 our primary key all those sorts of things.
+02:29 So that is solid, but there's no data in it yet
+02:32 so the next thing we have to do is insert some data into the database.

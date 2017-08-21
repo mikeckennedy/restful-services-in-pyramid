@@ -1,0 +1,175 @@
+00:01 So we have this csv renderer working super well right here.
+00:04 However, one thing that is really not nice about it
+00:08 is this bit about, if it's a car right,
+00:11 we should not have to embed into the renderer
+00:14 knowledge about these types, they should be separate they should be disjoint.
+00:19 So, how do we do that? Well let me comment this out for a second
+00:22 and just show that it's not going to be so much, okay, let's accept the csv type,
+00:28 you can see that that is not great, right there, right no attribute keys
+00:34 car has no attribute keys we saw this before;
+00:36 so how do we address that problem?
+00:38 Well,one would be you could just say look the csv only takes dictionaries
+00:42 so in our api here, I could say all right, well instead of returning cars
+00:47 what I'm going to return is we'll just do a little list comprehension here
+00:51 and the list comprehension will convert a list of cars to a list of dictionaries,
+00:54 so we'll say car for car in cars, what are we going to do the car
+00:58 we're going to say to dict, right, that would actually work;
+01:01 so if a rerun this, and re-request it, things should be back to good.
+01:04 So that's one possibility, like you tell the renderer,
+01:07 like the renderer just has these limitations
+01:09 it only takes dictionaries and lists of dictionaries;
+01:12 on the other hand this is also sort of polluting our api
+01:15 how did we solve this with the json renderer— what we did was
+01:18 we added an adapter, so adding an adapter that given a car it knows how to transform it.
+01:24 Let's go and add that here, like this.
+01:28 Let's tell it that it has an adapter and you know what,
+01:30 it's probably going to use exactly the same type, okay,
+01:34 so obviously this method doesn't exist, but PyCharm is happy to write it for us,
+01:38 this will be type, let's just call it class like we're going to adapt from this
+01:45 and this will be a method, okay,
+01:48 so let's go and say this object is going to have initializer,
+01:54 and in here it's going to have a dictionary of things that it can use called adapters.
+02:00 And down here, we'll just say into this adapter
+02:03 by the type of the object that we're going to pass in
+02:07 so car or whatever, we want to use that as the hash and we got to put in the method.
+02:12 So you give me a car here's the method to call and get the car back out,
+02:15 you're going to give me some other type, you know, a customer or a user
+02:20 here's the thing to call to convert it to something we can deal with
+02:23 which is either straight up dictionaries or a list of dictionaries.
+02:28 Now, the next thing we need to do is
+02:30 somehow take this general stuff that we're doing or this specific stuff
+02:34 and make this more general, let's select all of this and make this a method
+02:37 so we'll call this adapt type, it's going to take the value
+02:43 and it's going to return back something
+02:45 and maybe this looks like that's kind of part of this adaptation stuff here
+02:50 ok so we want to come in and we want to say well if it's one of these things
+02:53 now how do we generalize this, right, we have this adapter dictionary
+02:57 and somehow we need to convert it
+02:59 so here this question basically says is that a type that you know how to adapt
+03:03 and then this will say okay we'll convert it to a list of that thing adapted
+03:06 all right let's try to create a generalized equivalent,
+03:11 so we'll say if type of value is in our adapters,
+03:15 that means there is a function that we know how to change this
+03:19 right, so than we'll say value equals now we just need to adapt the value
+03:22 so we'll say self.adapters, make this little simpler up here,
+03:27 like we don't want to keep typing that and keep computing that,
+03:30 so we'll give that, and the adapter takes—
+03:34 actually I think that adapter takes two values and it returns back the adapted value.
+03:40 Okay, so before we had it hard coded to just the car,
+03:44 and now we have this dictionary of adapters
+03:48 which have a bunch of types, not just car potentially
+03:51 and they have functions which we can call
+03:53 their value is a function which we can call that returns the adapted thing,
+03:57 this is because we want to get everything into a list of stuff.
+04:03 And then, we are going to do this and now we're going to come here and say
+04:07 okay, same thing, but really this value is basically the same
+04:10 so we want to create the type of the first item and we could even maybe say
+04:14 alright, we're just going to assume the type is the first one and not recompute this
+04:17 but we're not worried about performance, yet, let's just get this working.
+04:21 So then we're going to ask is the type in there
+04:23 and then how did we have this before, we had a value of index
+04:26 and then we ran the adapter function on item, like so.
+04:31 All right, so if we run this now and we undo this, just return cars again,
+04:39 what are we going to get, not something amazing, car has no item keys;
+04:45 why did this happen— well just maybe you know in our minds
+04:48 we're like oh we could have an adapter for cars right
+04:51 did we add it, oh it looks like I made a super small mistake here
+04:57 look on line 50, what do you think that comes back as—
+05:00 well on line 48 we know it's a list, and a list is not what we're looking for,
+05:03 we just really wanted to have the first value like what does the list contain
+05:07 so let's make this and call this first, just so it's really clear
+05:11 and let's actually move that outside of the list here
+05:14 that will also be better for performance
+05:17 and we could also say adapter equals, put this up here
+05:24 we'll stay if not, I'll say if adapter, I think that's a little nicer.
+05:28 No reason to compute that over and over and over again, right,
+05:31 just once and then call it on every item in the list; okay, let's try this again.
+05:38 Send, key error list, where are we getting this list error?
+05:46 Oh I just copied this, this should be type of first
+05:50 and we don't need that again, like this, ok try one more time,
+05:57
+06:02 yes, okay they do want to value there but obviously this is not none,
+06:09 alright, look at that how cool, sorry about the little glitch there
+06:13 but this is working beautifully, if we go over here
+06:18 you can see down here we've got our csv coming through
+06:21 and in the api side, remember what we did was
+06:26 we are just now returning a list of cars
+06:29 we kind of fixed it by letting the renderer be dumber at the beginning
+06:34 but then we said no no let's actually let it return arbitrary objects
+06:37 and long as somewhere in the system we tell it like hey if you have a car
+06:41 here's how you get to a dictionary and once you have dictionaries or lists of dictionaries
+06:45 you can totally deal with that, and the way we taught it was
+06:48 we added this adapter, just like we did for json,
+06:51 in fact, it's highly inspired by the way the built in one works
+06:56 that you can add this adapter it looks it up by type and so on.
+06:59 We'll see that this is really nice because while you might look at this and say
+07:04 you know this is no big deal, like we can just do that, right,
+07:06 I don't need all this complexity of adapting types and whatnot;
+07:10 it turns out that sometimes you really do need it,
+07:13 it's great to just do it on line 15
+07:15 but any time you return to car down here, down here,
+07:19 all of these will have to do like this translation
+07:22 and then what if you want to change how that works or something,
+07:25 it becomes you know, sort of something
+07:27 that works its way through all the parts of your api
+07:29 and it's better to just have this one place,
+07:31 right here we say if you need to take a car to a dictionary
+07:35 teach a renderer to do it, it goes there,
+07:38 just like it was really nice to do this here,
+07:41 and then we could return arbitrary objects involving cars or lists of cars and so on
+07:44 and the json renderer would deal with it, same thing here.
+07:48 So let's just review our adapt type function here.
+07:51 We're given some type and we may need to change it into another type right,
+07:56 we saw we're given an individual car we need to convert that into a list of cars;
+08:01 if we're giving a list and it's not a list of dictionaries
+08:05 we need to convert it to a list of dictionaries.
+08:07 So we set up this adapter concept, we can register many things
+08:10 that can be converted to dictionaries, and then we just go through and say
+08:13 look if the type of this thing that we're working with,
+08:17 if it's an individual instance not a list and we could convert it,
+08:21 then we're going to convert it to a list of one item by adapting that value.
+08:25 But if it's a list, let's go through every item in the list
+08:27 and make sure that it is something we can work with,
+08:30 so here we get the first one and we say do we have an adapter
+08:34 in this case it's a list of cars, and it says yep I know how to convert cars
+08:39 so it just goes through the list assuming the list is homogenous,
+08:43 one thing I suppose would be fun to test is if we go up here to the top again
+08:47 and just show that we can still return other types
+08:50 still show that we can return this list of dictionaries
+08:53 and that somehow won't break the system, I don't think it will, let's find out.
+08:56 Yes, yes it did break it; where did it break— all right,
+09:00 yes, this seems to be a get, so what do we do wrong here—
+09:06 on this one, we are basically assuming it is in here
+09:10 and of course, why would we test for it, if we were doing that
+09:12 so let's do the more gentle friendly get me this type
+09:16 and then we're already testing for it.
+09:19 So one more time, boom, we're returning dictionaries
+09:22 and so it's you know, I don't need to adapt dictionaries,
+09:24 you already can work with those.
+09:26 If we change this to say no, no, return cars, we go return cars, okay.
+09:31 So now, we have or csv entirely built in a general way right,
+09:37 the csv as far as its work goes, all it really cares or knows about are dictionaries
+09:43 and maybe we want to put some kind of test in here
+09:45 and say you know, I was given some type, I don't know about it
+09:49 and it should raise some type of exception, right,
+09:52 so we have this, maybe let's go ahead and say first equals value of zero
+09:57 say if not is instance first dict,
+10:02 well then we have a problem, it could not convert type or something like that
+10:08 and maybe we'll just say what the type was here
+10:11 all right, a little better error message,
+10:14 we'll do a type of first, so it should still work
+10:20 and then maybe we can send it something that it doesn't expect
+10:24 just to show you know, it's going to be able to detect this
+10:28 so let's return a list of tuples let's say,
+10:31 it shouldn't know what to do with that, let's try this—
+10:34 built in error could not convert type class tuple.
+10:38 Perfect, so now I think we've got a pretty good system here
+10:42 make sure l put it back for you in a way that works, excellent.
+10:45 Okay, so we've built this custom csv renderer,
+10:50 we've used this adapter concept to give it lots of flexibility
+10:53 to take many , many different types and not force all the ways
+10:56 in which we use it through our application
+10:59 to know that that transformation is required
+11:01 we just add the adapter in the site setup and we're golden.
+11:04 So while this is fun, let's actually add one more type, let's work with images as well,
+11:09 so we'll be able to go to the car and say hey car I would like your image.

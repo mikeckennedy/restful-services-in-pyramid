@@ -1,0 +1,53 @@
+00:01 The next thing we're going to need to do is do some set up code
+00:05 set the connection string and some of the pulling settings and things like that,
+00:10 so the next thing I'm going to do is I'm going to create
+00:13 this thing called a db factory or db session factory,
+00:16 so in order to work with sqlalchemy , we work with this thing called a unit of work,
+00:20 which is manifest in this session object in the sqlalchemy type system.
+00:24 So, we're going to want to basically configure this thing
+00:27 and then we'll be able to ask it for sessions,
+00:30 so the next thing I want to add is something I'm going to call db session,
+00:33 let's call it db factory, so we want to come over and create a class
+00:37 and it's mostly going to be static, but we'll say db session factory, we'll go with this,
+00:42 and down here we're going to have a function
+00:45 that does like overall setup for the system
+00:47 so I'll define a function called global init and we're going to call this one time
+00:51 and it's not going to be a self, it's going to be a static method,
+00:55 a static method, class method, it doesn't matter
+00:58 but it's not going to be an instance method.
+01:00 So we're going to come over here and we're going to do a couple of things,
+01:03 the first thing that we want to do is we want to come up with the connection string,
+01:06 so the connection string of course varies by database
+01:10 if we're talking to mysql , it might be a machine name and something like that;
+01:14 if we're talking to sqlite , with it's going to be file based
+01:17 and we're going to use sqlite here
+01:20 because it's a no configuration database built in to python, right
+01:23 so it's super easy for you guys to just pick up this project and go,
+01:26 there's no like oh you forgot to set up the database
+01:29 so we'll just go with this, with sqlite , in order to do that
+01:32 we need to have a location that we want to put these files into,
+01:34 so let's do this and make like a data folder, call this db,
+01:37 just four source control so this thing gets created
+01:41 I'm going to create a file here called placeholder.txt
+01:44 once we run it, it's going to basically put a database file right there.
+01:49 So let's go back over here and we want to figure out that place
+01:52 so we're going to import OS, all right,
+01:55 and we're going to import our own package name
+01:57 which is a restful auto service, okay
+02:00 so we're going to use this things to figure out the past,
+02:03 so we're going to say working folder= os.path.dirname
+02:09 so this will give us the directory, if we give it a file
+02:13 to give us the directory that that's contained in,
+02:15 what file are we going to give it, the root file for our package
+02:18 so that's going to give us this directory here,
+02:20 and I somehow want to take that and combine db as a folder
+02:24 and some file name, so we'll say file, it's going to be equal to os.path.join
+02:30 working folder db and let's just call it dealership.sqlite ,
+02:39 the extension doesn't matter but I always like to put sqlite or something like that
+02:42 to like go this is a sqlite file.
+02:45 Alright, so this is the actual file that we are going to work with,
+02:47 and finally, we're going to get the connection string
+02:50 it's going to be sqlite:/// plus the file
+02:55 so then we have our connection string and we're pretty much ready to go.
+02:59 So once you have a connection string
+03:02 the next thing you have to work on is the engine.

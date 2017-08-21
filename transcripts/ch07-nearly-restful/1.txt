@@ -1,0 +1,95 @@
+00:01 So far, we've built a service, an http service
+00:04 that exchanges json when you do an http get to it.
+00:07 So this is some ways down the road, but not very far
+00:11 towards our fully restful service.
+00:14 During this chapter, we're going to fill out almost all the remaining pieces
+00:18 to create what I would consider a restful http service;
+00:22 so let's start by examining what we've accomplished.
+00:25 Well, we've been able to do a get request to / api /autos
+00:28 and that gives us a list of available cars and their details back,
+00:32 if we want details about an individual car,
+00:35 we can do a get against api /autos/ car_id
+00:39 and this will give us the details back about that.
+00:42 We have done some http friendly things, for example car ids
+00:45 that we request when the car itself does not exist return a 404
+00:49 instead of just maybe an empty json resolved ,
+00:53 or like some kind of message in the body that responds
+00:56 saying car not there but actually it's a 200,
+00:59 now we're using the web and we're saying 404 this thing does not exist.
+01:02 However, we're only returning json responses
+01:06 and just the default minefield version of those.
+01:10 So we're not doing a lot of work around the format
+01:14 although if you had to pick one and stick with it json is really , really solid.
+01:18 What's left to do? Largely what we will do in this chapter.
+01:22 So if I'm going to group this into one big idea
+01:25 what we have left to do is make this a read/write service,
+01:28 what we've created so far is really read only,
+01:30 we can read all the car details or individual car details, that's it;
+01:34 what we're going to do is we're going to make this a read only service
+01:37 where we can post new cars to it, we can update cars,
+01:40 we can remove cars by issuing a delete and so on.
+01:44 So the first thing we're going to do is allow us to create new cars
+01:47 that maybe we want to list our car for sale,
+01:50 so we're going to do a post, http post to / api /autos.
+01:53 Once we've created one of these, maybe we want to update it
+01:56 like maybe we've changed the price, maybe it ’ s gotten cheaper
+01:59 because it's not selling or we crashed it and has some problem now,
+02:03 we got to update the listing, things like that.
+02:06 So we will be doing a http put to / api /autos/individual car id
+02:11 with the new details about the car.
+02:14 And, once we've sold it or we decided we don't want to sell it,
+02:17 we can take it down by doing a delete against api /auto/car_ id
+02:21 Then we also want to support a variety of response types
+02:25 now it's cool that we can give json back to our clients
+02:28 like json is really the most popular and most useful
+02:31 but what if they want csv instead of json for that list of cars
+02:35 or what if they want an image for an individual car,
+02:40 not the json describing the car, things like that.
+02:43 So we're going to support a variety of different response types
+02:46 through things called renderers and custom renderers we're going to create
+02:49 and we are also going to see that the service
+02:52 ultimately will support what's called content negotiation
+02:55 so I could do an http get again to say api /autos
+02:59 and indicate in the header using the except type
+03:02 hey I want json and the service will automatically determine that and send back json ,
+03:08 I could change that and say no, no take that back, I want csv ,
+03:11 and now the service will return csv formatted text, as the response.
+03:15 And ideally, this happens without us changing a code at all
+03:18 just configuring the system differently at the serialization level,
+03:21 so this is all great, however this content negotiation part
+03:24 we're going to do this in the subsequent chapter.
+03:27 All right, so let's look at the road map,
+03:29 I've given you these different pieces that make up
+03:32 what I'm considering a restful service
+03:34 and we listed them from simple order to more complex or more advanced,
+03:37 let's see how we're doing.
+03:39 Well are we using http methods explicitly—
+03:42 yes, sort of, we're definitely using the codes, right
+03:45 we're saying a 404 for missing, 200 for success, things like that ,
+03:49 there's more to do there, but certainly we're doing this pretty well.
+03:52 For verbs, we're really only easy get and for content types
+03:56 we've been ignoring that as well,
+03:58 so we're going to look at leveraging http verbs
+04:00 and content types more carefully in our api here.
+04:04 Are we using endpoints as basically url or uri resources, definitely,
+04:08 api /autos api /auto/ an individual one, I think we got that one down solid.
+04:15 This is cacheable— yep definitely cacheable, it's certainly a layered system
+04:20 and it doesn't know more about what's beyond it,
+04:23 so that's fine and it's going to stay that way.
+04:25 I'ts stateless, mostly; now, right now we have a fake database
+04:29 and this fake database like regenerates itself each time we restart the service
+04:33 so it's really not actually stateless, but that's just because it's a fake database.
+04:37 Pretty soon we're going to implement a real database ,
+04:40 and then it will be truly stateless, and the only thing it'll depend on
+04:43 is the database, and we can have as many
+04:45 web front ends or service front ends as we want talking to the same database
+04:48 and we won't have to worry about session and state and those kinds of things.
+04:52 Are we doing content negotiation— not yet, but we're going to ,
+04:55 like I said, that's going to be in the next chapter.
+04:58 Finally, there's one we're not going to do in this course,
+05:00 so we're not going to use this HATEOAS stuff
+05:02 which is very much how the web itself works,
+05:05 the hyper media as the engine of application state
+05:07 we're punting, it doesn't really apply to this service that we're creating here,
+05:11 so we're having a little bit more strict predefined url structure,
+05:15 and I think that's how most services work and I'm totally fine with that here.

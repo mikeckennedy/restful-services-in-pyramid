@@ -1,0 +1,48 @@
+00:01 So you saw a little bit of the project structure, but let's focus on the individual details,
+00:05 so you can see where to go to configure
+00:08 or write code to affect a certain part of the app.
+00:11 So I used the tree command, which you can brew install onto MacOS,
+00:15 to give me a hierarchical view here.
+00:17 So at the top, we have our project root I'm in the main directory
+00:20 that was created, the one that has the setup.py and things like that;
+00:25 over here, you'll see that there are some package management files,
+00:28 there's some read only details that get pulled in
+00:31 as well as the setup.py which is the most important thing
+00:34 that installs the dependencies,
+00:36 that installs the website as a package itself, and so on.
+00:40 Next, we have our web application root, this is almost always
+00:44 the exact same name as your root directory,
+00:46 your package root but is a subdirectory of that,
+00:50 so here we have auto service api, there is really the root of our service
+00:53 and in here we have the __init__ which represents the entry point to this package,
+00:58 and that is the entry point into your web application.
+01:01 So this is where the start up and configuration code part of it goes,
+01:04 we've got our static client side cached files here,
+01:08 we have our dynamic view folder, so our templates
+01:12 we're going to pass the models to the Chameleon, Jinja 2
+01:16 or whatever type of templates and they're going to turn that into pure html
+01:19 and those are in the templates folder here,
+01:21 we have a my template in a layout,
+01:23 the layout is like the overall look and feel for the site
+01:25 and my template just brings in what's different about that page.
+01:29 So you should really look at how those fit together
+01:32 if you are adding more pages along the same line.
+01:34 We have the code that is going to run our tests,
+01:36 there is some basically starter example code
+01:39 on how to create a test version of your app,
+01:42 started up but not actually run the web server
+01:45 and then make requests, fake requests, and things like that to it.
+01:49 So if you want to write tests, you definitely want to look there.
+01:52 And you'll be spending a lot of time in the dynamic view folder,
+01:54 so here's where you write the functions that are your mapping routes
+01:59 to that actually do the work; now it doesn't have to live in this views folder,
+02:02 like I strongly encourage you not to put
+02:05 every single part of your website to the single file, that would be very wrong;
+02:09 we'll see one of the first things we do is organize this into a different structure,
+02:12 but by default this is the structure they use and that's where your views live.
+02:16 Finally, we have our configuration files here,
+02:19 so we've got our development.ini and our production.ini the idea is
+02:23 you run the development one in development and the production one in production,
+02:27 but it's really just the command line arguments you set up to run.
+02:30 So now you have a better understanding of all the working parts
+02:33 of your website, it's time to start writing some actual service code.

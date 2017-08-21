@@ -1,0 +1,49 @@
+00:01  So, we've got our users modeled here,
+00:04  we've got them created in the database
+00:06  we've got the repository able to query some of them
+00:09  but we still have one thing we'd like to take care of.
+00:11  If I open this up and I say select star from user
+00:15  and I run this, what amazing users do we have, none, no users,
+00:20  so there's a couple of things we could do
+00:23  we could go and actually manage this like outside of our program
+00:26  which I guess would be okay, but then we wouldn't have
+00:29  some of those defaults run and things like that,
+00:32  so let's just go ahead and add a little bit of work down here,
+00:35  let's write one more function that we can do call just to say
+00:39  hey let's create some that temporary users,
+00:43  so we'll say create test users,
+00:46  actually let's just call it like this, create user and we'll pass in a user,
+00:49  so what are we going to require, let's go look at the non non default things
+00:54  so this we don't have to pass it's auto incrementing
+00:57  this we don't have to pass it's got a default,
+00:59   this we don't have to pass it as a default,
+01:02  this, I don't really know what to set here,
+01:04  we're not actually hashing passwords
+01:06  and it's not required, so we're not going to pass that.
+01:08  So really, all we need is the name actually that's kind of cool.
+01:10  So let's go over here and say it's going to take a user name,
+01:14  and so we want to create a session
+01:15  and then we'll say such user equals user like that
+01:20  and then just say name = username and then session.add user
+01:26  and don't forget to commit,
+01:31  and we can go ahead and pass this back
+01:33  and now this should have all those defaults
+01:35  set by the database so that will be handy
+01:38  all right so now let's go in our little init here just for a moment,
+01:40  let's go over here and say repository.add user, create user
+01:48  so this will be jeff chloe sarah and mike,
+01:55  all right, so we're going to create all those
+01:57  so that we can get them back, I guess I get them out with the tools, right
+02:01  we could go and print out there their password or the API key that was generated
+02:04  but it'll be over here, let's just run this really quick
+02:07  now you see it's already done it, so let's comment those out
+02:12  so we don't create the same users twice, that would really crash
+02:14  because the uniqueness constraints,
+02:16  so if we go over here and say a table editor,
+02:18  you can see we have our users and there's their API keys right
+02:21  no password, some of them created, their auto incremented id, their names and so on.
+02:25  So let's copy that, we're going to work on behalf of this user mike for the rest of the time
+02:31  so after this we need to talk about how do we take this api key
+02:34  and pass this along to our function, how do we get it out,
+02:37  what is the convention that we're going to follow, and things like that.
+02:40  So now we have for users let's go work on the service.

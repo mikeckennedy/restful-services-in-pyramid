@@ -1,0 +1,165 @@
+00:01 Here we are back in our actual server side service code.
+00:04 And our goal is to add cors support, that is cross-origin scripting support
+00:09 so we could come in here, and actually on every single one of these requests
+00:15 set the various cors headers that are required, that is not a good idea.
+00:20 We're not going to do that, it's totally not maintainable,
+00:22 it's not centralized, things like that.
+00:24 There are also third party packages,
+00:27 other packages that add core support to Pyramid
+00:30 but you'll see that really we just have to add a couple of headers in the right location
+00:35 and globally or actually however we want to choose to support it,
+00:40 we would support and enable cors, so I'm just going to show you
+00:43 the raw way to do it, if you want to grab some other package and that does it as well,
+00:46 that's fine, but I don't really think that it's necessary.
+00:49 So we're going to come down here
+00:52 and we're going to write another function here called allow cors,
+00:58 we're going to need the config in order to do this
+01:01 so we create this will function, and just like all the mains
+01:04 I prefer to have this stuff below main, there we go.
+01:09 So what we're going to do is we're going to write a function
+01:12 that's going to leverage what are called events in Pyramid,
+01:15 and these are basically filters that run before and after various requests.
+01:20 So what we're going to do is we're going to hook
+01:23 every single request that comes into our site
+01:25 and we're going to write a little function that for any request that comes in
+01:29 we're going to add the proper headers that allows cors,
+01:32 and then let the rest of the app run and it wouldn't even know
+01:35 that we've done this trick to add cors to it.
+01:38 So in order for this to work, we're going to need to do a couple of things-
+01:43 we're going to start by coming over here,
+01:45 we're going to write a function that goes to the config and says add a subscriber
+01:50 and it's going to subscribe to the new request event,
+01:54 so we can notice this is from pyramid.events.NewRequest
+01:57 we'll import that at the top, well what is this function?
+02:00 This is a function that is going to get called every time a new request comes in,
+02:04 so you are going to have to follow me a little bit down the rabbit hole here
+02:09 but it's pretty easy once you see it; so here's what that function looks like,
+02:13 we want to come in and say add cors headers into this response right,
+02:17 so we're going to process that request and as part of the response
+02:20 we're going to add these headers, we can do that at the very end
+02:23 and it's got to come with the event, the reason we care about the event
+02:27 is this has things like the request and response objects on it,
+02:30 so this function here will run at the beginning of the request,
+02:35 and so what we're going to do is use this function to say
+02:38 call one more function that we don't have yet,
+02:41 call one more function after our various API calls,
+02:45 or view calls if I have already processed it, and at the end add in those headers.
+02:49 So we have one more function here that we're going to write,
+02:52 and I'm just going to copy this over,
+02:54 because you don't want to mess up the headers.
+02:56 So here, we are going to say cors headers given a request and a response,
+03:00 it doesn't really matter here but the request is we're going to go to the response
+03:03 and we're going to update the headers, allow control origin star
+03:06 allow control methods and so on, so these are the various things
+03:10 and you can of course tune them to the security that you are after,
+03:14 but how does this function get called, well, remember,
+03:19 the function on line 18 runs at the beginning
+03:22 and the goal is to get line 19 to run at the end
+03:24 so when I come here I want to say go to the event request
+03:27 hey request, when you are done and you're generating the response
+03:32 run the function that adds the headers.
+03:35 So that probably looks a little g narly, a little intense,
+03:38 but here's the thing, you write this code and you never ever think about it again,
+03:42 so let's just add a little print here I'll say print adding headers,
+03:47 if we run this again, if we just click on it, you can see we got three adding headers
+03:52 one of them from our straight request,
+03:55 and one for our css and one for javascript or something like that,
+03:58 you know calling back into this service, maybe even images.
+04:02 So it looks like that's working, let's do one more thing,
+04:05 let's go back here and do another request;
+04:07 now notice, our headers went from 4 to 9,
+04:12 and there you can see all of the headers that allow cors are now added back in here.
+04:16 So be very careful, these controls are in here for a reason,
+04:21 you don't want some javascript on some bad form
+04:24 to reach back to your site and grab some private data
+04:26 using a logged in cookie of your user
+04:29 that maybe also visited that site, things like that,
+04:31 but if your goal is to write just a pure service endpoint
+04:36 that anybody can call, then you need to enable cors.
+04:39 It looks like those are coming back, now let's go and clear this out,
+04:43 let's go and try our other client, this one here;
+04:47 so we can come back to this, and run this again,
+04:50 and now we had one that had it open right, so if I click this, let's erase that
+04:55 do this again, abc oh look at that- 404 not found,
+05:00 well why is it not found- it's not found because there's no car with id abc,
+05:05 this is super cool, so now let's go and, remember, this list is out of date,
+05:10 because I restarted the server, so let's refresh,
+05:13 and let's try to get this Opel Signum here with id that ends in f f.
+05:20 So when I come over here and paste it, you've got to be very careful
+05:23 I got a quote on the end, so if we hit go, it shows the id,
+05:29 I am going to get rid of that little alert, that part is working- success,
+05:32 see that, success, right, you have an error here but that's just leftover.
+05:36 All right, so things are looking great, this is fine,
+05:38 let's say if e.error, remember we added that in
+05:45 get alert, error contacting service, like so;
+05:53 otherwise, we'll just say a generic fail, who knows what happened here,
+05:58 like site is down, network is off, something like that.
+06:02 So that's the fail, but over here that's done one, this is the success
+06:06 so the results remember, we're getting an individual car
+06:10 so the results are going to actually be the car,
+06:13 so let's say populate data, and we'll pass the car which is the results here,
+06:18 I put that in the wrong spot, let's put it where it belongs, all right there
+06:22 so when it's done, we're going to populate the car with the results
+06:27 and this is when it runs successfully, if it fails, well then we get something over here.
+06:31 Ok so the final thing to do is to just populate the results,
+06:34 and let's go ahead and write that, let's go over here, grab that and drop that in.
+06:40 So no ,we don't want to switch languages to whatever that is,
+06:43 so we're going to come over here and we want to use jquery again,
+06:46 and we're going to go grab all these,
+06:49 so we want to basically do like this at the beginning of every one of these
+06:52 and then drop off the end, put something there to set the value,
+06:57 down here at this part, we want to say .text is going to be car.name, okay,
+07:03 in this case it's name, in this case it's price.
+07:06
+07:11 Remember, our service gave javascript json
+07:15 and json are basically javascript objects
+07:17 so we can access the values with dot notation there.
+07:21 Okay, so, notice we are going to the car detail section
+07:25 and we're fading it out in case it was already shown
+07:27 and then we're fading it in,
+07:30 by default it's not shown initially until you load a car into it,
+07:34 so doing a get when things are done successfully, we're going to call this
+07:38 otherwise there's some error handling, let's go and try this
+07:42 so here we refresh that, click and I got to get rid of this,
+07:46 but look at that, there it is, success, we've done it!
+07:50 All right, that's pretty cool, so notice there's no errors in the console
+07:53 that's really pretty sleek, and the last thing is there's some alert somewhere
+07:57 that I still have that I want to get rid of.
+08:00 So let's refresh this, get it again, notice we've got this one,
+08:03 let's go get a different one, this one's going to be the Astra, find little vehicle
+08:07 okay, so let's go check out the Astra,
+08:09 this should go to the server, download it as it starts,
+08:12 it's going to fade out this part and then when the fade out is done,
+08:16 it's going to populate it and fade it in,
+08:18 so it should fade away and come in with the Opel Astra, and not the Signum.
+08:22 Ta- da, and there it is, okay so what have we learned here?
+08:26 We've learned, well jquery still works and makes life pretty easy, right,
+08:30 so we come over here and we order the document,
+08:33 and we say give me the form, somebody tries to submit it,
+08:36 instead we're going to use ajax to do that and tell it don't actually submit the form,
+08:39 we can go over here and we do a little bit of grabbing the car id value out
+08:43 and use that to build the url that is basically our api
+08:48 our schema that we want to talk to here,
+08:50 and we use $.get because we're trying to do a get
+08:53 we could just as easily do a post and post the data, but we're not there yet;
+08:56 if it's done successfully, we populate the results,
+08:59 otherwise there's error handling, remember we return like a 404,
+09:02 and we put this error, let's try something else,
+09:05 like let's change 1 to a 2 and see what we get- fail, okay.
+09:08 So if we try to get one where the idea is wrong, we just get a 404,
+09:13 but of course, if we get the one that is right, it fades in and everything is good.
+09:19 So everything was pretty straightforward in terms of javascript here,
+09:22 the one thing that maybe was unexpected,
+09:26 depending on how much you've done this,
+09:28 is we actually had to go over to pyramid and we had to add this cors operation
+09:33 or cors configuration on the server side, we had to go to every request
+09:38 and say for this request, we would like to add the cors headers,
+09:43 now of course, this thing here was the request
+09:46 you could look at the request that's coming in and say
+09:49 well, only if its /api/something do you want to actually add the cors headers,
+09:55 all the other requests we don't want javascript to be able to get to that
+09:59 we just wanted to be able to get to /api/whatever right,
+10:03 so you could be more discriminating, more careful
+10:06 than just throwing it on every single request,
+10:08 but we don't really have a use case for excluding it
+10:11 so I'm going to put it everywhere, and you guys can adapt this to your situation.

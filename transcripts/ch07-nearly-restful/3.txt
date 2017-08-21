@@ -1,0 +1,61 @@
+00:01 Let's review the main ideas behind creating a new automobile via post.
+00:06 So, we decided that the server was going to be the one that assigns the primary key
+00:12 as is almost always the correct choice,
+00:15 the server is going to decide how and where to create this car,
+00:18 and so that means we're going to do an http post against / api /autos
+00:25 not including the id, and then what's going to happen is
+00:28 we're going to submit the json body to that url ,
+00:31 the server is going to take it in, generate it and save it to the database
+00:34 pull out any default values that might have been generated in the database
+00:38 as well as the primary key and then return this new updated version back to us,
+00:42 so let's see how that works.
+00:44 As always, we start out by adding the view config
+00:47 and we set the rout name to the one that matches the url listed above
+00:50 and then it's very important that we set the request method to post
+00:54 we don't want to handle a get request or put or delete in the same function
+00:58 this one only handles what it means to do a post
+01:01 which is to create an auto and you see, we've even named the function that.
+01:04 Sometimes you'll see people looking at the request inside the function
+01:08 and saying well if it's get, do this, if it's post, do that
+01:11 and that's almost never the right choice
+01:14 because often these are very dramatically different behaviors
+01:16 of like returning what a car is versus creating and validating the car, things like that,
+01:20 so we've created our own method and set up the disambiguation
+01:24 by adding the request method and setting that to post.
+01:27 Notice there is no renderer set here, because it's not needed
+01:31 in every case we're doing any sort of return value
+01:33 we're using the response object which skips the renderer anyway.
+01:36 So, the first thing we have to do is actually get the car data
+01:39 that they are posting to us, and they're doing that in json form
+01:42 that's what we've asked of our api clients
+01:45 so we need to somehow get that out
+01:48 and notice we can go to the request and say request.json body
+01:50 and this will basically decode the encoded bytes of the body
+01:54 and then send those off to the json module to parse them into a python dictionary;
+02:00 and what comes back, we're calling car
+02:02 is just a python dictionary of the values they submitted.
+02:05 Now this might fail, it could feel for a couple of reasons,
+02:07 it could be something— maybe the body is empty,
+02:10 maybe there's a malformed text that's not parsable as json ,
+02:13 whatever reason, there could be an exception thrown
+02:16 so we want to catch that here, not let it crash our server,
+02:19 we want to say instead hey there's a problem status code 400 bad request
+02:23 the problem is on your side please check what you posted
+02:26 because we can't parse that, we don't understand that.
+02:29 Once we've got the car created,
+02:31 then we're going to go to the repository and say add car
+02:34 and if everything works, what we're going to do is
+02:36 we want to return not just the car with code 200,
+02:38 that would be okay it would be better to say
+02:40 use the most precise status code we can which is 201 created
+02:44 in order to return an object and change the status code
+02:48 we can't just return car, that would be returning the car and then doing 200;
+02:52 to get the 201, we have to return the response, set the status code to 201
+02:56 and then set the json body of that response to car.
+02:59 So that will return the new and updated car to the client
+03:02 if everything works right, if there's some kind of exception
+03:05 maybe this is a server side thing, if we had a real database
+03:09 we could maybe look on constraints
+03:12 versus can't connect to the server and disambiguate on error type ,
+03:15 but for now, we're just going to say 500 sorry something went wrong.
+03:18 And that's all we have to do to save and create a new car on server.

@@ -1,0 +1,114 @@
+00:01 Let's do a little bit of code reorganization,
+00:03 so that it's a little easier to understand
+00:07 where we should be putting various pieces,
+00:09 and we'll also do a little bit of design work to get started,
+00:12 we don't want that basic red page, we want something about APIs.
+00:15 So notice I've copied what we just created,
+00:18 so here is sort of a snapshot of this service starting here,
+00:22 so this is when it was just created and now we're going to keep working
+00:24 on this one which I'll probably snapshot later as well.
+00:27 So here we have it loaded up, now first thing I want to reorganize is our views
+00:32 actually let's go ahead and do the html first;
+00:34 so remember if we run this what we get-
+00:37 down here we have this red pyramid starter thing
+00:41 and I'd rather have a page that says welcome to our API
+00:44 here's the operations that you can call, issue a get request here, things like that
+00:49 so instead of you watch me write that, let me just drop in a little bit of html and css
+00:53 okay notice that I've made the color of the page black,
+00:57 I've made the background white, it should not be red anymore, but will it?
+01:02 So recall over in our start up we're setting this max cash thing here
+01:08 to say cash for an hour, so if I go and I pull this up again
+01:11 notice the words here have changed, and it has these endpoints
+01:16 but the look and feel of it- the look and feel is still the same,
+01:21 like it's not white, so we've got to do a hard refresh
+01:24 which is a little unfortunate, but that's the way it is, okay?
+01:29 Let me make one more change, so over here, maybe just for this moment
+01:34 while we're doing our dev I'm going to set that to one second
+01:38 for the cash age so it doesn't last that long;
+01:40 There's interesting tricks we can do around cash busting
+01:43 and basically generating a different url any time that that changes,
+01:46 but that doesn't really apply to services very much,
+01:48 so let's just fix it for this homepage and then we'll be good.
+01:52 Let me also drop in a different layout here,
+01:55 I think we can get a slightly better layout if we do this
+01:57 we come over here, we refresh it, oops it looks like the first auto service
+02:02 notice there is this static url here, we want to just, we could fix it
+02:06 but the stuff kind of makes me crazy anyway, we'll just do like that,
+02:09 all right, so we have our service back and running,
+02:12 we have auto service, a basic restful auto service,
+02:15 well it's not super restful yet, in fact it doesn't do anything
+02:17 but we do have our little operations here,
+02:19 get autos, individual car, we have our github project,
+02:22 which actually goes back just to my account.
+02:26 Alright, so our goal now that we have some kind of documentation,
+02:29 is going to be to have / api /autos do a thing, right,
+02:34 we want to have this little APi section,
+02:37 so the next organization thing that we want to do here,
+02:39 is to go over and actually reorganize this a little bit,
+02:42 like I said, do not put all of your views, this is our little homepage view,
+02:47 let's rename that to index, so we don't want this to be
+02:51 completely full of every possible request,
+02:54 and I am not sure that this has any value so let's take this off,
+02:57 just doub le check, it's asking can it sh ut it down or rerun it,
+03:01 that's exactly what we want,
+03:04 alright, so yeah, it's not using this so we can clean this up a little bit,
+03:06 now notice right here, this request in PyCharm gets this warning
+03:10 like hey this is not used, and if you have an unused parameter,
+03:12 that could be a bug, but in this case, we just have to have it here
+03:15 for the system to work, and we are not going to use it,
+03:17 so anytime you have that you can out it underscore,
+03:20 and that means I know I am not using this variable,
+03:22 I am naming this thing to ignore it, so that warning goes away.
+03:25 Alright, so this is all well and good ,
+03:27 maybe if we call that home I can call this home.
+03:29 If the route name is home.
+03:32 But , let's reorganize this a little bit, let's make
+03:35 a views folder, and let's make an API folder.
+03:41 So we can keep our regular views
+03:44 and our views that are associated with API calls separate.
+03:47 So I am going to put this in here, and we will move it there,
+03:50 and let's move it there and then I will rename it,
+03:52 and I don't want vies.view so let's rename this
+03:56 to home page, or something like that,
+04:00 okay, now, we may be able to run his, we may not. Let's find out.
+04:05 So if we run it, there is a section here that does this scan,
+04:10 and it is just looking for a thing with a view config , called home.
+04:13 The uncertainty is will it actually look down inside that view, let's find out.
+04:18 Let's rerun it, my first thought is no but let's see, yes, no.
+04:22 We're missing our template, oh it looks like maybe it did find it,
+04:27 but we need to go set our template, okay, so here what we can do is
+04:30 we can actually give it the package name, the package name is
+04:33 svc1_first_auto_service: like this, and it says
+04:40 look at the top of the package in the template folder.
+04:43 Okay, back to good, so now it's found it, that is all great,
+04:47 let's wrap this around a little, so we've organized our stuff into the views here,
+04:50 and I believe that fact that PyCharm added as subpackage
+04:54 instead of the regular view, a regular directory is why it was found.
+04:58 The next thing we want to do is we want to have an auto service here,
+05:01 so let's just call this auto API, how's that;
+05:06 so over here, we're going to have very similar code,
+05:10 so let's go ahead and just copy this for a moment,
+05:13 we'll tweak it, so we're going to need the Pyramid view,
+05:17 we need the view config , basically the route name is not what we're looking for,
+05:22 and the renderer is definitely not what we're looking for.
+05:25 We want that to just be straight up json .
+05:27 And for this, let' say we're going to have the name of it just autos.
+05:32 We can go one step further and we can say the request method=get
+05:39 alright, so that means even if somebody does a post, to autos, whatever that url is,
+05:45 we'll specify it in a moment, somebody does a post to it,
+05:48 it's going to come up 404, but if they do a get to it ,
+05:51 it will run t his function. Now, home is probably not the best,
+05:54 let's just call this all_autos or something like that, okay,
+05:57 so we're getting close to having our service here, but,
+06:00 we're not really calling, there is no way to get to this,
+06:04 like what does autos even mean,
+06:07 and it may be an error to try to run it, it didn't look in here,
+06:13 let's add a __init__ to make that a subpackage ,
+06:18 try it again, now there is the crash we were hoping for,
+06:24 so, it says, no route named autos found in view registration.
+06:27 We came over here, and we tried to say we're going to use
+06:33 this thing called autos to map to this.
+06:36 and Pyramid said yeah, but there is now a thing called autos,
+06:39 so this is broken, there is no way to put the pieces together, kaboom , crash.
+06:42 Alright , so what we're going to do next,
+06:44 is we're actually going to map that url over here.

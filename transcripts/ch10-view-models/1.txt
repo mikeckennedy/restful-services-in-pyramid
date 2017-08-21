@@ -1,0 +1,90 @@
+00:01 Let's come back to our auto API and make this a little bit more realistic;
+00:05 so it looks like we've got a renderer stuff
+00:08 working really well with the negotiate stuff,
+00:11 I think we've got the restful components working great with our http verbs
+00:14 our response status codes, things like that.
+00:17 But, still not very realistic, so if we look here, I think this is solid
+00:21 you ask for all the cars you get all the cars.
+00:24 Here you ask for a particular one, and if it doesn't exist, you get a 404, great.
+00:28 But the farther down we go, it gets the less good,
+00:31 like notice this part about validation.
+00:34 We're taking the arbitrary dictionary submitted as a json object
+00:36 back to our view here, and then we're just going that's probably a good car.
+00:40 No, that's probably not a good car, we should not be trusting user input here ,
+00:44 now to some degree in the database, when we get to the data layer,
+00:48 we can model it such that certain types are required,
+00:51 so for example the price must be a number, right
+00:53 it can't be just anything, right or that the name is required
+00:57 like these things can be modeled in database constraints.
+01:00 We probably don't want to count on that, right if we count on the database
+01:04 to actually be the validation layer, we're going to get like sqlalchemy errors
+01:08 as the thing we tell them that went wrong, and that's not great
+01:11 we'd much rather say hey, this number that you've submitted
+01:16 has to be between this and this, right
+01:18 this thing must be of this type, and so on,
+01:20 so we need to add the validation and for a moment
+01:22 I'm going to make this method worse, not better
+01:25 by actually putting all the validation here,
+01:28 because right now where does it go, right,
+01:31 maybe, maybe it goes in from the car, right from dictionary bit that parses it
+01:35 and that would not be a bad choice in this particular case,
+01:38 we could put it there, we could have a different exception type that catches the errors
+01:43 to me, let's just look at the car real quick.
+01:45 The car is, it's really supposed to be the database object, right
+01:49 it's suppose to know what it fields are and so on,
+01:52 and so we model this in sqlalchemy ,
+01:54 it's really going to represent the sqlalchemy thing, so maybe even this
+01:57 like we probably don't even want this year, so ideally we take this way
+02:00 rather than leave it here, at a minimum we need to rewrite this
+02:04 because it turns out if the dictionary contains something that's not listed here
+02:08 it's going to crash, as well as if the dictionary omits something
+02:12 like the price for example, it's going to crash as well.
+02:15 So this needs some work, right and we could probably
+02:19 move that out of the cars responsibility as well.
+02:22 Let me just go and put some validation here we're going to leave this part in,
+02:25 but for example we want to check that hey, the price is valid
+02:30 we want to check that it has a name and things like that.
+02:33 Now instead of me typing that all in, let me just paste a bunch of rules here
+02:36 and let's do a little trick here, new car, let's rename this, back to car.
+02:44 All right, so for example, what can we check,
+02:48 let's suppose we want to be able to give more than one error,
+02:50 like hey these three things were wrong with your submitted post, okay
+02:54 so over here, we're going to say if you did not set the last scene,
+03:00 like this is the date time value for what is supposed to be there,
+03:04 that's required, that's an error, if you don't set the name, that's an error,
+03:08 or if it's empty right, this will also test if it's empty.
+03:11 If we want a check if it's only not there, like is none, right,
+03:14 we could do something like this
+03:16 if it were allowed to be empty but must be present,
+03:18 but we'll just go like this, the brand has to be there, the price has to be set,
+03:21 the price cannot be negative right,
+03:24 you can't have people pay you to buy the car or whatever;
+03:29 similarly, the year has to be a positive number
+03:33 it's got to be reasonable like 1900 until present plus one year, things like that.
+03:41 But you can see there's a decent amount of validation here
+03:43 and I would contend that this is just part of it, this is only a little bit of it,
+03:47 now like I said, the database will catch some things that are out of step
+03:51 as well as when we parse it, we'll be able to do a little bit of work there as well.
+03:55 But now let's just start to look at this method.
+03:58 This is not amazing, right, I mean it's doing all this work
+04:02 and we really just wanted to kind of do this, this is sort of the point,
+04:05 but so much other stuff going on that it's obscured by that
+04:09 so what we're going to do in this chapter is
+04:13 we're going to add another layer that's at play here,
+04:16 so something I'm going to call view models
+04:19 and the role of these view models will be to take the inbound data
+04:22 whatever that means, right, like this if it comes off of the url
+04:25 that's also a part of it, we could take those things together
+04:29 and do the parsing and the validation and all of that
+04:33 and provide kind of the final result to this method
+04:37 to do whatever it's going to do with it right,
+04:39 like then hand it off to the repository, and things like this.
+04:42 And that makes it much easier to test, we can test the validation
+04:45 by testing the view models, it will make our APIs much cleaner
+04:48 by having one concise common clear repeatable way to do validation
+04:53 and if we want to add— I would at some point get tempted to go
+04:58 okay no more validation, it's just making this a mess
+05:01 and I don't want this method to be like only validation,
+05:04 alright, but if you move that validation somewhere else,
+05:07 well then you can go crazy and put all sorts of rules over there
+05:09 and it doesn't clutter up the reading of the code.

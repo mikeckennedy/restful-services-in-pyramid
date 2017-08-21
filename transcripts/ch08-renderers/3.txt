@@ -1,0 +1,27 @@
+00:01 So we've seen that we're getting csv back,
+00:04 if we'd run this again, boom, there you go,
+00:06 we have our csv data, we have the status,
+00:09 here if you look at the headers you can see the content type is set along
+00:12 with the character set, so we're definitely doing the exchange correctly.
+00:15 Now, what if we wanted our json back,
+00:19 here is some stuff, we'll get to that later,
+00:23 so what if we want to say I am going to accept,
+00:26 notice over here we can say csv , and we should get the same,
+00:31 maybe we would like to be able to say json as well, send json ,
+00:36 alright, so we can come over here,
+00:39 let's go back to our api , here,
+00:44 and we can say accept type= text/ csv ,
+00:51
+00:55 let's go over here and maybe make that csv , application/ json ,
+01:00 so I put json back, run it again, oh sorry that was supposed to be just accept,
+01:05 okay, so now, let's try this again, first of all, let's go over here and say csv ,
+01:11 we should get the same, now if we put json , now we get json ,
+01:18 isn't that cool, here, let's do like this, accept csv , so turn this one off,
+01:25 look at that, turn this one on, and we'll go back to json .
+01:32 So you can see we have both of these renderers in play
+01:34 in the next chapter what we are going to look at is
+01:36 how to make this entirely controlled by the client
+01:39 and have the server have nothing to do with it,
+01:42 it will just render whatever it's supposed to render,
+01:44 like whatever they ask for, but, for now, we'll have these two types,
+01:48 because I want to still have the json option.

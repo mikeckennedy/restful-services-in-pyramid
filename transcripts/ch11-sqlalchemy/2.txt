@@ -1,0 +1,38 @@
+00:01 Now in order to use sqlalchemy ,
+00:03 there's a couple of things we're going to need to get set up as foundational items
+00:05 before we can model our classes, with sqlalchemy .
+00:08 The first one is to just indicate that hey we depend upon sqlalchemy now,
+00:12 so it's going to be important for later, when we actually want to deploy this, right,
+00:17 so I could click this button here, I didn't do it last time, I'll do it this time.
+00:21 We wait a moment, great it looks like everything was installed successfully
+00:25 into our virtual environment, we could of course check if we say pip list,
+00:28 now we should have sqlalchemy right there, apparently 119 is the latest version,
+00:33 ok so we have sqlalchemy here;
+00:36 the next thing we need to do is we need to create a base class,
+00:39 now the way it works basically is for each database that you want to talk to
+00:44 you created base class, and when you derive from that class,
+00:47 it tells sqlalchemy here is a type I'm supposed to manage
+00:51 and then you can do things like create the tables
+00:54 based on all the types that derive from this type, things like that.
+00:57 So the first thing we need to do is actually create this base type
+01:00 now it's really simple and it is not at all complicated,
+01:02 but I am going to put it into its own file ,
+01:05 just so that you know where to go to manage it,
+01:08 it's clear where this base class lives, things like that.
+01:11 If we have say like an analytics database and a core database,
+01:14 we'd have two base classes, like a sqlalchemy core base
+01:17 and a sqlalchemy analytics base, but, we are not that advanced here.
+01:21 Okay, so let's go and create a new file, I'll call this sqlalchemy base,
+01:25 alright, so we're going to import sqlalchemy.ext.declarative ,
+01:35 let's do it this way, let's say from that import declarative base,
+01:40 so this is like a factory type thing, a function when called,
+01:44 will actually create a type dynamically, like I said,
+01:48 there should be one type per database,
+01:51 that all of your models derive from, and really huge one
+01:54 that I guess could make sense to like have multiple ones
+01:56 if they never intersect with each other, but I always just create one,
+01:59 so we'll call this sqla l c hemy base, it's going to be this, right,
+02:03 so this is like a factory function, factory method that is going to create
+02:06 a type then we can use that type to derive from.
+02:10 So like I said, there is not a lot going on here,
+02:14 but this is what we got to do to get started.

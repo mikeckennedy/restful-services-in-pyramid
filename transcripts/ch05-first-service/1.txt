@@ -1,0 +1,31 @@
+00:01  I think it's time to create our first web service.
+00:04   What web services we are going to build?
+00:07   Well we've been hired by a small town auto dealership here,
+00:13  and this dealership is very interested in taking their car sales to the next level
+00:19  and they've decided that if they can add a little bit of European flair
+00:24  plus some technology, some services,
+00:26  maybe people can integrate with their APIs
+00:29  they will be able to take it to the top.
+00:31   So we're going to add Opel as one of the companies,
+00:35  the brands of cars that we're going to sell,
+00:38  and we're going to expose all of these Opels
+00:41  that people might want to sell or interact with through our web service.
+00:45   So we're going to be creating basically a service that lets them list the details
+00:49  about the cars that they sell, initially
+00:52  and then later, we might be able to do things like add used cars for sales
+00:56  or list our own Opel to be sold through their Opel dealership things like that.
+01:01   So , if we look at the operations, we're going to start small,
+01:04  the first thing that we're going to do
+01:06  is be able to just do a get to list all available cars
+01:10  now, they've actually got a pretty big supply cars as we'll see in our database,
+01:14  so we're going to have to limit this somehow,
+01:17  maybe implement some paging or something like that,
+01:19  but we want to be able to get all the cars they have,
+01:23  and once we have the list of cars, we might want details about those cars.
+01:26   So if we want to interact with a particular car,
+01:29  we could do a get against api /auto/ the id of that car
+01:32  and that will give us a specific details about this car.
+01:35  Now, we might want this in many formats, but in our first pass
+01:38  we're going to take and exchange all of the data simply in json format.
+01:43  I hope you are excited to build this web service
+01:46  for this awesome car dealership, it's going to be really fun.
