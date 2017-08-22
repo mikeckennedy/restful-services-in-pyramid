@@ -1,0 +1,17 @@
+00:01 In this course we're going to be using something called logbook.
+00:05 Now, logbook is made by Armin Ronacher, the guy who created Flask
+00:09 and logbook is really nice; Python comes with built in logging,
+00:14 but for some reason it's just not so clean and simple,
+00:17 I don't know why, but not so much fun; Logbook made it be more fun,
+00:21 so here you can see a really simple example of how you might set it up,
+00:24 say we're going to push to standard out, setup a logbook and off it goes,
+00:29 and we'll do this in a couple of different ways in our apis,
+00:32 but what makes this fun, what about getting log messages to your phone
+00:37 or desktop notification system, logbook can do that.
+00:40 So logbook has got a bunch of cool features
+00:42 and I like it because it's really easy to use,
+00:45 and it works well with layered systems,
+00:47 so different levels of your web app can have
+00:51 different output type messages and so on, so that's really great,
+00:54 it's easy to tell where did this error come from
+00:57 or what was the sequence of events that led to some log message.

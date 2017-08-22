@@ -1,0 +1,69 @@
+00:01 In this chapter we're going to add
+00:03 both logging and error monitoring to our web api.
+00:07 First of all you might ask why do we care about monitoring, right,
+00:10 just our clients let us know, yeah they probably will,
+00:13 but there's a couple of things we kind of want to look for;
+00:16 we want to have extra information
+00:18 so that we can be sure we know what happened,
+00:20 and we like to get notified before people start complaining.
+00:24 This is a pretty common thing on the internet,
+00:26 ooh our web application is crashed,
+00:29 boom 500 sorry and it's cool to have like a fun error page
+00:32 so at least it doesn't feel so bad, right,
+00:34 but when our application crashes,
+00:36 we want to have all the information that led up to this,
+00:39 what browser were they using, what exactly set of steps did they take
+00:43 what was the url, was there a query string, where they logged in
+00:47 who were they longed in as, all these things are super important,
+00:49 so having that in the log file is great, getting that notification exactly
+00:53 when this error happens like maybe to our Slack channel
+00:55 or to our email would be even better.
+00:58 So, eventually when the user comes back in contact us
+01:01 about the error and says hey I had this problem,
+01:03 we can say yeah we're already researching it
+01:06 we know what happened, we're going to fix it shortly.
+01:08 That's the perfect answer if something goes wrong, right.
+01:10 So, in this chapter we'll see how to do that.
+01:12 All right, first of all let's look at the log file,
+01:15 so here's the log file from Talk Python training
+01:17 and there's a number of interesting things to see about it
+01:21 I've actually cleaned up some of the data
+01:24 so that we don't have like personal email addresses
+01:28 or the other things like that that maybe shouldn't appear in a public course,
+01:30 but just pulling up this log file shows us some really interesting things.
+01:36 So, for example, we can see user actions, like here our user is logged in,
+01:39 here's another user action, somebody subscribed to the mailing list,
+01:43 and here's another, this person has logged out at this ip address.
+01:47 So this is standard application operations, right
+01:51 and we issue this to the log files a notice
+01:53 like these are kind of significant events in the application life cycle,
+01:56 but they're not highly important, right they're just stuff going on.
+02:01 Now, we also have other things that maybe you wouldn't have expected
+02:04 search engines, so down here you can see the search engines are trying
+02:07 to dig into the actual course videos themselves,
+02:10 they shouldn't be doing that, I don't know why they're trying to go here
+02:14 I don't really care but you can see
+02:17 that there is some four or four type stuff happening
+02:19 around googlebot or something compatible with googlebot,
+02:22 but I'm not sure what the heck that is;
+02:24  there's also other interesting stuff that shows up,
+02:26 for example here's somebody trying to hack the website
+02:28 so they're looking for the wp login php page
+02:33 which is what wordpress uses as its backend
+02:36 to give you an admin access to the site
+02:38 as you probably know, this site is built with Python, IT's a custom site
+02:41 there is no wp login so those hackers can just take off right,
+02:44 nothing really important happened here,
+02:47 but it's interesting to know that someone was actually trying to hack us
+02:50 in fact this happens all the time, it's happening here, and also down here.
+02:53 So the log file lets us know what's going on in our application
+02:57 and we'll even discover certain things like why are the search engines
+03:02 trying to get to the private videos, I don't know,
+03:05 but having a log file turns out to be really helpful
+03:07 just in understanding how your apps are being used as well.
+03:10 So this equally applies to web applications as it does to web apis.
+03:14 Now, if something goes wrong, we want to know about it as soon as possible
+03:18 so we'll briefly talk about setting up Rollbar
+03:22 which is what I use for my web applications
+03:25 you can really easily integrate Rollbar into Pyramid
+03:28 and it will automatically capture all these errors and send them your way.

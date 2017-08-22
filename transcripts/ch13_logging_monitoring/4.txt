@@ -1,0 +1,227 @@
+00:02 Now that we have logbook all set up and working,
+00:04 let's actually switch back to dev, now let's go ahead and do a little bit of logging.
+00:08 So let's begin by logging this startup action,
+00:12 so a lot of this sort of system set up a configuration
+00:15 is really stuff you want to register in the system start up log,
+00:20 so for example the core settings maybe you want to save that,
+00:23 you very likely want to save the database connection information
+00:26 like this is the database we're using right now,
+00:29 so we can go back and check that out,
+00:32 possibly stuff about the renderers, and the routes maybe, maybe not,
+00:35 but definitely the db seems like something you'd want;
+00:38 so let's go over here, and let's actually work with logbook.
+00:40 So, we'll come over here we'll create, I'll just call it a log, so we'll say logbook,
+00:45 it's not imported, this file, until now
+00:50 and we would create a thing called the logger, and these loggers get names,
+00:53  so the name is part of a hierarchical type of output that it gives here,
+00:58 so you'll see that it gives you the time
+01:00  and the level and the location within the app
+01:02 so I am going to call this app start up, something like that,
+01:05 or we maybe make it very obvious, make it all caps, I don't know take your pick.
+01:09 So then let's go ahead and make sure we turn the log
+01:12 and we will use that above, so we can say log.
+01:15 now we have things like notice or warn or error or trace, so let's say
+01:21 that this is a info, maybe something like that, e'ill send out this info message
+01:28 and it will say something about the log file and the mode
+01:32 so configured something like that, ok, so configured logbook in
+01:39 so here we'll say dev mode, if not log file else prod mode, something like that,
+01:48 and then the next thing we want to pass is the log file, right,
+01:53 so for now let's just go and let's just run it
+01:55 and see this message come out, so run it again,
+01:56 we're running in dev which means the message goes to the output stream,
+02:00 and here's what one of these messages looks like,
+02:03 configuring logging with, go in here and get rid of that print message,
+02:09 ok so here we got this exact time of the recording, pacific standard daylight time
+02:14 I guess, and we have an info level message
+02:18 from this part of our application, here is the message
+02:21 so we've configured logbook in dev mode with no file,
+02:23 now let's go a and switch it to production, try it again,
+02:28 okay, it's running great, where is the message, message is down here.
+02:32 So I think I got to refresh this, here we go,
+02:37 so now notice that this message has gone directly exactly the same message
+02:42 saying some time gone to this file here,
+02:44 and notice that the year month day is in here
+02:49 and of course it's going to rotate around as the days change, right,
+02:53 tomorrow will be the thirteenth, so 5-13, things like this.
+02:56 Now we could have a go both to here and to here
+03:00 but you'll see that when we get to deployment
+03:03 things like the micro wsgi log catch standard out
+03:06 and put that in there already so you would basically be duplicating
+03:08 this log message stuff to the micro wsgi bits
+03:11 and you know, you can decide whether you want that
+03:14 but I don't think it works out really well.
+03:16 So we're going to go like this, let's go back to dev
+03:19 let's go ahead and do a little bit more work
+03:21 so we got our logging here, we'll call this log we could make this
+03:24 like a global variable here but let's go into like this,
+03:26 we'll pass it along there, pass it along here,
+03:30 and now what we can do is we can say something like this,
+03:35 I think we're doing the logging in there right,
+03:40 nope, okay good, so let's do our log here
+03:44 at one point we're printing that out, and let's say that this is an informational thing
+03:47 and based on the way we set things up that means
+03:50 this is going to show up in production, whereas maybe
+03:54 more chatty stuff a lot of the success type things you probably don't want to log
+03:58 so well say configured db with sqlite file like this,
+04:05 and we give it db file, okay, so if we run this again,
+04:10 now we'll see a logbook is configured with no file
+04:13 this one is just really just to show you guys, I'm not sure I'd really log that
+04:17 but this one definitely configure db light with this file
+04:21 or connection string or something like that
+04:23 that's totally reasonable, all right,
+04:25 maybe down here we're also going to do
+04:29 log, and do something like this log.info
+04:37 configuring your image for cors permissions, and spelling is hard,
+04:45 but the tools are here to help, okay, so we run it again,
+04:50 ok, so we are getting our message here
+04:52 now we could have actually gone in here and say you know what,
+04:55 log.trace adding cors permission to request
+05:01 and go down here and do a format request.url,
+05:08 that would be underscore, let's fix that for a moment,
+05:10 now if we come over here and we make a request of this,
+05:13 and do a few of them, click here, must be authorized, sure,
+05:17 so notice, you can see all of this stuff adding cors permission
+05:21 trace, trace, trace, trace,
+05:23 so, this is very very chatty, you don't want to normally log this
+05:29 but maybe you're trying to debug it, so we could have this trace,
+05:32 I'd still find even things this chatty like maybe I'll put that message there ,
+05:36 but then, actually not keep it around most of the time,
+05:40 just if I'm like wait, what's up with cors, I thought that was working
+05:42 put that back, right, but you can see we have these different levels,
+05:45 we have informational, we have trace, and we have the app start up
+05:48 let's add one more area where we might do some logging.
+05:51 So a couple of things to note before we leave this page,
+05:53 so once we've done this global init, throughout the rest of our application
+05:58 we can now just say logbook.logger and allocate one of those ,
+06:02 give it a name and use it and it will pick up the settings done in global init,
+06:06 so you really want to try to do this init logging like as soon as possible,
+06:10 right at the beginning of your app.
+06:13 So even these other start up operations
+06:15 can have logging configured and ready for use.
+06:17 Okay so this is great, let's go over to our auto api here
+06:20 and do one more thing, let's go and import the logbook as well
+06:27 and let's create a logger here, so we'll say log equals, call this auto api,
+06:34 now if you want to look at, let's go back to the messages really quick,
+06:38 if we were to look at these messages as kind of a hierarchy here right,
+06:41 so we've got the level and then we've got this thing
+06:45 and we've got the message, we could do it like this api/auto
+06:49 and then maybe we'd have other things like accounts or whatever,
+06:53 and this might indicate like these are all part of the api,
+06:56 but this part is the accounts, I don't know, it's up to you;
+06:59 let's go with this, I think there's probably some some utility in having it that way
+07:03 if we want to go back and parse the log files.
+07:05 Alright, so now throughout this, here we have a print message, right,
+07:09 any time you see a print message that should probably be going away, right
+07:13 so it's going to be a log and notice this is kind of informational,
+07:16 this is just hey, things going as usual,
+07:19 we're listing the car, maybe this would be a trace,
+07:22 or maybe an info, I'm going to go with trace on this one.
+07:25 Down here, similarly let's grab the same thing,
+07:30 this is going to be car details for cars such and such and user such and such,
+07:39 maybe this needs to be car id, like so,
+07:44 ok so let's go ahead and just see that these are working;
+07:48 notice, here's our startup messages and info info info app start up,
+07:52 and if I try to click on this, we're not going to get the message about seeing the cars,
+07:56 maybe we want to have a permission failed type of thing, right,
+07:59 maybe over here in our auth, we are going to have a section
+08:02 where we deny people access to it, we might want to log that.
+08:05 So that's up to you, we could do it, we'll just probably finish out this one over here,
+08:11 so when we get a single car this makes a lot of sense,
+08:13 now here's where it gets interesting, so we could say something like this
+08:19 log.notice info, how about info, this is sort of a preliminary successful thing
+08:24 like hey somebody is trying to update the cars
+08:26 we'll say we let me grab the user name here
+08:29 so we'll say the user such and such is creating a car, like this,
+08:34 so here's an info message, but when there's a problem
+08:37 maybe we could say something like log.warn,
+08:41 so this is not a problem with our system,
+08:43 but this is a problem with the message sent in by this user.
+08:46 The submitted json body couldn't be parsed for this person here, ok.
+08:55 So that's pretty decent, if there's some kind of problem
+08:58 we're going to give you a warning which maybe
+09:02 maybe this is even a trace, I'm not sure,
+09:04 but people modifying data, you probably want to log that
+09:07 but you can decide trace, not trace, whatever,
+09:10 but certainly you want to log like mistakes and errors, right,
+09:13 so down here, you could say submitted invalid car,
+09:17 we can say reasons you're here
+09:21 now we probably want to be a little bit careful with this,
+09:25 because this error message might have new lines and stuff that might mess up our logs ,
+09:32 so let's be careful how we put this in here, so we go here
+09:37 and I would like to just comma separate this or semicolon separate it
+09:40 and we'll do that with a quick join like this,
+09:43 okay so let's go and do that, and finally maybe this one is a proper error, right
+09:49 this is our problem, not their problem failed to save car,
+09:54 and at this point, maybe we're just like you know what,
+09:57 we are just logging everything, like this, so just straight up log the exception,
+10:01 in fact we're returning it back which made me not be advisable,
+10:05 but we're doing it there, ok so let's run this
+10:07 and get to where we can actually call this
+10:11 with postman, with authentication, api key and all that
+10:14 so here's our get autos, and we have you can see our authorization key
+10:18 we're doing json, that's cool, so we send that over,
+10:22 trace api listings, listing the cars for jeff,
+10:27 remember that's the api key for jeff that we've been using.
+10:30 Let's go over here and make another one, and this time
+10:34 let me grab one of these so I remember the format
+10:37 and let's say we're going to do a post to create a car
+10:41 so go set the body to this, we can't have an id
+10:47 this is going to be a very fast new Opel with lots of extras
+10:51 this will be, let's just call it slightly old Opel, not so many extras ;
+10:57 now let's make that json malformed right, and the url is going to be the same
+11:03 that's our model here and I run this, how's it going to work
+11:07 it's good and say permission denied, right come down here
+11:10 you must specify authorization header, so we'll do that,
+11:14 and then it should come up with an error,
+11:16 so we have headers authorization with that value,
+11:21 send it again, boom could not parse json, invalid character here
+11:25 okay that's fine, but let's look in the log files, info the user jeff is creating the car
+11:30 ooh, warning they submitted a json body that couldn't be parsed
+11:33 now we could print out the json body if we really wanted to,
+11:36 like I said that might mess up our log files, we might need to encode it in some way
+11:40 so it is like escaped in the log files who knows; but this at least lets us see
+11:46 like hey there's something going wrong in our api auto section,
+11:50 now finally, let's go over here and make a few more obvious mistakes
+11:56 so let's have some negative prices, and let's get rid of last seen,
+12:02 that should generate a number of errors, it does,
+12:04 there is two here pricing and year
+12:06 and we look down here now we can see warning submitted
+12:09 invalid car price must be non negative, year must be non negative.
+12:13 Okay, so this is nice it's showing up in our log and so on.
+12:16 So I guess we need probably one more message to make this all work,
+12:21 so right here when things are all good let's say this log.info
+12:24 and where is my user bit, so and so has successfully created car with some id
+12:34 so here we'll pass in the name, we'll pass in the car and the id of that
+12:38 remember this comes back from the database,
+12:40 so one more time let's go and actually create a valid car here
+12:44 still, we have these problems, let's go back to our body here,
+12:49 and say that's positive, that's positive, put our last seen back
+12:54 try again this should work, error 500, ok that's not great
+12:58 could not save car parser must be a string or character stream not a datetime.
+13:03 I think that actually might be a real problem we have in here
+13:07 let's go check here, yes I think that the car once we've upgraded it
+13:10 has already converted that to a datetime so it actually had a problem
+13:14 but check this out, we really did save a full on crash in our server,
+13:18 all right so I think we'll be good now, let's try it one more time
+13:21 send it, 201 created awesome, here you can see the car came back
+13:24 with this id that ends in 5b, let's go see what we got—
+13:28 excellent, we have an info in the auto api
+13:31 jeff has successfully created this car such and such,
+13:34 all right so I think we've really driven home this idea
+13:37 of working with logbook and adding the logging.
+13:41 Now one thing that always bothers me about having tons of logging,
+13:43 is this used to be very very clean and easy to read
+13:47 and now it's just got you know, just more stuff
+13:50 okay, so I don't really know how to solve that,
+13:53 there's not a lot I can do to move that stuff out
+13:57 because every single line is kind of its own unique message and data and whatnot,
+14:01 so I think that's just a fact with having lots of logging,
+14:04 but it does make it a little less nice here,
+14:06 however, when we're running, and we can come down here in dev mode
+14:11 or we can actually just tail our logs or whatever,
+14:14 then you can actually see what's happening in your app
+14:18 and that's really gratifying that you are able to go back and track that down and so on.
+14:21 So logbook very nice we have the different levels, we have the different outputs,
+14:25 we have the different locations, the error formatting and so on,
+14:29 there's email, there's sms, there's lots of cool stuff with logbook,
+14:33 so definitely consider adding this to your api before you send it off to production.

@@ -1,0 +1,122 @@
+00:01 Now let's add logbook logging to our api.
+00:05 The first thing we have to do is actually install the logbook package
+00:08 and of course set it as a dependency
+00:10 so down here we're going to want to put it there
+00:13 and let's go ahead and this time we're just going to pip install it
+00:16  so we'll say go to the terminal make sure that our virtual environment is active
+00:19 and we'll pip install logbook,
+00:24 great, it looks like that's going to work
+00:27 and we come down here and we're going to say loogbook, right,
+00:30 so when we go to the deployment or we check this out on another machine
+00:33 we will run the setup, it automatically has all the dependencies, right,
+00:36 we don't want to have to chase those down as run time errors.
+00:39 So we have logbook here, the next thing we need to do is
+00:42 do a little bit of configuration, logbook is very flexible,
+00:45 and it can send the log messages in all sorts of locations,
+00:48  I think what we're going to do is when we're running in development mode
+00:51 we want to send it to the console,
+00:53 so we can just see it come out in the terminal there
+00:55 and in production we want to send it to a particular file
+00:58 so let's go here and give us a key that we can use, or a value
+01:03 that we can look up about where this file is if we should use it
+01:06 so we'll say logbook log file, something like that,
+01:09 now let's just leave it blank here in the development version,
+01:13 and in the production version, let's go over here and we'll just say
+01:17 this is going to be the logfile.txt, something like that
+01:22 remember to not put quotes on these, the green is already like the string value
+01:26 so the quotes will cause trouble.
+01:29 Okay, so we have this, and let's go and then import this,
+01:32 and now we've got the little init db
+01:34 that is very similar to what we're doing, so let's do an init login, like so,
+01:38 so we're going to get the settings, and this time we're going to have log file
+01:43 and we wanted to just grab that value, which may or may not be empty
+01:47 but we're going to go grab this value here, and then what are we going to do next
+01:52 well, let's create a special single module, whose job is basically
+01:56 to set up all the logging for us, so we don't have to bloat our set of file here
+02:01 keep this nice and clean and readable,
+02:03 so over in infrastructure, let's just create a logging bit
+02:06 and let's import it, in a nice and easy way
+02:10 let's say import restful infrastructure logging as logging
+02:16 so we just say logging, that will keep it nice and simple,
+02:18 so down here we'll say logging. let's say global
+02:22 this is kind what we did before, just global init, log file,
+02:28 so this global init really means like you call it once at the beginning and that's it,
+02:32 we can use PyCharm to write this function, thank you PyCharm.
+02:35 So now, over here, we're going to actually work with logbook,
+02:38 so let's begin by importing logbook, like that,
+02:42 so what we need to do is we need to make two basic choices ,
+02:46 one, what level are we going to log at,
+02:49 and this might be something entirely reasonable to put into the configuration files
+02:54 and debug, we're logging a trace and in production
+02:57 we're only doing warnings and above or something to that effect;
+03:00 so let's go over here and just set the level
+03:03 so let's say logbook. we have notice, info, trace, notice
+03:07 in production, probably you would want to run info or notice
+03:10 these are kind of higher level, and sort of the most broad one is trace,
+03:14 so we're going to default the trace if it happens to be that we have a log file here
+03:18 and that would indicate we're kind of in production,
+03:21 then we'll make a different choice for the level.
+03:23 Okay, so let's actually use the log files presence
+03:26 to indicate whether it's in development mode of production mode,
+03:29 so we'll say if the log file exists, then we want to send this to a file somewhere
+03:35 we'll come back to that, we'll do the simpler one first
+03:37 so if there's no log file, we're going to use this trace level
+03:41 and what we want to do is we want to set up what's called a stream handler
+03:45 so we can say logbook and the stream handler will write to any stream
+03:50 well, what stream do you think we want to use, how about standard out, right,
+03:54 so we're just going to log to where all the other messages go,
+03:57 wherever print goes, so go our messages,
+03:59 we can set the level and let's just actually, let's move this in over here
+04:03 different values in two locations we can just inline this like so,
+04:10 okay, not sure why we have the parenthesis, thank you PyCharm,
+04:14 okay, so this stream handler we're going to need to create it
+04:17 and now what we can do is we can say I would like this particular handler
+04:21 to capture messages from where, and so we use this push thing,
+04:25 we can push it to the thread local storage,
+04:27 greenlets or globally within our application.
+04:30 So that's what we want to hear is to just say for the application run this
+04:35 and we're going to do something similar up here,
+04:37 but we're not going to use a stream handler,
+04:39 we are going to use a different kind of handler
+04:42 so look at all these different handlers, we got a gmail handler,
+04:44 a file handler, a rotating file handler, a timed rotating file handler and so on.
+04:50 Even a fingers crossed, which is kind of an interesting one,
+04:53 so rotating would be once the file hits a certain size, make another copy of it,
+04:59 like switch to a new file name, timed is I think a little more predictable
+05:03 like once a week or once a day switch to a new file,
+05:07 so you have a log file for that day, that's what I use and I think it's really important
+05:10 because if you have a popular web service
+05:13 you'll see that these log files can pile up really quickly,
+05:16 like on Talk Python we have gigabytes of text in these log files
+05:20 and periodically we'll go and take the old ones
+05:22 and compress them and get rid of them, right,
+05:25 so having them based on time is really handy.
+05:27 So we want this, and of course, it's going to have different values here
+05:30 we're not going to send it there, we're going to pass in the log files, the first thing
+05:35 and then we're going to set the level, just like before
+05:38 and this one, let's do this one at info, right,
+05:40 so trace and those kinds of things like really verbose stuff is out,
+05:45 so either info or notice seems like a decent option here.
+05:48 And then, for the date format, we want this to go something like
+05:53 %Y-%m-%d, something like that, so this is the format of the file,
+05:59 ok, so a timed rotating file handler for, if we have a log file
+06:06 and if we don't, we're going to assume that it's just production.
+06:09 Ok, so this looks pretty good, let's just make sure app runs
+06:13 and everything we've done so far is hanging together
+06:16 and we'll also do a little print here, print configuring logging with
+06:24 and we'll do the log file, and let's do it like this,
+06:27 okay, so run it, are we actually calling this, that is the question,
+06:33 so we created the function, but no, of course we're not calling it, unfortunately,
+06:39 there we go, now we'll be calling it, great, configure logging with
+06:43 well nothing, right, notice up here
+06:46 that I actually have created a second run configuration,
+06:48 let me pull that up, we have a dev which points at development.ini,
+06:51 and a production, which points at you guessed it— production.ini.
+06:55 This is super easy to set up, you can go up here
+06:58 and add as many of these as you like, and you just pick the configuration file,
+07:01 the working directory, and the Python interpreter to run it.
+07:04 So if we switch to production we'll be using the other configuration file
+07:08 and now we're going to be logging with the text file.
+07:11 So it looks like our grabbing the value is working correctly,
+07:14 the pushing, the stream handlers to the app worked great,
+07:18 now all that is left is to actually do some logging.

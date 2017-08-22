@@ -1,0 +1,115 @@
+00:01 The last section in this chapter about monitoring logging
+00:04 has to do with real time monitoring,
+00:07 so what I'm using currently at Talk Python and the various podcasts
+00:10 and the training site is rollbar, and of the various choices,
+00:14 rollbar is a really good one, let me take you on a quick tour
+00:18 and show you how you integrate it into your app,
+00:21 it turns out installing this is your app is like super easy
+00:23 there's a free version, so why not try it on your api, right
+00:26 So the idea is basically you connect your github project,
+00:30 even if it is private, here and then you can tell rollbar
+00:35 when you deploy here's a particular deployment,
+00:37 it'll look back at github and understand the code changes that have been made,
+00:42 and then it will wait for any errors, it'll send you messages about those
+00:45 and then correspond that back to the source code that comes from github,
+00:48 so a really really nice system, let's first talk about how to install it,
+00:51 then I'll show you like what we've got up here for Talk Python actually.
+00:55 So if you go down to the docs, they actually supported a couple of different
+00:58 libraries and languages and whatnot, so we go to Python,
+01:03 and it talks about how you could obviously pip install it,
+01:06 there's a couple of things you can do, but if you're working with Pyramid
+01:09 you just click here and it says this is super easy,
+01:11 they already have one of these handler type things that listens to every request,
+01:16 before and after a little bit like our cors, the thing that we did,
+01:19 so you just have to pip install the Rollbar itself,
+01:22 and then the contrib sub module or sub package is already in there,
+01:26 so you just basically tell pyramid to use this,
+01:29 in production by the way don't do this, you just have this alone
+01:32 this is only for dev, very important there, and you have to get your api key
+01:37 and stick it in here, and there is a little bit more stuff to do,
+01:40 to set up the logging and the environment, make sure dev says dev,
+01:45 production says production, things like that.
+01:47 And that's it, you just basically configured develop.ini and production.ini,
+01:51 and you're golden, right, so really easy to get going,
+01:55 let's go and look around the Talk Python back end.
+01:58 So you can see there's not too many errors, like these blue ones,
+02:00 what is that five or six different types of errors,
+02:04 some of them may actually be repeated the same ones,
+02:06 over two months I'm pretty happy that given how many requests that site gets.
+02:09 So notice, in the last 24 hours no errors, that's great,
+02:13 nothing has been reactivated or anything like that,
+02:17 there are some that I haven't gone and said you know this is okay
+02:20 I kind of approve this or I acknowledge this error has occurred,
+02:23 so Talk Python talks to a MongoDb server
+02:27 which is on a separate machine at Digital Ocean,
+02:30 internally it's known as Mongo server, although that's not a public name of course,
+02:34 and there was some security patch for Linux so I rebooted the server,
+02:38 and I had not run it in like multiple machine replica mode,
+02:41 so basically it failed to connect right, I mean the machine was only offline
+02:46 for like ten seconds over the last month, month and a half,
+02:50 but still, Talk Python gets so many requests per second
+02:53 that they still generate errors, right, you can see a couple of errors here,
+02:56 so we can go look at this, this is pretty interesting,
+02:59 let's see what we got, I could resolve it and say fix this here,
+03:03 but we can do that in a minute, so here's the mistake that we got right,
+03:07 we couldn't connect to the Mongo server and let's see,
+03:09 we come down here and here's the trace back,
+03:12 so what we were trying to do is we were going to the episodes controller
+03:15 and then this feed view model, and then into the Mongo repository,
+03:18 I am calling a thing called git episodes,
+03:20 and then we were trying to evaluate the query
+03:23 which came back from the database and notice I can click right here
+03:25 and it will actually take me to where we need to go
+03:28 in github to view particular line, right, so this is pretty cool,
+03:32 I can see how often this has occurred for what browsers and so on,
+03:38 we can register people and it can grab that, what's the breakdown by platforms,
+03:44 so these are errors happening when podcast players are trying to grab the rss feed,
+03:50 which they're just pounding away at,
+03:52 see the ip addresses, here is the suspected deploy,
+03:54 you can see all the stuff that I've put out here,
+03:57 it says you know, I think this one right here is what happened,
+04:00 we could go look on github and are there similar items, yes,
+04:03 are there community solutions, sadly no, especially since it involves
+04:08 very specific machine name, so things like that.
+04:11 Okay so this is pretty cool, and you can actually see the call stack down
+04:14 through Mongo engine, down into PyMongo, and then finally all the way down,
+04:18 So this is cool, let's go and also see the deploys,
+04:22 you can do your own queries, things like that;
+04:24 and let's go look at another one that has a slightly different information.
+04:28 So if we go to Talk Python, down here, right here at this section
+04:33 what do listeners think, when I first deployed this,
+04:35 I had in my local database populated a couple of these,
+04:40 just test ones for the design and then the plan was I would deploy the site,
+04:44 and go to the back end which also came with those changes,
+04:48 where I could enter these, but initially, right when I pushed go
+04:51 there was nothing in the database, right,
+04:54 because my next step was to go and add something to the database,
+04:57 well it turns out before I could go and do that, I got this error,
+05:00 the home page is not working, what is wrong with it, it's broken,
+05:05 and of course in production it just says 502, or 500, boom, no dice so that's bad,
+05:11 but then I got a quick notification about this, and I came over here and said
+05:14 what is going on, so I looked at this and said ok,
+05:17 see home control or home view model,
+05:20 doing this oh chosen reviews get random reviews count=3,
+05:24 get chosen reviews random.choice on the reviews,
+05:27 and guess what— that was empty,
+05:30 so it crashes, right, the crash was trying to run this line right here,
+05:33 which is pretty cool, and check this out, so you could expose the arguments
+05:36 that were passed to this function, it happens to be passed
+05:39 because of the default, but or maybe I set that, I don't know,
+05:42 but it's passing three for the count, right it's also pass itself
+05:47 and has some local variables down here as well, we can see
+05:51 the various pieces here, so at the time this was running on sqlalchemy
+05:55 now it's running on Mongo, but it doesn't matter, the problem is
+05:57 that with the database the problem is this line,
+06:01 doing choice on a list that's empty basically
+06:03 and so instead of trying to debug this figure out what's going wrong
+06:06 it fails in production but it works on my machine
+06:09 like why is this happening, I would just pull this page up and go oh,
+06:12 I better quickly go enter some stuff into the database
+06:15 at least one thing really quickly, so this doesn't crash,
+06:18 boom, problem solved, it wasn't actually a coding problem,
+06:21 but it was a configuration data problem;
+06:23 so this is the kind of stuff that you get with rollbar,
+06:25 and you saw it's super easy to integrate it,
+06:28 you just basically set up your configuration any file and you're good to go.
