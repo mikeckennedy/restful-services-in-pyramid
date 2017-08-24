@@ -1,0 +1,18 @@
+00:01 Now the next thing we want to do is create our server
+00:04 but before we can do that, we need to give it an ssh key
+00:06 that we can use to log in, after it's created,
+00:08 this is a much easier and safer way than just using usernames and passwords.
+00:12 So click here, it's going to say let's create a new ssh key,
+00:16 and you click this link, it takes you over here and it says
+00:19 the first thing you are going to do is ssh keygen rsa.
+00:22 Now that's close to what we want, it's not exactly really what we're going to need,
+00:25 so what we're going to do is we're going to do ssh-keygen -t ssh-rsa,
+00:31 not just straight rsa, and it's going to ask us for our files
+00:34 we'll say use/screecaster/ .ssh/ and let's call it digital_ocean_course_demo.key
+00:44 call it whatever you want, I'm calling it that, no passwords and it's all good to go.00:48 Now if we look in here, we'll see we have a couple of these,
+00:51 we have the private key and we have the public key,
+00:55 now I'm going to delete this key from my account afterwards anyway
+00:58 but let me just offline grab the value and put it into where it's supposed to go.
+01:02 Okay I've taken the contents of the public key
+01:05 and I put it in here where it's asking for the new ssh key details,
+01:11 so that's what we're going to use for creating this server.

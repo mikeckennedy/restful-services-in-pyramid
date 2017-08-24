@@ -1,0 +1,57 @@
+00:01 So we have a little bit of basic documentation working here
+00:03 we don't have really like a nav bar anything like that
+00:06 but just pure html, we can have that.
+00:08 However, we don't have the actual documentation
+00:11 so let's go over here and fill in this piece that we're going to work with
+00:16 now I am just going to paste this in
+00:18 because you watching me type documentation can't be the most fun;
+00:21 alright, so what we're going to do is we are going to come down here
+00:23 and we haven't got our css yet, but we'll get there
+00:26 and we're going to have a place that talks about all the autos
+00:29 here's a little description, here's that get
+00:32 remember that was green like dark green on light green to indicate a get request
+00:35 and orange for a put and red would be for delete and so on,
+00:38 we even have a cool little try it button here,
+00:40 so you click the button, we're using bootstrap so it gets us button style
+00:44 and you click try it and it'll just go and download this,
+00:47 now, I don't think this is actually going to work here
+00:49 because we've added the requirement that you have to log in
+00:54 you have to pass the api key, but at least we can see it tell us
+00:57 hey no api key for you.
+01:00 Here's the response formats, and notice we've got a bunch of classes and stuff
+01:03 that we can style and we have our examples here in a pre,
+01:07 ok, so if we go back over here and we refresh
+01:09 boom, this already looks pretty good, it could be better
+01:13 like this part obviously could be better
+01:16 those were like pulled out in little highlights and whatnot,
+01:19 but decent, maybe I should indent this, there we go, indented, looks a little better,
+01:24 so let's go and work on the css, so notice we have already a static/docs css
+01:30 up here, but it just doesn't exist, so let me just copy this one in here
+01:35 we can look at it real quick, so this is from before
+01:38 I just said alright look, when you talk about the request
+01:41 use some sort of monospace type thing,
+01:43 color the git foregrounded and background so it highlights this way
+01:46 the post that way, obviously do the same for put and delete
+01:48 and just generally highlight the code parts and make the fonts a little bigger.
+01:54 So not a huge thing, but that looks a little bit nicer, right
+01:57 notice how these popped out now.
+01:59 So we have our little back home, we go back we could check out the post
+02:02 that was not done, we'll do that in a second
+02:04 but this one, this one's done, do you want to try it
+02:07 you must specify an authorization header, right
+02:09 then we could set up like a test one or whatever
+02:13 but for now, this is totally fine.
+02:15 Okay, so let's just put the html in the other one, so just like before,
+02:20 standard html here, and let's go back home,
+02:25 now paste that in there, so now we've got our little documentation.
+02:29 So that's pretty nice, we're back here, we're checking out our service,
+02:33 just hit the url so it would be like auto_service@talkpython.fm
+02:37 from our deployment section you would see this,
+02:40 and then you could go look at the individual pieces, right,
+02:43 this is not really a great set of documentation
+02:45 because I didn't create a whole fancy website just to talk about documentation,
+02:48 you guys totally should have the idea and a little template that you can work with.
+02:52 So hosting your documentation on github or on read the docs or something like that
+02:56 is totally fine, but you can see that it's super super easy to do
+02:59 if for some reason you want to host it inside the same app
+03:02 that serves up the api itself.

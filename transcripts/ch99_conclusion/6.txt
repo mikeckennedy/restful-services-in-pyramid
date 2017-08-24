@@ -1,0 +1,25 @@
+00:00 Returning json was fun, but we looked at returning different types
+00:04 we returned csv, we return json, including parsing custom types as part of the json,
+00:10 and images, so that also was good, but how do we negotiate that,
+00:14 how do we make this something the client can ask for automatically
+00:18 without us being involved? That's where content negotiation comes in.
+00:21 So here's how we created a negotiating renderer factory.
+00:24 Now the idea was this is basically a renderer itself
+00:28 that means that it has a _call, a dunder call method
+00:33 which returns a function, and that function takes a value and a system
+00:37 and then it returns the serialized result or some kind of response of that.
+00:41 So here we get it set up, we say look, we're going to provide you a bunch of renderers
+00:45 and then we'll key them off of the content type, so will you add these renderers,
+00:49 what content type does his thing render and what is it, so we'll store that here,
+00:53 if somebody calls us to create a new renderer to process a request
+00:58 we just say yeah I just use our renderer function here
+01:00 and then in this one, we're going to take the value,
+01:03 figure out which renderer it should go with, according to the request
+01:06 and then serialize it or crash if we can't deal, so we're going to go to the request
+01:10 get the accept headers, do a little work, because remember,
+01:13 this could be a string of like I'll take this, and if I don't have this
+01:16 I'll have this other one, so we got to take that apart,
+01:18 loop over those, see if sort of highest priority first and say
+01:22 do you have a renderer that'll do this, no, ok, how about another one
+01:24 and we'll just go through them and if they're all exhausted
+01:26 well too bad, I guess we can't help you we'll throw some kind of exception.

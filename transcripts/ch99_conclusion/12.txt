@@ -1,0 +1,14 @@
+00:01 Alright, the last thing we did after everything was up and running,
+00:03 we said, well if this is something public we should add some documentation
+00:06 and we could add that documentation somewhere else,
+00:09 or we could implement it and run it right in our web app.
+00:12 So we added a /docs section, and this decent look
+00:16 and little documentation for the various things,
+00:19 so if we want to get all the autos, we're going to do a get to api/autos,
+00:22 if we want to create a car we'll do a post to /api/autos,
+00:27 and we'll pass that body we say there,
+00:29 and you'll see the response type and so on.
+00:31 So, because we only have a few endpoints and a few options
+00:34 documenting inside our app seemed like a really decent choice,
+00:37 if you have a really complicated one,
+00:39 we talked about other options as well in that section.

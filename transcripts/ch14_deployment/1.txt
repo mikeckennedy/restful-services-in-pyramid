@@ -1,0 +1,49 @@
+00:01 We've reached an exciting point in our class,
+00:03 we've basically entirely created our web api,
+00:06 and we're ready to deploy it to the cloud, in a full on production environment.
+00:11 I hope you're excited, I am. So how is this going to work?
+00:14 Well we're going to start out by deploying this to Ubuntu,
+00:17 that's this big grayish box here, right so we're going to deploy to Ubuntu,
+00:21 and we could have the running across multiple servers,
+00:24 with load balancing a lot of things, but for a simple example
+00:27 we're just going to put it all on the same machine.
+00:29 So the first technology in addition to Linux that we're going to employ is nginx,
+00:34 so nginx is going to be the front line web server,
+00:38 this is the thing that browsers and other web clients talk to,
+00:43 and as far as they know this is the only thing involved in our web processing,
+00:46 so then, behind the scenes on the server,
+00:49 the thing actually executing Python is going to be μwsgi,
+00:53 μwsgi is implemented in C and is specially built
+00:58 for running Python web applications, so we're going to run that,
+01:03 but we're not just going to have one instance of it ,
+01:05 instead we're going to use it in this kind of master emperor mode
+01:09 I think it might be called,
+01:12 where there's one process, but you actually create many subprocesses
+01:16 because Python is not super great at computational parallelism,
+01:20 so the way we're going to solve this is just by having many subprocesses,
+01:23 it does use threads and as we're talking to things like databases,
+01:26 that will do parallelism, but we're going to get additional parallelism
+01:29 by having multiple ones.
+01:31 So we're going to create a bunch of these,
+01:33 and it's actually in these little sub processes where our Python code is going to execute,
+01:38 so let's see how this request overall architecture is going to work,
+01:41 some kind of request is going to come in from the internet,
+01:45 and hopefully, you'll set this up to use https,
+01:47 it's really easy to make nginx talk https,
+01:50 you just get a certificate, point it at it and say here's your certificate,
+01:53 so a request will come in to nginx,
+01:56 it's going to handle all the ssl certificate stuff,
+01:59 all the static files and things like that
+02:01 but when it needs logic, when it needs to do Python stuff in our application,
+02:05 it's going to send this request internally
+02:08 over to our μwsgi management main process,
+02:12 and this is probably over http or just a local socket ,
+02:14 and then this thing is going to decide which one of these is going to actually
+02:18 do the processing and then it will return the response back,
+02:21 so this is what we are going to go now and set up on Digital Ocean
+02:24 we are going to create an Ubuntu Server on Digital Ocean,
+02:27 we are going to install nginx, we are going to install μwsgi,
+02:30 we are going to move our Python code that we've written up there via get,
+02:33 and then we're going to see how to configure these things to accomplish
+02:37 basically exactly what I have here, except we're not going to do the https part,
+02:40 you guys can add that on yourself if you want.

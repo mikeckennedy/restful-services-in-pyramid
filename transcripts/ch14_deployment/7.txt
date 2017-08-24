@@ -1,0 +1,56 @@
+00:01 Let's review the various steps we had to take to configure our servers.
+00:04 We installed a bunch of things via aptitude
+00:08 in order to get our server ready to run what we needed,
+00:11 we installed μwsgi, we installed Python 3,
+00:13 we installed nginx and a bunch of other stuff along there,
+00:17 we stalled the get, command, line tools and so on.
+00:20 So that's all in that setup_script.txt, I said txt not sh
+00:24 because you really aren't supposed to run the whole thing
+00:27 there's a few steps that require manual intervention and so on.
+00:30 I guess you could run it once and just sort of realize
+00:34 ok, here's where I enter my username and password for github and things like that
+00:38 but however you want to use it, you can make it a full on proper script;
+00:42 there's a bunch of stuff in there that we'd ran that I'm not showing here,
+00:45 but these are the key configurations for the various pieces set up by those steps.
+00:49 So first of all, in order, we saw in order to run μwsgi,
+00:53 by pointing it at our configuration file, it needs a μwsgi section
+00:56 so this goes into production.ini, and see the μwsgi section
+01:00 what you want to listen to that could be a socket
+01:03 instead of http, where's the working directory,
+01:06 how many processes, where to log to, things like that.
+01:09 So, make sure this just goes at the beginning or really anywhere I suspect,
+01:13 but you can put at the beginning of your production,ini.
+01:16 Then, we have to register a μwsgi as a service, using system d
+01:21 so here we gave it like a description name and a target
+01:24 so we can run as soon as sys log is going,
+01:27 and then the execution path is to run μwsgi with any -paste option
+01:32 pointing at production.ini, and giving it the working directory.
+01:35 Other than that, you can pretty much just say this is just standard
+01:38 a system d service file; in order for this to do anything,
+01:42 we have to copy it to /etc/systemd/system
+01:45 and then you could just say refer to it as auto_service
+01:50 if you used the service extension on the file you can omit it
+01:53 when you're interacting with it on the command line.
+01:56 The other thing in addition to μwsgi that we used is nginx.
+01:59 So here we set up a configuration for nginx, we said
+02:03 I want you to listen to auto_service.talkpython.fm
+02:07 you saw that I removed the default website,
+02:09 so you could also go to this by ip address,
+02:13 and it'll just use the one and only thing it has this,
+02:15 but you can have many different servers and many different server names
+02:19 and things like that, you can just have a different server name here and it'll only listen
+02:24 at that point to that particular domain name, not just the ip address.
+02:28 So we're listening on port 80, we're mapping static files
+02:31 with a year-long cash to where the static files go,
+02:34 again we copy this to etc/nginx/sites-enabled
+02:38 and then there was some more stuff after the server set up
+02:41 and the static we set the location for \ onward just
+02:44 pass the url off to my application I am configuring below
+02:48 which is to basically do a little bit of setup on headers
+02:53 and gzip for speed, and then say we're just going to do
+02:57 a proxy pass over to μwsgi, to the main masterpiece
+03:00 running at port 8999 locally, could be another machines actually,
+03:05 but right now it's locally, and then that thing will figure out which sub process
+03:09 is going to actually, work or process is going to handle that individual request
+03:13 There you have it, we have our service running very nicely
+03:16 on a nice, cheap, high performance, Digital Ocean server for five bucks a month.

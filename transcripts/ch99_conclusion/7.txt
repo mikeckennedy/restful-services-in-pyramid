@@ -1,0 +1,33 @@
+00:01 After content negotiation and the different renderers
+00:03 we added validation to our api which was sorely missing up until this point,
+00:07 but once we did, the actual validation code simply overwhelmed the api code
+00:13 and the important code if you will, by just totally filling up
+00:16 so we said let's create this abstraction called a view model
+00:19 whose job is to do the validation, to do the transformation
+00:22 from original object into rich Python objects and so on.
+00:25 So here, after having a super bloated update auto method,
+00:29 we condensed it back down, so we're doing the standard web stuff in gray
+00:33 so we're getting the request.json_body and we have to do that in the api method
+00:37 because there's not really a good way to do that without passing the request itself
+00:41 so we just go ahead and say fine we'll have to do this here, a little bit of web work
+00:44 and then we create our view model, we give it the initial data,
+00:47 call compute details and then it populates its errors response
+00:52 which is a list of problems that may have encountered
+00:54 and if it has one, it just says hey there's some kind of problem
+00:57 like 400 bad response, 404 missing, 403 permission denied, whatever
+01:01 and it sends the error text and the status back.
+01:04 All right so that orange line or red line section in the middle
+01:08 no matter how much validation we add it's going to stay that simple
+01:11 and if we want to test the validation,
+01:14 we don't need to do that by mocking of the web request in the database
+01:17 we just give it this object and we can test that on its own.
+01:20 If we make it through that, then we're really down
+01:22 to what we wanted to do in the first place,
+01:25 take a car, update the database and either say that worked or it didn't.
+01:27 So here we're returning the error 400,
+01:30 because the repository was doing some validation as well
+01:33 but it could also be 500, we need to be more careful
+01:39 about the exception type that we're catching
+01:41 so like a database exception probably our fault,
+01:44 like couldn't connect, some sort of other validation exception,
+01:47 well maybe we do 400 here.

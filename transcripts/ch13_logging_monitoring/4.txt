@@ -45,9 +45,9 @@
 02:53 tomorrow will be the thirteenth, so 5-13, things like this.
 02:56 Now we could have a go both to here and to here
 03:00 but you'll see that when we get to deployment
-03:03 things like the micro wsgi log catch standard out
+03:03 things like the μwsgi log catch standard out
 03:06 and put that in there already so you would basically be duplicating
-03:08 this log message stuff to the micro wsgi bits
+03:08 this log message stuff to theμ wsgi bits
 03:11 and you know, you can decide whether you want that
 03:14 but I don't think it works out really well.
 03:16 So we're going to go like this, let's go back to dev

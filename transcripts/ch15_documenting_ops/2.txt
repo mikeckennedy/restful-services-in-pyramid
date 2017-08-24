@@ -1,0 +1,81 @@
+00:02 All right, so what we're going to do in this example is
+00:04 we're going to add some extra pages, some extra views to this website
+00:08 and those can function as documentation, in our case things are really simple,
+00:12 we just have a few calls, a few end points
+00:14 and we've decided bundling them together on to our little service here
+00:18 is better than having some other place to maintain,
+00:20 that might not be the best for you,
+00:22 but for what we're going to do, that's how it's going to work.
+00:24 So what we want to do is we want to come over here
+00:26 and notice we have our home page renderer here
+00:28 and our view and let's add one just called docs,
+00:31 and we have something really similar, so I'll copy this across like so
+00:35 and for some reason our system hasn't found pyramid yet
+00:39 we just got to restart PyCharm, it'll be fine;
+00:43 so here we have our view config all set up and this is going to be docs
+00:47 and let's say all autos, and then every one of these is going to be a get request
+00:54 but some of them are going to describe get,
+00:56 some of them are describe put, and so on,
+00:59 so we'll call this get something to that effect.
+01:02 Now this template slash my template, not so amazing
+01:05 let's go over here and make this a little bit nicer.
+01:07 So let's try to organize this, we will create a directory here
+01:10 let's create one to hold our existing thing, I'll say home,
+01:12 let's create one for all the docs templates
+01:17 and then let's create one for things that are shared across them
+01:22 so for example layout goes into shared, that's great
+01:25 and my template is going to go into home, let's do that
+01:28 and let's also rename this to index or home or something like that.
+01:33 All right, so if we look, I made a copy here so it kind of duplicated that,
+01:36 but let's look at this one, notice how it's sort of refactored
+01:43 it took a really good shot at it and renamed that part
+01:45 but it didn't catch the home here, ok, so that's good
+01:48 let's just make sure this still works, we better go ahead and add that
+01:53 I did want to assess this part, we'll come back to this,
+01:56 okay so now we want to come over here and we want to say /docs/
+02:01 and what are we going to call this, we are going to call this something like
+02:04 let's go ahead and make the route name and the function name
+02:07 and the template name all match, so we don't go crazy
+02:10 so let's just call this docs_all_auto_get, maybe it will just be all_autos_get.
+02:14 So down here, let's make a copy of that and make it all autos get
+02:21 ok so we're using this layout, now with this reorganization
+02:25 this doesn't quite line up anymore, so we need a ../shared/ like this
+02:29 on all of our little templates, when I say all I mean the two that we're doing,
+02:34 all right, so we are going to need to say go up and look in the shared folder
+02:37 but this is going to be a much nicer organization
+02:39 in this simple site it doesn't really matter, in a real site this gets massive right
+02:43 so this organization is super important.
+02:45 Okay, so come over here and let's just put
+02:48 so we could just have I'll put a little something like this will be something like this
+02:53 this will be get/autos and I'm going to put some html here
+02:57 it's nicer and we'll talk about in a second right
+02:59 but the idea is all we have to do is have one of these pt files
+03:01 it points to the shared layout, it has a content section,
+03:04 and then we just put straight plain html, you could have a dynamic
+03:08 but for documentation, probably not.
+03:10 Oh yeah, one more thing, let's go fix that.
+03:13 So we come to our main, we go to register routes
+03:16 and down here we're going to have another one
+03:19 what we're calling it, something like docs_ that
+03:25 and it's going to be let's say docs and let's just say all_autos we can add a get
+03:31 or just all autos, right, this is how you get all the autos.
+03:33 Let's have one more, in there docs post, and this will be create auto,
+03:40 so these are the two that we're going to work with.
+03:43 Let's just get this first one going, so we run this,
+03:46 if we didn't mess anything up it should be working, here we go
+03:50 and if we go to /docs/all_autos, boom, there you have it, we're hitting this page
+03:57 now the one all autos create auto, that one doesn't exist;
+04:01 so let's go ahead and do that really quick as well.
+04:04 So we just want to duplicate this, and notice there's really no logic
+04:08 we're just saying serve up that template, so this is going to be all autos post
+04:12 and so is that, so this all line up great, and let me just put post here
+04:20 ok so if we come back to our home page, here
+04:24 we have these little links where it says, it sends you off there,
+04:27 let's actually send this to the documentation, let's say /docs/all_autos
+04:31 let's have the other one, say create car, we'll call it create autos
+04:39 and this will be post like that and so on.
+04:41 If we run this, we should be able to at least navigate around a little bit now
+04:44 so here's our home page, if we click this,
+04:46 it takes us to our api get click this it takes to our post.
+04:49 Okay, so the overall structure is set up and now all we have to do is
+04:53 put the actual contents of the documentation in here and do little style magic.

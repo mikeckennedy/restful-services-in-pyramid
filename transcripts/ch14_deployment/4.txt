@@ -1,0 +1,188 @@
+00:01 We have our ssh keys generated,
+00:03 we don't actually have them registered in MacOS for now
+00:06 so that is something we'll have to take care of,
+00:08 but let's go ahead and create this Digital Ocean droplet as they call them,
+00:11 so we are going to use the five dollar a month server,
+00:13 just think about that, five dollars a month, that is crazy affordable,
+00:15 we don't need any of the extras, I'm going to put this in San Francisco
+00:18 if you want to hear my thinking on this, like obviously,
+00:21 San Francisco is near Portland Oregon where I live
+00:23 so why not do this one locally; most of my machines live in New York
+00:26 because a majority of my traffic is split between the US, Canada and Europe
+00:30 and so I figured east coast US is as good as I can get
+00:35 to still serve the west coast of the US well as well as Europe.
+00:39 So I typically would pick New York if that was your traffic patterns as well,
+00:43 but I'm going San Francisco.
+00:45 So it looks like I've already set this Digital Ocean key,
+00:47 and I've already selected it and I want one droplet, I've set the name,
+00:51 so we click create and how long is this going to take—
+00:55 you'll see it takes almost no time at all.
+00:58
+01:09 I think I might leave this in here as real time for you,
+01:12 so you actually see, there's no speeding up.
+01:15
+01:19 Done. That's got to be less than thirty seconds,
+01:21 all right, so now we can go and talk to it, so let's go here
+01:26 and copy the ip address and we'll go over
+01:29 and we can ssh as root that's the account there,
+01:35 and first of all, we've never done this before,
+01:37 and so ssh says are you sure, and we say yes, we're sure.
+01:40 However, permission denied, we don't have the right public key,
+01:44 we don't have any key really, so what do we need to do?
+01:47 Well, this is because we did not use the standard name for our key,
+01:52 so we created a custom one, so I can run ssh add,
+01:59 let me just delete this, we can run ssh-add -K to add it to our key chain
+02:05 and what we want to give it is the private key.
+02:11 Now if we try again, ta-da, we're here, what should we do first—
+02:19 oh you bet, the very, very, very, very first thing we should do is apt update
+02:23 and install any security patches that might still somehow not gotten taken care of,
+02:29 so see if there's anything to upgrade here—
+02:32 there are so, so let's do a quick upgrade, see what this is all about,
+02:35 bunch of built in stuff, let it go, and just to be sure, let's just do a quick reboot,
+02:40 we'll wait about ten seconds, so we can log back in, and then we can get started,
+02:44 while that's rebooting, I want to copy some files, let's see if it's back yet,
+02:49 boom, that was pretty quick right, very very fast.
+02:53 So over here into our project, we're going to move this up to Digital Ocean
+02:56 on our server, but there's a few things we need to do first,
+02:58 let me put some files here, and I'll explain what we get in a second,
+03:03 I put this etc folder here, and it has the configuration
+03:06 we are going to need for μwsgi,
+03:08 a configuration we're going to need for nginx,
+03:11 and the set of steps that proceed the existence of that
+03:14 so this basically is the set up of the server.
+03:16 Now, the very very first thing we did if we did our update and upgrade
+03:19 so that in case there is any security vulnerabilities, we're not getting smacked on.
+03:24 The next thing we want to do, I am just going to copy and paste these
+03:26 there is no sense for you to watch me type them,
+03:29 is I'm going to set up the firewall, so this is uncomplicated firewall in Ubuntu,
+03:34 and we're going to allow ssh traffic,
+03:36 we're going to allow standard unencrypted web traffic
+03:40 and encrypted web traffic and nothing else
+03:42 so we're going to run those over here and it says
+03:45 you could disrupt your ssh connection, basically if you mess this up,
+03:48 we want to proceed because now we're still letting 22 go through.
+03:54 We can check just by exiting and coming back, yeah everything's fine,
+03:58 we didn't break it, probably you want to check that early.
+04:01 Also, we can install fail2ban in case there was, if you wanted to log in
+04:05 with the username and password instead you can install fail2ban,
+04:08 I'm not going to do it because we don't have that, but this would prevent
+04:11 like brute force attacks against logging in, I'll go and leave that there.
+04:15 The next thing we need to do is use aptitude to install,
+04:19 like build essentials, Python 3, git,
+04:21 so we can get some stuff and just a few other things
+04:24 like nload is a handy little thing to have as well,
+04:26 so let's just run through that, and I'll speed up some of these
+04:28 as we go through and just shorten them.
+04:31 All right so we successfully installed build essentials,
+04:35 it took a little bit, but we'll go and install these next—
+04:38
+04:41 excellent, now we want to get the latest nginx, and right now
+04:45 I think you get 1.10 if you just apt install nginx,
+04:49 but we can go and register what they call their development branch
+04:53 which gives you a better version, I actually recommend doing this
+04:57 I believe so, go add that, now we want to make sure that we do an apt update
+05:03 so we actually pull those changes before the next thing.
+05:06 Come back over here, this is Python software properties, we need this as well,
+05:14
+05:18 then we can actually install nginx,
+05:22 so I said a bunch of stuff's going to be installed
+05:25 and so on, that sounds fine to me, it's what it needs, let's it do it.
+05:28 All right, that looks like it works, now we're ready to start working on μwsgi,
+05:34 so let's make sure we install pip for Python 3, so right now if I type pip,
+05:39 we don't have it at all, right, if I do what it suggests,
+05:42 it's going to install that for Python 2 I believe,
+05:45 I want it for Python 3, the alternative would be to use the get-pip.py thing
+05:49 and not let linux manage that at all,
+05:52 this does lag a little bit behind so it might be with considering
+05:55 but we'll just do it this way for simplicity.
+05:59 All right, pip is set up, now μwsgi takes a long time to install
+06:03 so let's let it go on its own, notice I'm now using pip 3,
+06:06
+06:09 okay, great, looks like we have μwsgi, let's also check nginx,
+06:13 check its version, that's 1.11.9, that's newer than you get
+06:18 if you don't register the extra aptitude link there at the repository,
+06:23 and here we go, got it right, so we also have 2.0.15 μwsgi, alright,
+06:30 the latest of both, that's good, now glances is just another tool
+06:34 like in load that lets you manage and view your server
+06:38 this is like super, super helpful so I am going to go install this
+06:42 now we type glances and you'll see it gives you
+06:46 this really cool sort of dashboardy view of your server
+06:49 and notice, so far we're only using 18 percent of our memory,
+06:54 and it's the smallest server right, we're doing really well,
+06:56 this little character is using 3 percent,
+06:59 this glances thing so that's what this cpu is about.
+07:02 I will come back and use that again in a little bit,
+07:04 to make sure things are running okay.
+07:06 Alright, now let's go and create some log files,
+07:09 or actually rather places for log files to go,
+07:12 so we're going to create some directories, web apps,
+07:16 web apps log, auto service, app log and so on,
+07:18 so in here is where we're going to put our time rotating file logs,
+07:22 whereas we'll just drop the μwsgi log there for example.
+07:26 Okay, so we got our logs, the next thing to do is we're going to use git
+07:30 and let's set this credential cash so that we don't have to type
+07:34 our username and password in every time, which will make us crazy
+07:36 Alright, so now if we enter our credentials,
+07:39 this is member for what is that, that's a 100 hours,
+07:43 all right, now let's, this is not what we want to get, let me change that url,
+07:50 so over here what we're going to do is we're going to go
+07:53 and download the repository for this, so we're going to do this
+07:58 git clone here and we want to do it in this folder, right,
+08:02 so we're going to have web app/the repository and web app/logs;
+08:07 now in this case because that's a public repo
+08:09 I didn't actually have to type in my username and password,
+08:12 but I think most of the time your service would not be a public repo
+08:15 so that credential helper will help you.
+08:17 Okay, so now we have this restful thing that's great
+08:20 and let's see what we got, let's go into source, go into deployment,
+08:24 and we're going to need to see where some of these things live,
+08:27 so the restful service, this directory here, this is the root of our project,
+08:34 ok, so we're going to be using that in a couple of places;
+08:37 now what's next, so we want to cd into this location
+08:42 and this right here is that location, so we want to go there, to the root of our thing
+08:48 and run Python 3 set up develop, okay,
+08:51 so now we're there, so we want to say Python 3 set up,
+08:54 auto complete shows it, so that's a good sign,
+08:57 and this will run and install all the stuff that needs to install
+09:00 all the dependencies including logbook and sqlalchemy like right there,
+09:04 as we said, it needs for it to run.
+09:07
+09:11 Alright, everything worked well, it might be worth giving us a test
+09:15 so we can do pserve great, and we could give it the development.ini
+09:19 and it's working, check it out, configured logbook with nothing
+09:23 our pyramid cors is working, here is our database
+09:26 and we can actually create another thing that we're going to ssh
+09:30 and we could do w get, actually let's do this,
+09:32 this is more fun, pip 3 the install httpie,
+09:36 I always mess up saying that, httpie, and now we can do
+09:39 http local host:6543, so what do we get, hey that looks like our website, right
+09:48 it looks like our web app is running, so the one is running for development,
+09:52 but it turns out we probably have a little more work to do on the production.ini.
+09:57 Okay, so first of all let's look at production,
+10:02 here we have the log file, we probably want to put that log file somewhere else,
+10:07 so we'll have a look at that over here, as we had web apps here
+10:13 this right there is the place that we want to put that,
+10:16 so now we got our server configured, let's put this as this
+10:19 and let's just call this auto service.log, something like that ok,
+10:26 so it's going to go there and of course it will put the time on the end, and so on.
+10:30 So, this is looking good, I guess we can go ahead and run this
+10:33 so we're going to push this back up,
+10:38 ok, so I like source tree, you can use whatever you want,
+10:41 but we're going to push that along with the various configurations up there,
+10:44 so we'll have that to run, now let's see
+10:49 if we can get this to work with production.ini.
+10:52 Boom, it's working, great, now if we exit and we do go look at the logs,
+10:57 oh it did run, but it didn't put it in the right place, why— I forgot this,
+11:03 now let's try it again, so now you can see we have this auto service log,
+11:09 and let's just go and see what it's about,
+11:13 perfect, so it looks like our log file is working,
+11:16 you can see where it has the log set
+11:18 so we're very very close, so what this means basically,
+11:21 I didn't do http request, I am pretty sure
+11:23 if we get this far everything's going to be fine,
+11:26 what this means is we have our Python code running perfectly,
+11:29 now we have two more sort of outer shells to configure before things run.
+11:33 The next thing we need to configure is μwsgi in its emperor mode,
+11:37 and then we're going to have to configure nginx
+11:41 to pass the things along to μwsgi, to pass along to our code,
+11:45 and then our web server and our web api will be up and running.

@@ -1,0 +1,18 @@
+00:00 Next, logging and monitoring,
+00:02 so we did logging with logbook and monitoring with rollbar.
+00:05 So if we wanted do logging here, we're going to create a logger
+00:08 and we've already set up our stream handler, our time rotating file handler
+00:13 the step that we had to do once at the start
+00:17 and then we can say logbook.logger and give it a name
+00:19 and this is sort of consistent way to do that create logger
+00:22 so you don't have to continually remember its api/autos like this,
+00:26 so put that in function and then throughout our api calls,
+00:31 we can come down here and say for example an update auto
+00:34 we can get the logger like this, do our work
+00:36 and now if something fails, we could warn about this
+00:38 say logger.warn, and give you information about what went wrong.
+00:41 So in this accept block, we're going to say no, no, something went wrong here
+00:45 then if the view model validation fails,
+00:48 we can warn with details about those errors again,
+00:51 and if everything works great, we can do a much lower level message
+00:56 log.trace which only shows up maybe in development, but not production.

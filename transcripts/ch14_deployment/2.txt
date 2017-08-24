@@ -1,0 +1,63 @@
+00:01 Here we are on Digital Ocean,
+00:04 you've maybe heard of Digital Ocean,
+00:06 I am a huge fan of what those guys are doing,
+00:08 you probably heard of things like aws and azure,
+00:11 but I'm here to tell you for simpler, not extremely complicated web applications
+00:17 that have to dig into all of these cloud apis, this is a better place to be;
+00:22 it really is better performance and much, much cheaper, and really just simpler.
+00:26 We're going to use Digital Ocean to go create this Linux server.
+00:29 Now, let's click really quickly on pricing,
+00:32 just so you guys see like what it is we're going to create,
+00:34 so the pricing is really nice here, we're going to use a standard droplet
+00:38 and pay, we can get hourly price if we want,
+00:41 but really monthly is a better human term to think about what is it going to cost us,
+00:45 they also have like high memory ones, and whatnot,
+00:48 but we're just going to focus down on these standard ones.
+00:51 So we're going to use a five dollar server,
+00:53 and you'll see that this five dollar server
+00:55 will run our api for many, many requests, I'm pretty sure
+00:58 we could get millions of requests per month for five dollars.
+01:01 And just to indicate like what a good deal this is, last time I checked the pricing
+01:06 for just bandwidth alone at aws was nine cents per gigabyte,
+01:11 notice you get a terabyte of bandwidth here,
+01:14 so 0.09 times that many gigabytes, that's 92 dollars a month
+01:18 just in bandwidth value that you get with his thing,
+01:21 not to mention you get ssds and all sorts of goodies.
+01:24 So what we're going to do is we're going to go create one of these,
+01:27 now, I have already created an account, so logged in here
+01:30 you can see my various servers that I used to run the Talk Python and Python Bytes stuff
+01:35 and we're going to go and create a new droplet,
+01:38 so let's go down here and and show you what you get
+01:42 so we can come down, we can pick a variety of different linux distributions,
+01:45 and pick different versions as well, so let's just go with this one,
+01:51 the standard long term support Ubuntu, there's not a real great reason
+01:56 to choose a different one, I will just point out though that you can go
+01:58 if you want to and get it kind of pre configured, like from my Mongodb server
+02:02 I just went down here and said I want Mongodb running on that version of Ubuntu
+02:06 and boom, it already comes preconfigured, somewhat secure, things like that.
+02:10 But we're not using Mongo, so we'll use this
+02:13 and pick this size, you'll see that that's plenty good
+02:18 we don't need block storage right now
+02:21 we could get a different data center so I'm on the west coast of the US
+02:25 so I'll pick something in San Francisco
+02:27 and then we just have to create an ssh key, we click go, give it a name,
+02:31 and let's call this auto service server something like that
+02:37 it seems like a decent name, we can have a bunch,
+02:40 I don't want a bunch, I want one, and we'll get going.
+02:42 So, that's how it will work, we're going to need to do things like create an ssh key,
+02:46 so that we can log in and not have to worry about passwords, and things like that,
+02:50 but we'll do that in just a moment, right.
+02:53 So Digital Ocean basically lets us create these servers
+02:56 and then we can go over to the networking section which we'll do afterwards
+03:00 and we can basically get it's called a floating ip address,
+03:04 and what that means is there an ip address that kind of
+03:07 we control independent of the machine and we can map our domain to that
+03:10 and then we can do things like hey I need to upgrade the server
+03:13 I could move it over to a temporary fail over server if for some reason
+03:17 I want to just create a new version after six months
+03:20 on a new implementation of Linux or whatever
+03:23 I could spin that up and get it exactly ready
+03:25 and then I could just instantly flip the switch, and it will flip to that new server.
+03:28 So it gives you a little bit of machine independence,
+03:31 with this networking section, so we're going to do that next,
+03:34 but first, in order to create this, we're going to create an ssh key.

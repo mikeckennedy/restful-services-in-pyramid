@@ -1,0 +1,25 @@
+00:01 There it is, the finish line, you've made it!
+00:03 Nice work, you've got through all these restful http service concepts
+00:08 and because you made it to the finish line,
+00:10 because you probably worked through
+00:13 and followed along with the demos as you were going to the course
+00:16 you now have a new magic power— building restful apis.
+00:21 So the big question is— what are you going to build now?
+00:25 So I hope you really enjoyed this course and learned a lot from it,
+00:28 and think about what you're going to build,
+00:30 hopefully you have something really cool
+00:32 that now that you can create these apis very easily and you fully understand them,
+00:36 you really are going to build something awesome;
+00:39 and if you do, be sure to come back and share it with us.
+00:41 However, before you go, you you want to take the code and the samples with you,
+00:45 so be sure to drop by github.com/mikeyckennedy/restful-services-in-pyramid
+00:51 and star and even consider forking that repository,
+00:55 so you have an exact copy of how it was when you went through this class.
+00:58 So, if you look into the source folder there
+01:01 you'll see there's actually a lot of different chapters
+01:03 and even different stages like
+01:05 step one, step two, step three throughout the code there.
+01:08 So I tried to make it so you could pretty easily grab the code from one level
+01:14 and start following along at any step that you like,
+01:17 hopefully it worked out that way, if not, do let me know
+01:20 and I can go back and adjust that for others.

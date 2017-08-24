@@ -1,0 +1,54 @@
+00:01 In this short chapter we're going to wrap up the course
+00:04 by looking at your options for documenting your apis.
+00:07 If you have a public api, you really should be documenting it,
+00:10 if it's internal, maybe, we'll see.
+00:13 So, let's take a look at some of these considerations.
+00:15 First of all, how are we going to go about creating these docs,
+00:18 do we need them at all— maybe, like I said,
+00:21 if it's a public api you absolutely need to have good docs,
+00:24 if it's an internal api and you work at a company with a couple of developers,
+00:29 maybe just the unittest and an example app is good enough,
+00:33 you don't really need to overly document it.
+00:35 If you work within a large company or you do an open source,
+00:38 you definitely need to document it as well.
+00:40 Okay, so let's suppose you've decided, yes, I do want documentation for my api,
+00:44 one option is to just host them on read the docs,
+00:47 so you go over there, create an account, set that up, that's an option;
+00:50 you could host them on github, and by that I mean you just have a repository
+00:54 that is a bunch of read me files, or you know mark down files
+00:57 that people can browse through.
+00:59 An example of this would be basecamp,
+01:01 at the beginning of this course we saw that basecamp has
+01:04 all of their documentation just as markdown files
+01:07 maybe restructured text, one of those two on github, so that's certainly an option.
+01:11 You could generate them from a static site generator type thing
+01:15 and then just put them up on a web server somewhere,
+01:17 that would be fine; so all these things here,
+01:20 all of these options kind of leave you to your own devices,
+01:22 if you want to go this path they're pretty well documented there.
+01:25 But in this section, I want to show you how to actually add the documentation
+01:30 to where your api is executing, inside the pyramid web app.
+01:34 So we could host them right in this application here,
+01:37 or something along those lines okay,
+01:40 so you can read the docs about working with read the docs, and things like that,
+01:43 but if you want to host them within your app and kind of keep it all bundled together
+01:46 then we'll see how to do that, it turns out to be super, super easy.
+01:50 So we'll add our documentation and we'll have a couple of pages
+01:54 we should probably feature it pretty clearly,
+01:56 put a little nice design on it, things like that,
+01:58 so here's the page that we might click on, see docs/all_autos
+02:02 and this might tell you how to get all of the automobiles from our service, right.
+02:06 We saw, as you know, we've been doing this for a while now
+02:08 get/api/autos, and that's going to return a json response of this type,
+02:13 actually it's going to return, the screenshot might be a little off,
+02:16 it is going to return a list of those, right
+02:19 so here is the general response,
+02:22 and I think the style, there's not much to it,
+02:24 but also having it look pretty definitely makes it feel more polished
+02:26 and people are more likely to use this api if the documentation looks
+02:28 at least somewhat professional, right.
+02:31 Now, we'll have another one of these for when we're going to create a car
+02:34 so here we are going to post the api/autos the submitted body is this,
+02:38 the response options are json and csv
+02:40 and they come out like this on the bottom.
+02:42 All right, so let's see how we add this to our auto service.

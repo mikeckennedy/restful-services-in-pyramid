@@ -1,0 +1,27 @@
+00:00 And then we said let's provide some level of authentication to our service
+00:04 and we said let's do that with api keys,
+00:07 so we created this decorator called require api key
+00:11 and it follows the convention of our service
+00:14 which is to pass an authorization header
+00:16 and then authorization header has a certain structure which includes that api key
+00:21 and our little function parse api key from header
+00:24 it's not shown here but it goes and it grabs that from the authorization header value.
+00:27 It says, look, if you don't have one, nope, 403, missing api key.
+00:31 It then uses that api key to look up a user,
+00:34 and if there is no user there it says no, no just invalid api key,
+00:38 or couldn't find user, or something like that.
+00:40 And then, if that all works, that means we actually have a user
+00:43 corresponding to that key they pass, so we stash the api user for later use
+00:47 and then we actually call the function that we're decorating
+00:50 which in this case is going to be one of our api view methods.
+00:53 So here's the implementation, hopefully the decorator stuff didn't freak you out too much
+00:57 and it kind of came across more cool than more complicated
+01:00 but they do take a lot to wrap you head around.
+01:03 Now, if we want to use this, it's dead easy
+01:06 we can come over here and say here's a view
+01:08 and oh this one requires an api key,
+01:10 and remember all autos will never even get called
+01:13 unless the user is already set and everything works,
+01:15 so we can even come down and know that request.api_user is going to be set
+01:19 we didn't have to check whether it exists
+01:22 because if it doesn't, we're not going to make it this far.

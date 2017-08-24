@@ -1,0 +1,26 @@
+00:01 Now we've got our app all configured, it's time to add some api views to it.
+00:04 So here we are going to create a method
+00:06 that's going to respond to the route api_all cars, that's probably /api/autos,
+00:11 it's going to return its response as json
+00:14 and it's only going to respond to get methods.
+00:17 So what do we do— well, we just go to the repository
+00:19 and say give me the 25 latest cars and boom— here they are,
+00:22 and this worked because at this current early stage
+00:25 the repository returned a list of dictionaries, not something more advanced
+00:29 like sqlalchemy objects, so we go and get the car from the database
+00:32 return the list, and because the renderer is set to json,
+00:36 it automatically formats that to a list of json objects,
+00:39 if it knows how to serialize them, which it does in this case.
+00:42 Now, if we want something more advanced
+00:44 not just reading the cars but creating one, we could go to the same route
+00:47 but now we have post instead of get,
+00:50 and in this case we're going to say request.json_body
+00:53 to convert the text that was submitted to us into a Python dictionary
+00:57 by parsing it as json, that might have failed,
+01:00 so we'll send them a response 400, bad request, if that's the case;
+01:03 otherwise, we'll actually try to create the car
+01:06 and we'll get back the car from the database
+01:08 because we want the default values that got created in the database to be sent back
+01:12 so we'll say the response is 201 created,
+01:15 oh yeah and here's the body of the car, if it happens to be an error—
+01:18 well, that's probably on us, 500, sorry about that.

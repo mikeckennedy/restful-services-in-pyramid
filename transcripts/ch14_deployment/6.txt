@@ -1,0 +1,158 @@
+00:01 Okay now let's go ahead and do a little more set up with μwsgi,
+00:05 I realized we forgot one thing, we'll come back to this
+00:08 maybe at the end I guess, we need to set it up as a system service.
+00:10 So, now what we're going to do is we're going to set up nginx,
+00:13 we already have it installed on the server,
+00:15 and you can double check by saying—
+00:18 oh yeah, we're still running μwsgi here,
+00:20 you can say nginx-v and it will show you the version, okay.
+00:23 So it's there, but if we actually go to it, if we do something like http local host
+00:29 it'll say something like yeey, welcome to nginx,
+00:32 that is not what we want it to say,
+00:35 we want it to say here's your api documentation
+00:38 and welcome screen, and so on.
+00:40 So in order to do that, what we need to do is
+00:42 we want to take away the default website
+00:45 so we're going to go over here and remove that
+00:47 and then we want to copy this file that I'm going to show you in a second,
+00:51 we want to copy it down to sites available,
+00:54 so what is that, now over here we have sites available auto service nginx,
+01:00 now, notice it's got a little green thing here a little icon for nginx,
+01:03 that's because I accepted a plugin suggestion that PyCharm had saying
+01:08 hey we could understand this for you and give you highlighted nginx files,
+01:11 and I named it .nginx, so that kind of gave it a hint.
+01:15 So what we're going to do is have it listen here
+01:18 all right, going to listen on auto_service.talkpython.fm,
+01:21 and I'd prefer that it doesn't give extra information about server, version,
+01:26 stuff like that, right less information for hackers,
+01:29 I'd prefer that it does a lot less still, but this is a little bit of an improvement
+01:34 some random stuff, so we've got our server and we're listening on a port.
+01:37 Okay, now it gets interesting, down here the static files
+01:40 will no longer go through pyramid at all or μwsgi,
+01:44 these will be served directly from μwsgi,
+01:47 now this path is wrong, let's say cd static, ok that's the right one,
+01:55 so let's take this huge long path and put that here
+01:59 so we can alias/static in the web request to this long thing
+02:04 and say we're going to cache that for a year right
+02:06 so this is great because this means all the static requests
+02:09 for like javascript, css and whatnot, never even touch our server, right.
+02:13 Now, granted in an api this matters less, but still
+02:16 we'll probably be serving up some form of html pages
+02:20 and we want to set it up this way, okay.
+02:22 And then we want to say local host, just when you listen like straight to /
+02:26 we're going to go down to this area
+02:28 that's basically going to delegate to μwsgi, ok,
+02:31 how do I know— come down here to the final section
+02:34 include μwsgi parameters,
+02:36 sometimes extra information does not get passed along
+02:39 like what is the real ip address, a lot of times it will look like 127.0.0.1
+02:44 to μwsgi, because it's like coming from nginx on that machine,
+02:48 so you can pass this extra info along
+02:50 and then we'll just do proxy pass over to this
+02:54 that should be very familiar from μwsgi, right,
+02:57 so internally when I make a request here, we could also set up a socket
+03:00 but it's easier just to do it this way, there's permissions
+03:02 on socket files and things like that on sockets.
+03:05 Okay, so this looks like it's ready to go,
+03:08 I think I have to push those changes up to the server
+03:13 so now we can do a git pull, make sure we got that copied over;
+03:18 okay, so the last thing we need to do is actually put that in a place nginx can find,
+03:22 so I'm going to copy like this, just copied to etc nginx, sites available,
+03:27 okay great, now we want to make sure that both nginx and μwsgi
+03:34 start on system boot, so we can do this here to say enable nginx,
+03:39 or update the files and here we also want to enable μwsgi.
+03:46 What did I call that, something different—
+03:51 oh, I don't think, I don't know if I've copied this over,
+03:55 let's try I think that's the deal,
+03:58 where is the cp, there we go, so missed the step,
+04:02 I forgot to copy the service definition for system d, for μwsgi,
+04:07 so now that's over there, ok so it looks like we're in good shape
+04:12 let's see if we can first start this, okay,
+04:16 that didn't give us any errors, so that's pretty good
+04:19 we can actually ask for the status
+04:21 and see all the children processes running there
+04:24 this is good right, it looks like it's working, you can see the output log
+04:26 where it got everything going, starting, starting, good.
+04:29 So it looks like nothing is broken there,
+04:32 so we could also do one more test, do a request against 8999, also working
+04:37 so very good chance that our automatic starting service for μwsgi is working.
+04:42 We need the same thing for nginx, so now we're going to come over here
+04:45 and say service start, for nginx, okay it may have already been running
+04:51 so let me restart it, in fact it was out already running,
+04:54 so now here's the big test, local host,
+04:57 if that comes up with errors, we still have work to do
+05:01 if that comes up with welcome to nginx, we still have work to do;
+05:04 if on the other hand it gives us our welcome page,
+05:07 from our site we're in business.
+05:09 It looks like we might have some work to do,
+05:12 what do you think— okay, I realize
+05:14 there's one little mistake I also needed to add here
+05:17 and I needed to copy this configuration over to sites enabled, as well,
+05:24 or instead actually I'm not sure anymore because it's in both,
+05:27 but copy this in addition to sites available to sites enabled, restarted nginx
+05:32 and now if we do http local host ta-da, things are working beautifully, okay,
+05:37 so here is the final, final step, what do we tell nginx,
+05:43 that it's supposed to listen to, let me pull this up really quick,
+05:46 so we told it it's supposed to listen to auto_service.talkpython.fm
+05:52 well you want to try that and see what we get— no way is that working, why?
+05:59 Because we haven't set that up in dns,
+06:02 now normally, you would go set this up in your dns settings or whatever,
+06:05 but instead what I'm going to do is while we're still in like test mode,
+06:09 I'm going to just jam it down here and actually you can see already did this,
+06:13 I just gave it the wrong ip the address,
+06:16 so let's go over here, now we could go and take this ip address right there and use it—
+06:21 don't do that, go set up a floating ip address,
+06:24 so we'll come over here and we'll say I'd like to create a floating ip,
+06:27 I'd like to take this one, and I'd like to assign a floating ip address,
+06:31 now I'm not really going to do this, because then I'll have to go
+06:34 and clean it up afterwards, but you click this button
+06:37 it gives you an ip address just like this right here,
+06:39 and you just copy it, but because I don't really want to mess up my system
+06:42 I'm just going to go back here and use the real ip address right,
+06:45 but, you understand this is not how you normally do it.
+06:48 Okay, so now we don't need this, okay,
+06:52 so we should be able to actually leave our server, close this off
+06:56 and now let's try one more time, where do we want to go to auto test
+07:01 let's try it over here, ok so try again, ta-da, look at that
+07:06 so here on my mac I'm talking to you my server I just set up,
+07:10 running nginx, talking to μwsgi, and it's master mode
+07:13 all the way down in San Francisco. Perfect.
+07:15 So let's go over here and do a get, I must specify an authorization header
+07:19 well let's go back to postmen and talk to it.
+07:22 When we have that running, let's go ssh back,
+07:25 now I could use the full name auto_service.talkpython.fm
+07:31 now we're logged in, so let's go over here
+07:35 and we can actually look at the log file, okay,
+07:40 so here it is, I'll clean it up, now when we do these requests
+07:44 we should see those start coming in,
+07:47 so where do we want to go, let me copy the url,
+07:49 and now we're going to go do a post to create a car
+07:52 this is going to be Opel for real, so we should create this one,
+07:58 do ascend, there you go, boom we did a post to the server
+08:02 and we in 57 milliseconds generated the response after inserting into the database,
+08:07 let's go over here and change the url again,
+08:10 actually I'll just create a new one, make a request,
+08:13 and what have we returned, 403 forbidden, right
+08:16 must specify an authorization header, I dropped that
+08:19 let's go get our little auth header here,
+08:22 we should be able to do a get,
+08:26 maybe if I can spell right, authorization, there we go,
+08:31 now we got our response back, do one more time,
+08:34 so check this out, 403, 403, now we generated somewhere a 200,
+08:38 here, it's wrapping, 200 over here, very quickly
+08:42 very nice response time, again let me click this a bunch of times,
+08:46 I told you about the different servers not necessarily being warmed up for this,
+08:50 now 10 milliseconds, 9 milliseconds, that is a very solid response time,
+08:54 we have about 40 thousand cars in there,
+08:57 and so this is going through and finding a certain number of them,
+09:01 it's taking the I think 10 cars or 25 cars whatever it is
+09:05 and doing formatter on it to turn it into json
+09:08 and shipping it across the wire, and there it is, all right.
+09:12 So hopefully, that seems pretty easy for you to set up the servers here, right,
+09:15 now if you have to come up with all of this on your own,
+09:18 not so easy, if you have the script right, run through this script,
+09:23 copy these two files, fill in the missing pieces, the path and stuff,
+09:26 I can tell you it's pretty easy, I've set up quite a number of servers
+09:29 sort of following along the script and it's worked out really well,
+09:32 this more or less is how I have my main websites that I use
+09:36 all set up on Digital Ocean as well.

@@ -1,0 +1,22 @@
+00:01 Next thing we did is we brought a real database and a real orm into the picture.
+00:04 We had this little fake repository thing that I created
+00:06 and it worked well enough for test data, it was super simple that was helpful
+00:09 but it was just in memory dictionary really,
+00:12 so it loaded up a csv and then it just held that result in memory,
+00:15 so we said no, no, no this is not really how it works,
+00:18 it really has a database and that database stores its state somewhere else
+00:22 making our service more restful by being stateless.
+00:25 So what did we do in sqlalchemy— we created a car object
+00:29 and derived it from our sqlalchemy base class that we created,
+00:33 we gave it a database name like table name is car
+00:36 fine if you're doing a lot of relationships
+00:39 that the name of the object, the name of the type
+00:41 and the name of the table matching makes life a little easier
+00:43 but it doesn't have to be the way;
+00:45 then we created an auto incrementing primary key integer, in this case
+00:48 I believe in our real example we gave it like a uuid4 type of thing.
+00:53 We have a name which is a string, a year which is an integer,
+00:56 price which is a float and so on,
+00:58 we even showed you that you could have relationships
+01:01 like over to an owner object or something like that,
+01:03 although technically we didn't model that in our api.

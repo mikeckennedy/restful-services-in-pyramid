@@ -1,0 +1,21 @@
+00:01 Now, before we put the wraps on this class and you go off to create your own apis,
+00:04 let's do a really quick review of each chapter;
+00:08 so we started out the course with asking the question what is rest
+00:12 and we said there's a set of principles that these web services can follow
+00:16 and the more of them you follow, the more restful you are,
+00:19 so one is to use http methods explicitly,
+00:23 endpoints are urls not verbs typically but nouns,
+00:27 you know, api/autos not api/list_autos things like that;
+00:31 it's casheable the get ones at least,
+00:34 it's layered system, so you don't see beyond what you're talking to
+00:37 even if that calls, other services,
+00:39 stateless, at first that wasn't true,
+00:42 but once we switched to the database totally stateless;
+00:45 it supports content negotiation, so that's using the except and content types in http
+00:51 to say hey if you could give me png that would be better than xml, things like that,
+00:56 hyper media as the engine of application state or HATEOAS,
+01:00 this is the one that we kind of pointed on and said
+01:02 you know, a lot of services really don't do this,
+01:04 this is more of a pure web thing, and so this is a spectrum,
+01:08 and I think we've made it more or less to level
+01:11 six not level seven, and that's fine with me.

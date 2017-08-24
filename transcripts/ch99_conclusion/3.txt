@@ -1,0 +1,25 @@
+00:01 Okay, next we came to web building blocks in pyramid.
+00:03 So we saw that first thing we had to do is create a route
+00:06 and we did this in the dunder init, __init__.py in the main method there
+00:11 and we said we have to set up patterns, not regular expressions,
+00:14 like some frameworks with just patterns with little template holes in them, if you will
+00:18 and we're going to map those over to views.
+00:21 Views sometimes known as controllers in the nvc world,
+00:24 these are the things that process our requests
+00:27 and decide what to send back if anything at all;
+00:29 templates, these are the dynamic html views that sometimes we send back,
+00:33 this was the home page, this was the doc page, things like that.
+00:36 Models, we had several levels of models, the actual thing we return
+00:40 were often— often, not always, Python dictionaries
+00:44 unless we configure the renderers to treat special types that it knows about.
+00:49 But, we also had view models in there,
+00:51 which served a slightly different role than the models typically talked about here.
+00:54 Static types and static files right, so css, javascript, images,
+00:59 we saw that we can map a special part of our web application
+01:03 to serve up files and no other part of will.
+01:06 We also did a lot with configuration,
+01:08 in the beginning we just played with development.ini,
+01:11 but as we got to deployment, we saw that the production.ini
+01:14 and the ability to have different configurations
+01:17 for locally running our code versus running in production,
+01:19 turns out to be super helpful.

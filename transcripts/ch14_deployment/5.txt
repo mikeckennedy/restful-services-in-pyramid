@@ -1,0 +1,73 @@
+00:01 The next thing to do is work on the next shell in our onion of configuration,
+00:06 and that is μwsgi, so that's what lives over here in this init folder,
+00:09 this auto service.service, so here you can see
+00:14 that we're given a name μwsgi auto service server instance,
+00:19 so you can ask like what services are running, things like that ;
+00:22 and then it's going to run μwsgi,
+00:24 we could double check that this path is good,
+00:29 yeah, it looks like that's right, so we're going to run or μwsgi
+00:32 and we're going to give it the url here, which I need to figure out what my path is
+00:37 one more time, and make sure that production.ini is here,
+00:41 so take this, kind of annoying you got to keep doing this,
+00:44 but you got to have it just all wired together correctly, right,
+00:48 and of course, it's going to run in that same folder,
+00:51 so we're going to put that like this
+00:54 that's really all we need, we need to set the exact start
+00:56 and we need to set the runtime directory,
+00:58 and then everything else is kind of standard,
+01:00 set let me push this again up to our server.
+01:03 And it's fine, just like this, ok git pull again, notice we got that fixed,
+01:09 so now what we need to do is move that into a particular place on the server
+01:13 where this is going to be used, so hopefully this is all good,
+01:16 first of all, before we try to do anything with μwsgi,
+01:21 in terms of like an auto start service, let's just see that this if I take that command
+01:25 we're putting into that service file and try to run it that it's going to work;
+01:28 that did not work so well, did it?
+01:32 Oh yes, there's one more thing that we're forgetting,
+01:35 that we need to do, so let's pull this back up here,
+01:38 so the way this works is μwsgi is going to run this code here,
+01:41 but we need a section in this configuration file that says
+01:45 hey μwsgi, when you run, run like this.
+01:47 Alright, so we'll grab this from a previous example,
+01:51 here's what we going to need to do, we're going to tell it to listen on that port,
+01:55 we need to set the directory, once again
+01:57 I don't know that we really need to set it twice but just to be sure,
+02:01 let's tell it if that is your directory,
+02:04 now here's the emperor mode thing I was talking about
+02:06 it's going to run in master and it's going to have five sub processes,
+02:09 so basically this is a tradeoff between amount of parallel processing and ram
+02:15 in real apps each one of these takes about a 100 megs, 50 to a 100 megs of memory
+02:20 so you can decide how much memory you've got,
+02:23 this should work fine for this simple app five,
+02:26 and then enable thread is true as well,
+02:28 and if things can a go haywire it will kill off its children services,
+02:32 and you know create them again basically force or restart on them.
+02:35 Now let's go make sure we got this log file path correct here,
+02:39 yeah, it looks like it was right, so we are going to use just at the top level
+02:43 a single μwsgi log, now everything should be good
+02:47 let's push this up one more time,
+02:51 get the latest and let's try again, oh silence is good, why is silence good—
+02:56 because everything is going to the log file, so if you see a prompt again here,
+03:00 that means it's crashing, and that's bad, you don't want to do crash, right?
+03:04 So let's go and check this out, so if we go to our web apps
+03:06 and we go to our log files and we go to our auto service
+03:10 we've got our μwsgi log here, so you can see it's starting up
+03:14 and it's just running, in fact let's tail this over like that, and start a third one
+03:20 because we don't yet have this exposed to the internet,
+03:24 and do an http local host, now we're running on 8999
+03:29 so we got this, the data came through, we saw the request,
+03:35 we'll do another request, you can see more of these requests coming in
+03:39 nice, and everything's working, you can run it a few more times
+03:43 it should pick up speed here in a little bit, there we go.
+03:46 So run that in zero milliseconds, one millisecond, one millisecond,
+03:49 notice the first few times it was slow,
+03:52 this is because the primary master μwsgi is sending this off to the sub processes
+03:58 and the sub processes haven't yet encountered the templates and things like that,
+04:01 but once they do after a while, this should be nice and fast,
+04:05 you can see 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, in the millisecond response time
+04:09 so now they're kind of warmed up, ok,
+04:12 so you might notice like the very first little bit of time
+04:15 there is a tiny bit of a slowdown for this,
+04:17 but it looks like everything is working, so we can get out of here
+04:20 and we can get out of there, μwsgi is working.
+04:24 The next thing we need to configure, the final thing we need to configure is nginx.

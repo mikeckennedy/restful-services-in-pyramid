@@ -1,0 +1,32 @@
+00:01 Next, we created our first service.
+00:03 Remember, we were going to help out this dealership,
+00:05 they were looking a little retro, they didn't have a good api,
+00:07 they wanted to get in the game and actually start selling some cool Opels,
+00:10 and get a little bit of European flair in small town America here,
+00:14 so we were going to create an api that let them list and sell
+00:17 and generally participate in a technology's way with their Opel cars, all right.
+00:23 So that was our service, first thing we had to do to create the services
+00:27 is have a web app to run it in at all,
+00:29 so in order to create the project, it's technically not required
+00:33 but it makes life way, way easier, we were going to use cookiecutter,
+00:37 so we had to install a cookiecutter on our machine,
+00:40 and you could even give that a --user if you just want to install it in your profile
+00:43 and then, we're going to run cookiecutter
+00:45 and pick the pyramid cookiecutter starter off of github.
+00:49 That's going to ask us a bunch of questions and generate the web application
+00:52 with all the stuff set up and ready to go.
+00:54 Then, we chose the name auto_service_api, at least in this little example here
+01:01 and so we we were going to go into that folder,
+01:03 create a hidden .env, virtual environment with the --copies don't forget that,
+01:09 if you're on MacOS that can be very helpful;
+01:13 and then, we want to activate this, we could do this in one of two ways,
+01:16 if you want to continue to work on a command line, you will do it here,
+01:20 in PyCharm, we saw that actually opening the auto_service_api folder
+01:24 it would detect that hidden .env and just cling on to it
+01:27 and make that the default one for the project that's going to create,
+01:30 so either way we'll activate it here or open in PyCharm,
+01:33 and then we need to run the setup.py with the development command,
+01:36 you might normally run it with install, but here we're going to run it with develop
+01:39 so it leaves the files in place, but executes them out of our working directory.
+01:44 And then we can run it just say p.serve development.ini
+01:48 and we should have our app up and running if we did everything correctly.
