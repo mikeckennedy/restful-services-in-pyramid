@@ -16,7 +16,7 @@ class Car:
             'price': self.price,
             'year': self.year,
             'damage': self.damage,
-            'last_seen': self.last_seen.isoformat(),
+            'last_seen': self.last_seen,
             'id': self.id,
             'image': self.image
         }
