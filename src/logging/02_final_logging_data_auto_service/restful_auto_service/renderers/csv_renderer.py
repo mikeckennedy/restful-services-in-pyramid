@@ -32,7 +32,7 @@ class CSVRendererFactory(RendererAbstractBase):
         for row in value:
             line_data = []
             for k in headers:
-                line_data.append(row[k])
+                line_data.append(str(row[k]))
             line = ','.join(line_data)
             response_rows.append(line)
 
