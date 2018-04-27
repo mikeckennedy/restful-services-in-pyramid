@@ -67,6 +67,7 @@ class Repository:
 
     @classmethod
     def add_car(cls, car):
+        cls.__load_data()
         key = Repository.generate_id()
         car.id = key
         cls.__car_data[key] = car
