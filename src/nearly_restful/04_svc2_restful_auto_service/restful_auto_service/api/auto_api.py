@@ -45,9 +45,9 @@ def create_auto(request: Request):
 
     try:
         car = Repository.add_car(car)
-        return Response(status=201, json_body=car)
-    except:
-        return Response(status=400, body='Could not save car.')
+        return Response(status=201, json_body=car.to_dict())
+    except Exception as x:
+        return Response(status=400, body='Could not save car: {}'.format(x))
 
 
 # noinspection PyBroadException
